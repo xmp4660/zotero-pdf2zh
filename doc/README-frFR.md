@@ -8,14 +8,14 @@ Ceci est un modèle pour développer une extension pour [Zotero](https://www.zot
 [English](../README.md) | [简体中文](./README-zhCN.md) | [Français](./README-frFR.md)
 
 - Documentation
-    - [📖 Plugin Development Documentation](https://zotero-chinese.com/plugin-dev-guide/) (Chinese, not yet complete)
-    - [📖 Plugin Development Documentation for Zotero 7](https://www.zotero.org/support/dev/zotero_7_for_developers)
+  - [📖 Plugin Development Documentation](https://zotero-chinese.com/plugin-dev-guide/) (Chinese, not yet complete)
+  - [📖 Plugin Development Documentation for Zotero 7](https://www.zotero.org/support/dev/zotero_7_for_developers)
 - Outils pour le développement de pluqgins
-    - [🛠️ Zotero Plugin Toolkit](https://github.com/windingwind/zotero-plugin-toolkit) | [API Documentation](https://github.com/windingwind/zotero-plugin-toolkit/blob/master/docs/zotero-plugin-toolkit.md)
-    - [🛠️ Zotero Plugin Scaffold](https://github.com/northword/zotero-plugin-scaffold)
-    - [ℹ️ Zotero Type Definitions](https://github.com/windingwind/zotero-types)
-    - [📜 Zotero Source Code](https://github.com/zotero/zotero)
-    - [📌 Zotero Plugin Template](https://github.com/windingwind/zotero-plugin-template) (Ce dépot)
+  - [🛠️ Zotero Plugin Toolkit](https://github.com/windingwind/zotero-plugin-toolkit) | [API Documentation](https://github.com/windingwind/zotero-plugin-toolkit/blob/master/docs/zotero-plugin-toolkit.md)
+  - [🛠️ Zotero Plugin Scaffold](https://github.com/northword/zotero-plugin-scaffold)
+  - [ℹ️ Zotero Type Definitions](https://github.com/windingwind/zotero-types)
+  - [📜 Zotero Source Code](https://github.com/zotero/zotero)
+  - [📌 Zotero Plugin Template](https://github.com/windingwind/zotero-plugin-template) (Ce dépot)
 
 > [!TIP]
 > 👁 Surveillez ce dépôt afin d'être informé des corrections et des mises à jour.
@@ -58,12 +58,12 @@ Si vous utilisez ce dépôt, je vous recommande de mettre le badge suivant dans 
 - ⭐ [Nuveauté !] Rechargement automatique à chaud ! Chaque fois que le code source est modifié, il est automatiquement compilé et rechargé. [Voir ici→]((#auto-hot-reload)
 - Nombreux exemples dans `src/modules/examples.ts` ; ils couvrent la plupart des usages des APIs habituellement utilisées dans les extensions (en utilisant [zotero-plugin-toolkit](https://github.com/windingwind/zotero-plugin-toolkit));
 - Support de TypeScript :
-    - Prise en charge complète de la définition des types pour l'ensemble du projet Zotero, qui est écrit en JavaScript (avec les [zotero-types](https://github.com/windingwind/zotero-types));
-    - Variables globales et configuration de l'environnement ;
+  - Prise en charge complète de la définition des types pour l'ensemble du projet Zotero, qui est écrit en JavaScript (avec les [zotero-types](https://github.com/windingwind/zotero-types));
+  - Variables globales et configuration de l'environnement ;
 - Gestion des workflows pour le développement, la finalisation et la publication des extensions :
-    -   - Génére / met à jour automatiquement l'id/version de l'extension, met à jour les configurations, et définit les variables d'environnement (`development` / `production`);
-    - Construit et recharge automatiquement le code dans Zotero ;
-    - Publie automatiquement les nouvelles versions sur GitHub.
+  - - Génére / met à jour automatiquement l'id/version de l'extension, met à jour les configurations, et définit les variables d'environnement (`development` / `production`);
+  - Construit et recharge automatiquement le code dans Zotero ;
+  - Publie automatiquement les nouvelles versions sur GitHub.
 - Intégration avec Prettier et ES Lint (analyseur et formatteur de code).
 
 ## Exemples
@@ -146,17 +146,17 @@ S'active avec `Shift+P`.
 
 1. Cliquez sur `Use this template`
 2. Clonez votre dépôt avec git.
-    <details >
-    <summary>💡 Démarrer votre projet avec GitHub Codespace</summary>
+   <details >
+   <summary>💡 Démarrer votre projet avec GitHub Codespace</summary>
 
-    _GitHub CodeSpace_ vous permet de démarrer votre projet sans avoir à télécharger le code/IDE/dépendances localement.
+   _GitHub CodeSpace_ vous permet de démarrer votre projet sans avoir à télécharger le code/IDE/dépendances localement.
 
-    Effectuez les étapes ci-dessus et créez votre première extension en 30 secondes!
+   Effectuez les étapes ci-dessus et créez votre première extension en 30 secondes!
 
-    - Allez en haut de la [page d'accueil](https://github.com/windingwind/zotero-plugin-template), cliquez sur le bouton vert `Use this template`, cliquez sur `Open in codespace`. ous devrez peut-être vous connecter à votre compte GitHub.
-    - Attendez que _GitHub CodeSpace_ se charge.
+   - Allez en haut de la [page d'accueil](https://github.com/windingwind/zotero-plugin-template), cliquez sur le bouton vert `Use this template`, cliquez sur `Open in codespace`. ous devrez peut-être vous connecter à votre compte GitHub.
+   - Attendez que _GitHub CodeSpace_ se charge.
 
-    </details>
+   </details>
 
 3. Entrez dans le dossier du dépôt
 
@@ -164,31 +164,31 @@ S'active avec `Shift+P`.
 
 1. Modifier les paramètres dans `./package.json`, y compris :
 
-    ```json5
-    {
-        version: "", // to 0.0.0
-        author: "",
-        description: "",
-        homepage: "",
-        config: {
-            addonName: "", // name to be displayed in the plugin manager
-            addonID: "", // ID to avoid conflict. IMPORTANT!
-            addonRef: "", // e.g. Element ID prefix
-            addonInstance: "", // the plugin's root instance: Zotero.${addonInstance}
-            prefsPrefix: "extensions.zotero.${addonRef}", // the prefix of prefs
-        },
-    }
-    ```
+   ```json5
+   {
+     version: "", // to 0.0.0
+     author: "",
+     description: "",
+     homepage: "",
+     config: {
+       addonName: "", // name to be displayed in the plugin manager
+       addonID: "", // ID to avoid conflict. IMPORTANT!
+       addonRef: "", // e.g. Element ID prefix
+       addonInstance: "", // the plugin's root instance: Zotero.${addonInstance}
+       prefsPrefix: "extensions.zotero.${addonRef}", // the prefix of prefs
+     },
+   }
+   ```
 
-    > ![WARNING]
-    > Veillez à bien définir addonID et addonRef pour éviter tout conflit.
+   > ![WARNING]
+   > Veillez à bien définir addonID et addonRef pour éviter tout conflit.
 
-    Si vous avez besoin d'héberger vos paquets XPI en dehors de GitHub, modifiez `updateURL` et ajoutez `xpiDownloadLink` dans `zotero-plugin.config.ts`.
+   Si vous avez besoin d'héberger vos paquets XPI en dehors de GitHub, modifiez `updateURL` et ajoutez `xpiDownloadLink` dans `zotero-plugin.config.ts`.
 
 2. Copiez le fichier de la variable d'environnement. Modifiez la commandes quilance la version beta de Zotero.
 
-    > Créez un profil de développement (Optionnel)  
-    > Démarrez la version beta de Zotero avec `/path/to/zotero -p`. Créez un nouveau profil et utilisez-le comme profil de développement. Ne le faites qu'une seule fois !
+   > Créez un profil de développement (Optionnel)  
+   > Démarrez la version beta de Zotero avec `/path/to/zotero -p`. Créez un nouveau profil et utilisez-le comme profil de développement. Ne le faites qu'une seule fois !
 
 ```sh
 cp .env.example .env
@@ -199,9 +199,9 @@ vim .env
 
 3. Installez les dépendances avec `npm install`
 
-    > Si vous utilisez `pnpm` comme gestionnaire de paquets pour votre projet, vous devez ajouter `public-hoist-pattern[]=*@types/bluebird*` à `.npmrc`, voir <https://github.com/windingwind/zotero-types?tab=readme-ov-file#usage>.
+   > Si vous utilisez `pnpm` comme gestionnaire de paquets pour votre projet, vous devez ajouter `public-hoist-pattern[]=*@types/bluebird*` à `.npmrc`, voir <https://github.com/windingwind/zotero-types?tab=readme-ov-file#usage>.
 
-    Si vous obtenez `npm ERR ! ERESOLVE unable to resolve dependency tree` avec `npm install`, qui est un bogue de dépendance en amont de typescript-eslint, utilisez la commande `npm i -f` pour l'installer.
+   Si vous obtenez `npm ERR ! ERESOLVE unable to resolve dependency tree` avec `npm install`, qui est un bogue de dépendance en amont de typescript-eslint, utilisez la commande `npm i -f` pour l'installer.
 
 ### 3. Codez !
 
@@ -210,8 +210,8 @@ Démarrez le serveur de développement avec `npm start`:
 - Il fera La pré-construction de l'extension en mode développement
 - Il démarrera Zotero avec l'extension chargée depuis `build/`
 - Il surveillera `src/**` et `addon/**`.
-    - Si `src/**` a changé, lancez esbuild et rechargez.
-    - Si `addon/**` a changé, reconstruisez l'extension (en mode développement) et recharger là.
+  - Si `src/**` a changé, lancez esbuild et rechargez.
+  - Si `addon/**` a changé, reconstruisez l'extension (en mode développement) et recharger là.
 
 #### Rechargement automatique à chaud
 
@@ -236,7 +236,7 @@ Vous pouvez également :
 - Tester les extraits de code dans Outils -> Développeur -> Run Javascript ;
 - Déboguer la sortie avec`Zotero.debug()`. Trouver les sorties dans Aide->Journal de débogage->Voir le journal;
 - Déboguer l'interface utilisateur. Zotero est construit sur le cadre XUL de Firefox. Déboguez l'interface utilisateur XUL avec un logiciel comme [XUL Explorer](https://udn.realityripple.com/docs/Archive/Mozilla/XUL_Explorer).
-    > Documentation de XUL : <http://www.devdoc.net/web/developer.mozilla.org/en-US/docs/XUL.html>
+  > Documentation de XUL : <http://www.devdoc.net/web/developer.mozilla.org/en-US/docs/XUL.html>
 
 ### 4. Construction (Build)
 
@@ -293,14 +293,14 @@ Lorsque la prochaine version normale sera mise à jour, `update.json` et `update
 > Voir également [`src/hooks.ts`](https://github.com/windingwind/zotero-plugin-template/blob/main/src/hooks.ts)
 
 1. Lorsque l'installation/activation/démarrage est déclenché par Zotero, `bootstrap.js` > `startup` est appelé
-    - Attendez que Zotero soit prêt ;
-    - Chargez de `index.js` (l'entrée principale du code de lextension, construit à partir de `index.ts`) ;
-    - Enregistrez les ressources si Zotero 7+
+   - Attendez que Zotero soit prêt ;
+   - Chargez de `index.js` (l'entrée principale du code de lextension, construit à partir de `index.ts`) ;
+   - Enregistrez les ressources si Zotero 7+
 2. Dans l'entrée principale `index.js`, l'objet extension est injecté sous `Zotero` et `hooks.ts` > `onStartup` est appelé.
-    - Initialisez tout ce que vous voulez, y compris les auditeurs de notifications (hooks), les panneaux de préférences et les éléments de l'interface utilisateur.
+   - Initialisez tout ce que vous voulez, y compris les auditeurs de notifications (hooks), les panneaux de préférences et les éléments de l'interface utilisateur.
 3. Lorsque la désinstallation/désactivation est déclenchée depuis Zotero, `bootstrap.js` > `shutdown` est appelé.
-    - `events.ts` > `onShutdown` est appelé. Cela supprime les éléments de l'interface utilisateur, les panneaux de préférences, ou tout ce qui a été créé par l'extension'.
-    - Supprimez les scripts et libérez les ressources.
+   - `events.ts` > `onShutdown` est appelé. Cela supprime les éléments de l'interface utilisateur, les panneaux de préférences, ou tout ce qui a été créé par l'extension'.
+   - Supprimez les scripts et libérez les ressources.
 
 ### À propos des variables globales
 
