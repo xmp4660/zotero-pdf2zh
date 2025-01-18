@@ -4,9 +4,10 @@
 
 ## 配置方法
 
-第一步: 运行python脚本:
+第一步: 
+根据以下python脚本的注释, 按照个人需求修改配置，然后运行:
+
 ```python
-# translate_server.py
 from flask import Flask, request, jsonify
 import subprocess
 import os
@@ -25,7 +26,7 @@ def translate():
         os.makedirs(translated_dir, exist_ok=True)
         print(input_path)
 
-        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t' + str(thread_num)+ ' --o ' + translated_dir)
+        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t' + str(thread_num)+ ' --o ' + translated_dir) # 执行pdf2zh翻译
 
         translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
@@ -43,12 +44,10 @@ if __name__ == '__main__':
 ### 第二步
 在Zotero-设置中，输入您的Python Server IP + '/translate'
 
-例如: http://localhost:8888/translate
+默认为: http://localhost:8888/translate
 
 ## 使用方法
 
 右键选择条目或者附件 - 点击 Translate PDF ![image](./image.png)
-
-
 
 条目中将会添加两个翻译后的文件
