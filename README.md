@@ -2,7 +2,6 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
-
 ## 配置方法
 
 第一步: 运行python脚本:
@@ -45,3 +44,11 @@ if __name__ == '__main__':
 在Zotero-设置中，输入您的Python Server IP + '/translate'
 
 例如: http://localhost:8888/translate
+
+## 使用方法
+
+右键选择条目或者附件 - 点击 Translate PDF ![image](./image.png)
+
+
+
+条目中将会添加两个翻译后的文件
