@@ -1,5 +1,6 @@
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
+import { setPref } from "../utils/prefs";
 
 export async function registerPrefsScripts(_window: Window) {
     // This function is called when the prefs window is opened
@@ -21,22 +22,15 @@ export async function registerPrefsScripts(_window: Window) {
             ],
             rows: [
                 {
-                    title: "Orange",
-                    detail: "It's juicy",
-                },
-                {
-                    title: "Banana",
-                    detail: "It's sweet",
-                },
-                {
-                    title: "Apple",
-                    detail: "I mean the fruit APPLE",
+                    title: "python server ip",
+                    detail: "enter your python server ip: (e.g: http://localhost:8888/translate",
                 },
             ],
         };
     } else {
         addon.data.prefs.window = _window;
     }
+    ztoolkit.log("Preference window opened!");
     updatePrefsUI();
     bindPrefEvents();
 }
@@ -83,14 +77,10 @@ async function updatePrefsUI() {
         // When pressing delete, delete selected line and refresh table.
         // Returning false to prevent default event.
         .setProp("onKeyDown", (event: KeyboardEvent) => {
-            if (
-                event.key == "Delete" ||
-                (Zotero.isMac && event.key == "Backspace")
-            ) {
+            if (event.key == "Delete" || (Zotero.isMac && event.key == "Backspace")) {
                 addon.data.prefs!.rows =
                     addon.data.prefs?.rows.filter(
-                        (v, i) =>
-                            !tableHelper.treeInstance.selection.isSelected(i),
+                        (v, i) => !tableHelper.treeInstance.selection.isSelected(i),
                     ) || [];
                 tableHelper.render();
                 return false;
@@ -127,6 +117,17 @@ function bindPrefEvents() {
             `#zotero-prefpane-${config.addonRef}-input`,
         )
         ?.addEventListener("change", (e) => {
+            ztoolkit.log(e);
+            addon.data.prefs!.window.alert(
+                `Successfully changed to ${(e.target as HTMLInputElement).value}!`,
+            );
+        });
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-serverip`,
+        )
+        ?.addEventListener("change", (e) => {
+            setPref("serverip", (e.target as HTMLInputElement).value);
             ztoolkit.log(e);
             addon.data.prefs!.window.alert(
                 `Successfully changed to ${(e.target as HTMLInputElement).value}!`,

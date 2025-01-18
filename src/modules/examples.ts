@@ -1,7 +1,9 @@
 import { getLocaleID, getString } from "../utils/locale";
+import { getPref } from "../utils/prefs";
 interface TranslationResponse {
     status: string;
-    translatedPath: string;
+    translatedPath1: string;
+    translatedPath2: string;
     message: string;
 }
 
@@ -45,8 +47,6 @@ export class BasicExampleFactory {
                 addon.hooks.onNotify(event, type, ids, extraData);
             },
         };
-
-        // Register the callback in Zotero as an item observer
         const notifierID = Zotero.Notifier.registerObserver(callback, [
             "tab",
             "item",
@@ -105,10 +105,6 @@ export class UIExampleFactory {
         });
     }
 }
-
-export class PromptExampleFactory {
-}
-
 export class HelperExampleFactory {
     @example
     static async translatePDF() {
@@ -120,36 +116,28 @@ export class HelperExampleFactory {
                 return;
             }
             for (const item of selectedItems) {
-                if (!item.isRegularItem()) {
-                    continue;
+                var attachItem;
+                if (item.isAttachment()) {
+                    attachItem = item;
+                } else if (item.isRegularItem()) {
+                    const bestItem = await item.getBestAttachment();
+                    if (bestItem) {
+                        attachItem = bestItem;
+                    } else {
+                        continue
+                    }
+                } else {
+                    continue
                 }
-                const attachmentItems = [];
-                for (const item of selectedItems) {
-                  if (item.isAttachment()) {
-                    attachmentItems.push(item);
-                  } else if (item.isRegularItem()) {
-                    item.getAttachments()
-                      .map((id) => Zotero.Items.get(id))
-                      .filter((item) => item.isAttachment())
-                      .forEach((item) => attachmentItems.push(item));
-                  }
-                }
-                const attachItem = attachmentItems[0];
                 const filePath = attachItem.getFilePath();
                 ztoolkit.log("selected attachment item filePath:", filePath);
                 if (!filePath || !filePath.endsWith(".pdf")) {
                     ztoolkit.getGlobal("alert")("请选择一个 PDF 附件。");
                     return;
                 }
-                const translatedPath =
-                    await HelperExampleFactory.runPythonScript(filePath);
-                if (translatedPath) {
-                    await HelperExampleFactory.addAttachmentToItem(
-                        item,
-                        translatedPath,
-                    );
-                    ztoolkit.getGlobal("alert")("翻译完成.pdf 已添加到条目中。");
-                } else {
+                const ok =
+                    await HelperExampleFactory.runPythonScript(filePath, item);
+                if (!ok) {
                     ztoolkit.getGlobal("alert")("翻译失败，未生成 pdf。");
                 }
             }
@@ -158,10 +146,14 @@ export class HelperExampleFactory {
             ztoolkit.getGlobal("alert")("翻译过程中发生错误。请检查日志。");
         }
     }
-    
-    static async runPythonScript(inputPath: string): Promise<string | null> {
-        const serverUrl = "http://localhost:8888/translate"; // Python 服务器的地址
-        const outputDir = "/Users/zhangxinyue/personal/code/pdftranslate/translated/example-mono.pdf";
+
+    static async runPythonScript(inputPath: string, item: Zotero.Item): Promise<Boolean | null> {
+        const serverUrl = getPref("serverip")?.toString();
+        ztoolkit.log("server url:", serverUrl);
+        if (!serverUrl) {
+            ztoolkit.getGlobal("alert")("请在首选项中配置 Python 服务器地址。");
+            return null;
+        }
         try {
             const response = await fetch(serverUrl, {
                 method: 'POST',
@@ -170,22 +162,17 @@ export class HelperExampleFactory {
                 },
                 body: JSON.stringify({
                     filePath: inputPath,
-                    outputDir: outputDir,
-                    threads: 4, 
                 }),
             });
-    
             if (!response.ok) {
                 throw new Error(`服务器响应状态码: ${response.status}`);
             }
+
             const jsonString = await response.text();
             const result: TranslationResponse = JSON.parse(jsonString);
-            
-            ztoolkit.log("翻译成功 haha:", result);
-            ztoolkit.log("翻译后的文件路径:", result.translatedPath);
-
             if (result.status === "success") {
-                return result.translatedPath;
+                await HelperExampleFactory.addAttachmentToItem(item, result.translatedPath1, result.translatedPath2);
+                return true
             } else {
                 ztoolkit.getGlobal("alert")(result.message || "翻译失败，未生成 pdf。");
                 return null;
@@ -199,19 +186,50 @@ export class HelperExampleFactory {
 
     static async addAttachmentToItem(
         item: Zotero.Item,
-        translatedPath: string,
+        translatedPath1: string,
+        translatedPath2: string,
     ): Promise<void> {
         try {
             const itemID = item.id;
-            const newAttachment = await Zotero.Attachments.importFromFile({
-                file: translatedPath,
-                parentItemID: itemID,
-            });
-            ztoolkit.log(`已将翻译后的 PDF 附件添加到项目 ${itemID} 中。`);
+            const libraryID = item.libraryID;
+            if (item.isAttachment()) {
+                if (item.parentItemID === null) {
+                    const newAttachment1 = await Zotero.Attachments.importFromFile({
+                        file: translatedPath1,
+                        libraryID: libraryID,
+                    });
+                    const newAttachment2 = await Zotero.Attachments.importFromFile({
+                        file: translatedPath2,
+                        libraryID: libraryID,
+                    });
+                } else {
+                    const parentItemID = item.parentItemID;
+                    const newAttachment1 = await Zotero.Attachments.importFromFile({
+                        file: translatedPath1,
+                        parentItemID: parentItemID !== false ? parentItemID : undefined,
+                        libraryID: libraryID,
+                    });
+                    const newAttachment2 = await Zotero.Attachments.importFromFile({
+                        file: translatedPath2,
+                        parentItemID: parentItemID !== false ? parentItemID : undefined,
+                        libraryID: libraryID,
+                    });
+                }
+                ztoolkit.log(`已将翻译后的 PDF 附件添加到库 ${libraryID} 中。`);
+            } else {
+                const newAttachment1 = await Zotero.Attachments.importFromFile({
+                    file: translatedPath1,
+                    parentItemID: itemID,
+                });
+                const newAttachment2 = await Zotero.Attachments.importFromFile({
+                    file: translatedPath2,
+                    parentItemID: itemID,
+                });
+                ztoolkit.log(`已将翻译后的 PDF 附件添加到项目 ${itemID} 中。`);
+            }
         } catch (error) {
             ztoolkit.log("Error adding attachment:", error);
             throw error;
         }
     }
-    // ************************************************************************************************
 }

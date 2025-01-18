@@ -3,7 +3,6 @@ import { BasicTool } from "zotero-plugin-toolkit";
 import Addon from "./addon";
 import { config } from "../package.json";
 
-
 const basicTool = new BasicTool();
 
 // @ts-ignore - Plugin instance is not typed

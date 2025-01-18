@@ -2,13 +2,11 @@
 import {
     BasicExampleFactory,
     HelperExampleFactory,
-    KeyExampleFactory,
-    PromptExampleFactory,
     UIExampleFactory,
 } from "./modules/examples";
 import { getString, initLocale } from "./utils/locale";
-import { registerPrefsScripts } from "./modules/preferenceScript";
 import { createZToolkit } from "./utils/ztoolkit";
+import { registerPrefsScripts } from "./modules/preferenceScript";
 
 async function onStartup() {
     await Promise.all([
@@ -64,6 +62,75 @@ async function onMainWindowLoad(win: Window): Promise<void> {
         text: `[100%] ${getString("startup-finish")}`,
     });
     popupWin.startCloseTimer(5000);
+
+    // 渲染偏好设置界面
+    updatePrefsUI();
+}
+
+async function updatePrefsUI() {
+    const renderLock = ztoolkit.getGlobal("Zotero").Promise.defer();
+    if (addon.data.prefs?.window == undefined) return;
+    const tableHelper = new ztoolkit.VirtualizedTable(addon.data.prefs?.window)
+        .setContainerId(`${addon.data.config.addonRef}-table-container`)
+        .setProp({
+            id: `${addon.data.config.addonRef}-prefs-table`,
+            columns: addon.data.prefs?.columns,
+            showHeader: true,
+            multiSelect: true,
+            staticColumns: true,
+            disableFontSizeScaling: true,
+        })
+        .setProp("getRowCount", () => addon.data.prefs?.rows.length || 0)
+        .setProp(
+            "getRowData",
+            (index) =>
+                addon.data.prefs?.rows[index] || {
+                    title: "no data",
+                    detail: "no data",
+                },
+        )
+        .setProp("onSelectionChange", (selection) => {
+            new ztoolkit.ProgressWindow(addon.data.config.addonName)
+                .createLine({
+                    text: `Selected line: ${addon.data.prefs?.rows
+                        .filter((v, i) => selection.isSelected(i))
+                        .map((row) => row.title)
+                        .join(",")}`,
+                    progress: 100,
+                })
+                .show();
+        })
+        .setProp("onKeyDown", (event: KeyboardEvent) => {
+            if (event.key == "Delete" || (Zotero.isMac && event.key == "Backspace")) {
+                addon.data.prefs!.rows =
+                    addon.data.prefs?.rows.filter(
+                        (v, i) => !tableHelper.treeInstance.selection.isSelected(i),
+                    ) || [];
+                tableHelper.render();
+                return false;
+            }
+            return true;
+        })
+        .setProp(
+            "getRowString",
+            (index) => addon.data.prefs?.rows[index].title || "",
+        )
+        .render(-1, () => {
+            renderLock.resolve();
+        });
+
+    await renderLock.promise;
+    ztoolkit.log("Preference table rendered!");
+}
+
+async function onPrefsEvent(type: string, data: { [key: string]: any }) {
+    switch (type) {
+        case "load":
+            registerPrefsScripts(data.window);
+            break;
+        default:
+            return;
+    }
 }
 
 async function onMainWindowUnload(win: Window): Promise<void> {
@@ -103,22 +170,6 @@ async function onNotify(
     }
 }
 
-/**
- * This function is just an example of dispatcher for Preference UI events.
- * Any operations should be placed in a function to keep this funcion clear.
- * @param type event type
- * @param data event data
- */
-async function onPrefsEvent(type: string, data: { [key: string]: any }) {
-    switch (type) {
-        case "load":
-            registerPrefsScripts(data.window);
-            break;
-        default:
-            return;
-    }
-}
-
 function onShortcuts(type: string) {
     switch (type) {
         default:
@@ -135,10 +186,6 @@ function onDialogEvents(type: string) {
             break;
     }
 }
-
-// Add your hooks here. For element click, etc.
-// Keep in mind hooks only do dispatch. Don't add code that does real jobs in hooks.
-// Otherwise the code would be hard to read and maintain.
 
 export default {
     onStartup,
