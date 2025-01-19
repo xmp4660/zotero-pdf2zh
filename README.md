@@ -8,7 +8,7 @@
 
 ## 配置方法
 
-### 第零步 
+### 第零步
 
 在本地安装[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
@@ -66,12 +66,11 @@ if __name__ == '__main__':
 
 ![image3](./image3.png)
 
-
 # 致谢
+
 - @Byaidu [PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 - @windingwind [zotero-plugin-template](https://github.com/windingwind/zotero-plugin-template)
 
 # 💗
 
 欢迎提issue或者参与贡献
-
