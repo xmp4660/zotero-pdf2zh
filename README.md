@@ -44,7 +44,7 @@ def translate():
         print("### translating ###: ", input_path)
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --output ' + translated_dir) 
+        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --output ' + translated_dir)
 
         translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
@@ -58,22 +58,26 @@ if __name__ == '__main__':
 ```
 
 #### 添加配置文件 & 修改翻译中文字体（可选）
+
 推荐使用霞鹜文楷字体, 配置方法:
 
 0. 下载霞鹜文楷字体: https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf
 
 1. 新建config.json文件
+
 ```json
 {
-    "USE_MODELSCOPE": "0",
-    "PDF2ZH_LANG_FROM": "English",
-    "PDF2ZH_LANG_TO": "Simplified Chinese",
-    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
+  "USE_MODELSCOPE": "0",
+  "PDF2ZH_LANG_FROM": "English",
+  "PDF2ZH_LANG_TO": "Simplified Chinese",
+  "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
 }
 ```
+
 `NOTO_FONT_PATH`为您的自定义字体路径
 
 2. python脚本修改为:
+
 ```python
 from flask import Flask, request, jsonify
 import subprocess
