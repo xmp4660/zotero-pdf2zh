@@ -157,16 +157,16 @@ async function onNotify(
   extraData: { [key: string]: any },
 ) {
   // You can add your code to the corresponding notify type
-  ztoolkit.log("notify", event, type, ids, extraData);
-  if (
-    event == "select" &&
-    type == "tab" &&
-    extraData[ids[0]].type == "reader"
-  ) {
-    BasicExampleFactory.exampleNotifierCallback();
-  } else {
-    return;
-  }
+  //   ztoolkit.log("notify", event, type, ids, extraData);
+  //   if (
+  //     event == "select" &&
+  //     type == "tab" &&
+  //     extraData[ids[0]].type == "reader"
+  //   ) {
+  //     BasicExampleFactory.exampleNotifierCallback();
+  //   } else {
+  return;
+  //   }
 }
 
 function onShortcuts(type: string) {
