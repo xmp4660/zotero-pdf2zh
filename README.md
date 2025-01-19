@@ -47,6 +47,8 @@ if __name__ == '__main__':
 
 在Zotero-设置中，输入您的Python Server IP + '/translate'
 
+![image2](./image2.png)
+
 默认为: http://localhost:8888/translate
 
 ## 使用方法
