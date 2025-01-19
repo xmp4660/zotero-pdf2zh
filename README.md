@@ -4,7 +4,7 @@
 
 ## 配置方法
 
-第一步: 
+第一步:
 根据以下python脚本的注释, 按照个人需求修改配置，然后运行:
 
 ```python
@@ -32,7 +32,7 @@ def translate():
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
 
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
-    
+
     except subprocess.CalledProcessError as e:
         return jsonify({'status': 'error', 'message': e.stderr}), 500
 
@@ -42,6 +42,7 @@ if __name__ == '__main__':
 ```
 
 ### 第二步
+
 在Zotero-设置中，输入您的Python Server IP + '/translate'
 
 默认为: http://localhost:8888/translate
