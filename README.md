@@ -56,3 +56,6 @@ if __name__ == '__main__':
 右键选择条目或者附件 - 点击 Translate PDF ![image](./image.png)
 
 条目中将会添加两个翻译后的文件
+
+![image3](./image3.png)
+
