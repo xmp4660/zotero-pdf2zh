@@ -1,5 +1,7 @@
 # Zotero PDF2zh
 
+[![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
+
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
 ## 配置方法
