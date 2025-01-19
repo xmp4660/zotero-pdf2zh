@@ -67,9 +67,6 @@ if __name__ == '__main__':
 
 ```json
 {
-  "USE_MODELSCOPE": "0",
-  "PDF2ZH_LANG_FROM": "English",
-  "PDF2ZH_LANG_TO": "Simplified Chinese",
   "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
 }
 ```
