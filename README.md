@@ -1,8 +1,10 @@
 # Zotero PDF2zh
 
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
+[![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/master/LICENSE)
+![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow)
 
-在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+> 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
 ## 配置方法
 
@@ -58,4 +60,13 @@ if __name__ == '__main__':
 条目中将会添加两个翻译后的文件
 
 ![image3](./image3.png)
+
+
+# 致谢
+- @Byaidu [PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+- @windingwind [zotero-plugin-template](https://github.com/windingwind/zotero-plugin-template)
+
+# 💗
+
+欢迎提issue或者参与贡献
 
