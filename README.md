@@ -8,7 +8,12 @@
 
 ## 配置方法
 
-第一步:
+### 第零步 
+
+在本地安装[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+
+### 第一步
+
 根据以下python脚本的注释, 按照个人需求修改配置，然后运行:
 
 ```python
