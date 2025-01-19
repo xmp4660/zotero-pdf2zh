@@ -10,7 +10,15 @@
 
 ### 第零步
 
-在本地安装[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+在本地安装最新的[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+
+```cmd
+pip install pdf2zh          # 安装pdf2zh
+或
+pip install --upgrade pdf2zh # 之前已经安装, 更新
+```
+
+本插件当前开发使用的`pdf2zh`版本: v1.8.9
 
 ### 第一步
 
@@ -33,13 +41,13 @@ def translate():
     input_path = data.get('filePath')
     try:
         os.makedirs(translated_dir, exist_ok=True)
-        print(input_path)
+        print("### translating ###: ", input_path)
 
-        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --o ' + translated_dir) # 执行pdf2zh翻译
+        # 执行pdf2zh翻译, 用户可以自定义命令内容:
+        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --output ' + translated_dir) 
 
         translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
-
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
 
     except subprocess.CalledProcessError as e:
@@ -47,16 +55,69 @@ def translate():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port_num)
-
 ```
+
+#### 添加配置文件 & 修改翻译中文字体（可选）
+推荐使用霞鹜文楷字体, 配置方法:
+
+0. 下载霞鹜文楷字体: https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf
+
+1. 新建config.json文件
+```json
+{
+    "USE_MODELSCOPE": "0",
+    "PDF2ZH_LANG_FROM": "English",
+    "PDF2ZH_LANG_TO": "Simplified Chinese",
+    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
+}
+```
+`NOTO_FONT_PATH`为您的自定义字体路径
+
+2. python脚本修改为:
+```python
+from flask import Flask, request, jsonify
+import subprocess
+import os
+
+pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
+thread_num = 4                      # 设置线程数: 默认为4
+translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
+port_num = 8888                     # 设置端口号: 默认为8888
+
+config_path = 'config.json'         # 添加配置文件: 自定义字体, 指定翻译引擎等
+
+app = Flask(__name__)
+@app.route('/translate', methods=['POST'])
+def translate():
+    data = request.get_json()
+    input_path = data.get('filePath')
+    try:
+        os.makedirs(translated_dir, exist_ok=True)
+        print("### translating ###: ", input_path)
+
+        # 执行带配置文件的pdf2zh翻译, 用户可以自定义命令内容:
+        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
+
+        translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
+        translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+        return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
+
+    except subprocess.CalledProcessError as e:
+        return jsonify({'status': 'error', 'message': e.stderr}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=port_num)
+```
+
+3. 其他配置的修改同理: 修改config.json即可, 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
 
 ### 第二步
 
 在Zotero-设置中，输入您的Python Server IP + '/translate'
 
-![image2](./image2.png)
+默认为: `http://localhost:8888/translate`
 
-默认为: http://localhost:8888/translate
+![image2](./image2.png)
 
 ## 使用方法
 
