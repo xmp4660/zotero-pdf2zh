@@ -28,7 +28,7 @@ def translate():
         os.makedirs(translated_dir, exist_ok=True)
         print(input_path)
 
-        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t' + str(thread_num)+ ' --o ' + translated_dir) # 执行pdf2zh翻译
+        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --o ' + translated_dir) # 执行pdf2zh翻译
 
         translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
