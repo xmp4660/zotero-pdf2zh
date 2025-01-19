@@ -93,7 +93,7 @@ export class UIExampleFactory {
     ztoolkit.Menu.register("item", {
       tag: "menuitem",
       id: "zotero-itemmenu-translate-pdf",
-      label: "Translate PDF",
+      label: "PDF2zh: Translate PDF",
       commandListener: (ev) => addon.hooks.onDialogEvents("translatePDF"),
       icon: menuIcon,
     });
@@ -132,6 +132,7 @@ export class HelperExampleFactory {
         const ok = await HelperExampleFactory.runPythonScript(filePath, item);
         if (!ok) {
           ztoolkit.getGlobal("alert")("翻译失败，未生成 pdf。");
+          return;
         }
       }
     } catch (error) {
@@ -163,7 +164,6 @@ export class HelperExampleFactory {
       if (!response.ok) {
         throw new Error(`服务器响应状态码: ${response.status}`);
       }
-
       const jsonString = await response.text();
       const result: TranslationResponse = JSON.parse(jsonString);
       if (result.status === "success") {
