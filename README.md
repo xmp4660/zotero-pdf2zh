@@ -18,7 +18,7 @@ pip install pdf2zh          # 安装pdf2zh
 pip install --upgrade pdf2zh # 之前已经安装, 更新
 ```
 
-本插件当前开发使用的`pdf2zh`版本: v1.8.9
+本插件当前开发使用的 `pdf2zh`版本: v1.8.9
 
 ### 第一步
 
@@ -44,7 +44,7 @@ def translate():
         print("### translating ###: ", input_path)
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --output ' + translated_dir)
+        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
 
         translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
@@ -62,7 +62,6 @@ if __name__ == '__main__':
 推荐使用霞鹜文楷字体, 配置方法:
 
 0. 下载霞鹜文楷字体: https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf
-
 1. 新建config.json文件
 
 ```json
@@ -97,7 +96,7 @@ def translate():
         print("### translating ###: ", input_path)
 
         # 执行带配置文件的pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' ' + str(input_path).replace(' ', '\ ') + ' --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
+        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
 
         translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
