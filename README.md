@@ -31,7 +31,7 @@ import os
 
 pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
 thread_num = 4                      # 设置线程数: 默认为4
-translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
+translated_dir = "/xxx/temp/"    # 设置翻译文件的临时输出路径(注意: 使用绝对路径!)
 port_num = 8888                     # 设置端口号: 默认为8888
 
 app = Flask(__name__)
@@ -79,12 +79,12 @@ from flask import Flask, request, jsonify
 import subprocess
 import os
 
-pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
-thread_num = 4                      # 设置线程数: 默认为4
-translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
-port_num = 8888                     # 设置端口号: 默认为8888
+pdf2zh = "pdf2zh"                # 设置pdf2zh指令: 默认为'pdf2zh'
+thread_num = 4                   # 设置线程数: 默认为4
+translated_dir = "/xxx/temp/"    # 设置翻译文件的临时输出路径(注意: 使用绝对路径!)
+port_num = 8888                  # 设置端口号: 默认为8888
 
-config_path = 'config.json'         # 添加配置文件: 自定义字体, 指定翻译引擎等
+config_path = 'config.json'      # 添加配置文件: 自定义字体, 指定翻译引擎等
 
 app = Flask(__name__)
 @app.route('/translate', methods=['POST'])
