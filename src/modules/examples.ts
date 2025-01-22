@@ -78,7 +78,7 @@ export class BasicExampleFactory {
       pluginID: addon.data.config.addonID,
       src: rootURI + "content/preferences.xhtml",
       label: getString("prefs-title"),
-      image: `chrome://${addon.data.config.addonRef}/content/icons/favicon.png`,
+      image: `chrome://${addon.data.config.addonRef}/content/icons/favicon.svg`,
     });
   }
 }
@@ -88,7 +88,7 @@ export class KeyExampleFactory {}
 export class UIExampleFactory {
   @example
   static registerRightClickMenuItem() {
-    const menuIcon = `chrome://${addon.data.config.addonRef}/content/icons/favicon@0.5x.png`;
+    const menuIcon = `chrome://${addon.data.config.addonRef}/content/icons/favicon@0.5x.svg`;
     // 添加自定义菜单项
     ztoolkit.Menu.register("item", {
       tag: "menuitem",
@@ -198,7 +198,8 @@ export class HelperExampleFactory {
               : undefined,
           libraryID: libraryID,
           collections:
-            parentItemID == null || parentItemID == false
+            (parentItemID == null || parentItemID == false) &&
+            collectionID != null
               ? [collectionID]
               : undefined,
         }),

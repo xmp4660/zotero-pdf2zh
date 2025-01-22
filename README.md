@@ -1,16 +1,18 @@
 # Zotero PDF2zh
 
+![Zotero PDF2zh](./addon/content/icons/favicon@0.5x.svg)
+
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/master/LICENSE)
-![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=pink)
+![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=yellow)
 
 <!-- ![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow) -->
 
-> 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
-## 配置方法
+# 配置方法
 
-### 第零步
+## 第零步
 
 在本地安装最新的[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
@@ -22,7 +24,7 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 本插件当前开发使用的 `pdf2zh`版本: v1.8.9
 
-### 第一步
+## 第一步
 
 根据以下python脚本的注释, 按照个人需求修改配置，然后运行:
 
@@ -68,7 +70,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port_num)
 ```
 
-#### 添加配置文件 & 修改翻译中文字体（可选）
+### 添加配置文件 & 修改翻译中文字体（可选）
 
 推荐使用霞鹜文楷字体, 配置方法:
 
@@ -126,21 +128,23 @@ if __name__ == '__main__':
 
 3. 其他配置的修改同理: 修改config.json即可, 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
 
-### 第二步
+## 第二步
 
 在Zotero-设置中，输入您的Python Server IP + '/translate'
 
 默认为: `http://localhost:8888/translate`
 
-![image2](./image2.png)
+<img src="./image2.png" alt="image2" style="zoom: 50%;" />
 
-## 使用方法
+# 使用方法
 
-右键选择条目或者附件 - 点击 Translate PDF ![image](./image.png)
+右键选择条目或者附件 - 点击 Translate PDF
+
+ <img src="./image1.png" alt="image" style="zoom:50%;" />
 
 条目中将会添加两个翻译后的文件
 
-![image3](./image3.png)
+<img src="./image3.png" alt="image3" style="zoom:50%;" />
 
 # 致谢
 
