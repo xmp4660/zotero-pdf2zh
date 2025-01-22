@@ -3,6 +3,7 @@
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/master/LICENSE)
 ![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=pink)
+
 <!-- ![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow) -->
 
 > 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
