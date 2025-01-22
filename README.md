@@ -2,7 +2,10 @@
 
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/master/LICENSE)
-![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow)
+
+<!-- ![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow) -->
+
+![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=yellow)
 
 > 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
@@ -31,8 +34,15 @@ import os
 
 pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
 thread_num = 4                      # 设置线程数: 默认为4
-translated_dir = "/xxx/temp/"    # 设置翻译文件的临时输出路径(注意: 使用绝对路径!)
+translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 port_num = 8888                     # 设置端口号: 默认为8888
+
+#####################################################################################################################
+def get_absolute_path(path):
+    if os.path.isabs(path): # 判断是否是绝对路径
+        return path  # 如果已经是绝对路径，直接返回
+    else:
+        return os.path.abspath(path) # 如果是相对路径，转换为绝对路径
 
 app = Flask(__name__)
 @app.route('/translate', methods=['POST'])
@@ -44,14 +54,16 @@ def translate():
         print("### translating ###: ", input_path)
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
+        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
 
-        translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
-        translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+        abs_translated_dir = get_absolute_path(translated_dir)
+        translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
+        translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+
+        translated_path1.replace('\\', '/')
+        translated_path2.replace('\\', '/')
+
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
-
-    except subprocess.CalledProcessError as e:
-        return jsonify({'status': 'error', 'message': e.stderr}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port_num)
@@ -81,9 +93,8 @@ import os
 
 pdf2zh = "pdf2zh"                # 设置pdf2zh指令: 默认为'pdf2zh'
 thread_num = 4                   # 设置线程数: 默认为4
-translated_dir = "/xxx/temp/"    # 设置翻译文件的临时输出路径(注意: 使用绝对路径!)
+translated_dir = "./translated/" # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 port_num = 8888                  # 设置端口号: 默认为8888
-
 config_path = 'config.json'      # 添加配置文件: 自定义字体, 指定翻译引擎等
 
 app = Flask(__name__)
@@ -98,8 +109,13 @@ def translate():
         # 执行带配置文件的pdf2zh翻译, 用户可以自定义命令内容:
         os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
 
-        translated_path1 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
-        translated_path2 = os.path.join(translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+        abs_translated_dir = get_absolute_path(translated_dir)
+        translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
+        translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+
+        translated_path1.replace('\\', '/')
+        translated_path2.replace('\\', '/')
+
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
 
     except subprocess.CalledProcessError as e:
@@ -135,3 +151,8 @@ if __name__ == '__main__':
 # 💗
 
 欢迎提issue或者参与贡献
+
+# TODO LIST
+
+- [] 支持远程部署
+- [] 支持在zotero perference中设置pdf2zh参数
