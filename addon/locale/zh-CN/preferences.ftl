@@ -4,3 +4,4 @@ pref-enable =
 pref-input = 输入
 pref-serverip = Python Server IP
 pref-help = { $name } Build { $version } { $time }
+pref-pythoncode = Python Server Script

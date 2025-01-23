@@ -30,45 +30,62 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 ```python
 from flask import Flask, request, jsonify
-import subprocess
 import os
+import base64
+from flask import Flask, send_file, abort
 
-pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
-thread_num = 4                      # 设置线程数: 默认为4
-translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
-port_num = 8888                     # 设置端口号: 默认为8888
+####################################### 配置 #######################################
+pdf2zh = "pdf2zh"                 # 设置pdf2zh指令: 默认为'pdf2zh'
+thread_num = 4                    # 设置线程数: 默认为4
+translated_dir = "./translated/"  # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
+port_num = 8888                   # 设置端口号: 默认为8888
+####################################################################################
 
-#####################################################################################################################
 def get_absolute_path(path):
-    if os.path.isabs(path): # 判断是否是绝对路径
-        return path  # 如果已经是绝对路径，直接返回
+    if os.path.isabs(path):
+        return path
     else:
-        return os.path.abspath(path) # 如果是相对路径，转换为绝对路径
+        return os.path.abspath(path)
 
 app = Flask(__name__)
 @app.route('/translate', methods=['POST'])
 def translate():
     data = request.get_json()
-    input_path = data.get('filePath')
+    path = data.get('filePath')
+    file_content = data.get('fileContent')
+    input_path = os.path.join(translated_dir, os.path.basename(path))
+    if file_content:
+        if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
+            file_content = file_content[len('data:application/pdf;base64,'):]
+        file_data = base64.b64decode(file_content) # 解码 Base64 内容
+        with open(input_path, 'wb') as f:
+            f.write(file_data)
+
     try:
         os.makedirs(translated_dir, exist_ok=True)
         print("### translating ###: ", input_path)
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
+        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
 
         abs_translated_dir = get_absolute_path(translated_dir)
         translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+        if not os.path.exists(translated_path1) or not os.path.exists(translated_path2):
+            raise Exception("pdf2zh翻译失败, 请检查pdf2zh日志")
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
-        translated_path1.replace('\\', '/')
-        translated_path2.replace('\\', '/')
-
-        return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
-
-    except subprocess.CalledProcessError as e:
-        print(e.stderr)
-        return jsonify({'status': 'error', 'message': e.stderr}), 500
+@app.route('/translatedFile/<filename>')
+def download(filename):
+    directory = translated_dir
+    abs_directory = get_absolute_path(directory)
+    file_path = os.path.join(abs_directory, filename)
+    if not os.path.isfile(file_path):
+        return "File not found", 404
+    return send_file(file_path, as_attachment=True, download_name=filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port_num)
@@ -83,61 +100,31 @@ if __name__ == '__main__':
 
 ```json
 {
-  "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
+    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
 }
 ```
 
 `NOTO_FONT_PATH`为您的自定义字体路径
 
-2. python脚本修改为:
+2. 修改python脚本:
 
 ```python
-from flask import Flask, request, jsonify
-import subprocess
-import os
+步骤1: 设置配置文件路径:
+config_path = './config.json'     # 设置配置文件路径
 
-pdf2zh = "pdf2zh"                # 设置pdf2zh指令: 默认为'pdf2zh'
-thread_num = 4                   # 设置线程数: 默认为4
-translated_dir = "./translated/" # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
-port_num = 8888                  # 设置端口号: 默认为8888
-config_path = 'config.json'      # 添加配置文件: 自定义字体, 指定翻译引擎等
-
-app = Flask(__name__)
-@app.route('/translate', methods=['POST'])
-def translate():
-    data = request.get_json()
-    input_path = data.get('filePath')
-    try:
-        os.makedirs(translated_dir, exist_ok=True)
-        print("### translating ###: ", input_path)
-
-        # 执行带配置文件的pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
-
-        abs_translated_dir = get_absolute_path(translated_dir)
-        translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
-        translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
-
-        translated_path1.replace('\\', '/')
-        translated_path2.replace('\\', '/')
-
-        return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
-
-    except subprocess.CalledProcessError as e:
-        print(e.stderr)
-        return jsonify({'status': 'error', 'message': e.stderr}), 500
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port_num)
+步骤二: 将
+os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
+修改为
+os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
 ```
 
 3. 其他配置的修改同理: 修改config.json即可, 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
 
 ## 第二步
 
-在Zotero-设置中，输入您的Python Server IP + '/translate'
+在Zotero-设置中，输入您的Python Server IP
 
-默认为: `http://localhost:8888/translate`
+默认为: `http://localhost:8888`
 
 <img src="./image2.png" alt="image2" style="zoom: 50%;" />
 
@@ -162,5 +149,5 @@ if __name__ == '__main__':
 
 # TODO LIST
 
-- [ ] 支持远程部署
+- [x] 支持远程部署
 - [ ] 支持在zotero perference中设置pdf2zh参数
