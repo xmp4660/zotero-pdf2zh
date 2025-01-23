@@ -22,14 +22,17 @@ app = Flask(__name__)
 def translate():
     data = request.get_json()
     path = data.get('filePath')
-    file_content = data.get('fileContent')
-    input_path = os.path.join(translated_dir, os.path.basename(path))
-    if file_content:
-        if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
-            file_content = file_content[len('data:application/pdf;base64,'):]
-        file_data = base64.b64decode(file_content) # 解码 Base64 内容
-        with open(input_path, 'wb') as f:
-            f.write(file_data)
+    if not os.path.exists(path):
+        file_content = data.get('fileContent')
+        input_path = os.path.join(translated_dir, os.path.basename(path))
+        if file_content:
+            if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
+                file_content = file_content[len('data:application/pdf;base64,'):]
+            file_data = base64.b64decode(file_content) # 解码 Base64 内容
+            with open(input_path, 'wb') as f:
+                f.write(file_data)
+    else:
+        input_path = path
 
     try:
         os.makedirs(translated_dir, exist_ok=True)
