@@ -43,7 +43,7 @@ def translate():
         translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
         if not os.path.exists(translated_path1) or not os.path.exists(translated_path2):
             raise Exception("pdf2zh翻译失败, 请检查pdf2zh日志")
-        return jsonify({'status': 'success'}), 200
+        return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500

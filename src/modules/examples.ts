@@ -173,6 +173,7 @@ export class HelperExampleFactory {
                         },
                         body: JSON.stringify(data),
                     });
+
                     if (!response.ok) {
                         throw new Error(`服务器响应失败: ${response.ok}`);
                     }
@@ -180,6 +181,21 @@ export class HelperExampleFactory {
                     const jsonString = await response.text();
                     const result: TranslationResponse = JSON.parse(jsonString);
 
+                    // 如果用的是旧脚本, 直接在本地读取文件也是可以的
+                    if (result.translatedPath1 != null && result.translatedPath2 != null
+                        && await IOUtils.exists(result.translatedPath1) && await IOUtils.exists(result.translatedPath2)) {
+                        await HelperExampleFactory.addAttachmentToItem(
+                            item,
+                            result.translatedPath1,
+                        );
+                        await HelperExampleFactory.addAttachmentToItem(
+                            item,
+                            result.translatedPath2,
+                        );
+                        continue;
+                    }
+
+                    // 以下是新脚本的处理方式
                     const fileName = PathUtils.filename(filepath);
                     const fileName1 = fileName.replace(".pdf", "-mono.pdf");
                     const fileName2 = fileName.replace(".pdf", "-dual.pdf");
@@ -219,10 +235,6 @@ export class HelperExampleFactory {
                             tempDir2,
                         );
                         IOUtils.remove(tempDir2);
-                    } else {
-                        throw new Error(
-                            `服务器响应失败, 响应状态: ${response.status}`,
-                        );
                     }
                 }
             }
@@ -333,7 +345,7 @@ export class HelperExampleFactory {
                     libraryID: libraryID,
                     collections:
                         (parentItemID == null || parentItemID == false) &&
-                        collectionID != null
+                            collectionID != null
                             ? [collectionID]
                             : undefined,
                 }),
