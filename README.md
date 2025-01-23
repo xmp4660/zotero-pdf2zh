@@ -122,7 +122,7 @@ os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --ou
 
 ## 第二步
 
-在Zotero-设置中，输入您的Python Server IP
+在Zotero-设置中，输入您的Python Server IP，按回车键确认
 
 默认为: `http://localhost:8888`
 
