@@ -65,7 +65,7 @@ def translate():
         translated_path2.replace('\\', '/')
 
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
-        
+
     except subprocess.CalledProcessError as e:
         print(e.stderr)
         return jsonify({'status': 'error', 'message': e.stderr}), 500
@@ -162,5 +162,5 @@ if __name__ == '__main__':
 
 # TODO LIST
 
-- [] 支持远程部署
-- [] 支持在zotero perference中设置pdf2zh参数
+- [ ] 支持远程部署
+- [ ] 支持在zotero perference中设置pdf2zh参数
