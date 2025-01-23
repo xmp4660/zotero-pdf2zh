@@ -25,6 +25,7 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 本插件当前开发使用的 `pdf2zh`版本: v1.8.9
 
 ## 第一步
+
 根据以下python脚本的注释, 按照个人需求修改配置，然后运行:
 
 ```python
@@ -42,10 +43,10 @@ port_num = 8888                   # 设置端口号: 默认为8888
 
 def get_absolute_path(path):
     if os.path.isabs(path):
-        return path 
+        return path
     else:
         return os.path.abspath(path)
-    
+
 app = Flask(__name__)
 @app.route('/translate', methods=['POST'])
 def translate():
@@ -66,8 +67,8 @@ def translate():
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
         os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
-        
-        abs_translated_dir = get_absolute_path(translated_dir)  
+
+        abs_translated_dir = get_absolute_path(translated_dir)
         translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
         if not os.path.exists(translated_path1) or not os.path.exists(translated_path2):

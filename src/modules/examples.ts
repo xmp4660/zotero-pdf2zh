@@ -182,8 +182,12 @@ export class HelperExampleFactory {
                     const result: TranslationResponse = JSON.parse(jsonString);
 
                     // 如果用的是旧脚本, 直接在本地读取文件也是可以的
-                    if (result.translatedPath1 != null && result.translatedPath2 != null
-                        && await IOUtils.exists(result.translatedPath1) && await IOUtils.exists(result.translatedPath2)) {
+                    if (
+                        result.translatedPath1 != null &&
+                        result.translatedPath2 != null &&
+                        (await IOUtils.exists(result.translatedPath1)) &&
+                        (await IOUtils.exists(result.translatedPath2))
+                    ) {
                         await HelperExampleFactory.addAttachmentToItem(
                             item,
                             result.translatedPath1,
@@ -345,7 +349,7 @@ export class HelperExampleFactory {
                     libraryID: libraryID,
                     collections:
                         (parentItemID == null || parentItemID == false) &&
-                            collectionID != null
+                        collectionID != null
                             ? [collectionID]
                             : undefined,
                 }),
