@@ -65,6 +65,10 @@ def translate():
         translated_path2.replace('\\', '/')
 
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
+        
+    except subprocess.CalledProcessError as e:
+        print(e.stderr)
+        return jsonify({'status': 'error', 'message': e.stderr}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port_num)
@@ -120,6 +124,7 @@ def translate():
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
 
     except subprocess.CalledProcessError as e:
+        print(e.stderr)
         return jsonify({'status': 'error', 'message': e.stderr}), 500
 
 if __name__ == '__main__':
