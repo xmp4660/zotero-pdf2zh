@@ -54,6 +54,7 @@ def translate():
     path = data.get('filePath')
     if not os.path.exists(path):
         file_content = data.get('fileContent')
+        path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
         input_path = os.path.join(translated_dir, os.path.basename(path))
         if file_content:
             if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
@@ -154,4 +155,5 @@ os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --ou
 # TODO LIST
 
 - [x] 支持远程部署
+- [ ] 跨平台部署测试
 - [ ] 支持在zotero perference中设置pdf2zh参数
