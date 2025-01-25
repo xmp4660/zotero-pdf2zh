@@ -32,6 +32,7 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 from flask import Flask, request, jsonify
 import os
 import base64
+import subprocess
 from flask import Flask, send_file, abort
 
 ####################################### 配置 #######################################
@@ -39,6 +40,8 @@ pdf2zh = "pdf2zh"                 # 设置pdf2zh指令: 默认为'pdf2zh'
 thread_num = 4                    # 设置线程数: 默认为4
 translated_dir = "./translated/"  # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 port_num = 8888                   # 设置端口号: 默认为8888
+config = './config.json'          # config文件路径, (可选)
+service = 'google'                # 翻译引擎, 默认为google
 ####################################################################################
 
 def get_absolute_path(path):
@@ -52,9 +55,9 @@ app = Flask(__name__)
 def translate():
     data = request.get_json()
     path = data.get('filePath')
+    path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
     if not os.path.exists(path):
         file_content = data.get('fileContent')
-        path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
         input_path = os.path.join(translated_dir, os.path.basename(path))
         if file_content:
             if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
@@ -70,7 +73,14 @@ def translate():
         print("### translating ###: ", input_path)
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
+        command = [
+            pdf2zh,
+            input_path,
+            '--t', str(thread_num),
+            '--output', translated_dir,
+            '--service', service
+        ]
+        subprocess.run(command, check=True)
 
         abs_translated_dir = get_absolute_path(translated_dir)
         translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
@@ -118,12 +128,25 @@ if __name__ == '__main__':
 config_path = './config.json'     # 设置配置文件路径
 
 步骤二: 将
-os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir)
+command = [
+    pdf2zh,
+    input_path,
+    '--t', str(thread_num),
+    '--output', translated_dir,
+    '--service', service
+]
 修改为
-os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
+command = [
+    pdf2zh,
+    input_path,
+    '--t', str(thread_num),
+    '--output', translated_dir,
+    '--service', service,
+    '--config', config_path
+]
 ```
 
-3. 其他配置的修改同理: 修改config.json即可, 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
+3. 其他配置的修改同理: 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
 
 ## 第二步
 
