@@ -185,6 +185,9 @@ function onDialogEvents(type: string) {
         case "translatePDF":
             HelperExampleFactory.translatePDF();
             break;
+        case "cutPDF":
+            HelperExampleFactory.cutPDF();
+            break;
         default:
             break;
     }

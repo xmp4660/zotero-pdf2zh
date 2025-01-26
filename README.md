@@ -34,25 +34,26 @@ import os
 import base64
 import subprocess
 from flask import Flask, send_file, abort
+from pypdf import PdfWriter, PdfReader
+from pypdf.generic import RectangleObject
+import sys
 
 ####################################### 配置 #######################################
-pdf2zh = "pdf2zh"                 # 设置pdf2zh指令: 默认为'pdf2zh'
-thread_num = 4                    # 设置线程数: 默认为4
-translated_dir = "./translated/"  # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
-port_num = 8888                   # 设置端口号: 默认为8888
-config_path = './config.json'     # config文件路径, (可选)
-service = 'google'                # 翻译引擎, 默认为google
-####################################################################################
+pdf2zh = "pdf2zh"                # 设置pdf2zh指令: 默认为'pdf2zh'
+thread_num = 4                   # 设置线程数: 默认为4
+port_num = 8888                  # 设置端口号: 默认为8888
+service = 'bing'                 # 设置翻译服务: 默认为bing
+translated_dir = "./translated/" # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
+config_path = './config.json'    # 设置配置文件路径
+######################################################################################
 
-def get_absolute_path(path):
+def get_absolute_path(path): # 获取绝对路径
     if os.path.isabs(path):
         return path
     else:
         return os.path.abspath(path)
 
-app = Flask(__name__)
-@app.route('/translate', methods=['POST'])
-def translate():
+def get_file_from_request(request): # 从request中解析pdf文件
     data = request.get_json()
     path = data.get('filePath')
     path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
@@ -67,7 +68,13 @@ def translate():
                 f.write(file_data)
     else:
         input_path = path
+    return input_path
 
+app = Flask(__name__)
+@app.route('/translate', methods=['POST'])
+def translate():
+    print("### translate ###")
+    input_path = get_file_from_request(request)
     try:
         os.makedirs(translated_dir, exist_ok=True)
         print("### translating ###: ", input_path)
@@ -81,12 +88,12 @@ def translate():
             '--service', service
         ]
         subprocess.run(command, check=False)
-
         abs_translated_dir = get_absolute_path(translated_dir)
+        print("abs_translated_dir: ", abs_translated_dir)
         translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
         translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
         if not os.path.exists(translated_path1) or not os.path.exists(translated_path2):
-            raise Exception("pdf2zh翻译失败, 请检查pdf2zh日志")
+            raise Exception("pdf2zh failed to generate translated files")
         return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
     except Exception as e:
         print(f"Error: {e}")
@@ -101,9 +108,85 @@ def download(filename):
         return "File not found", 404
     return send_file(file_path, as_attachment=True, download_name=filename)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port_num)
+# 新增了一个cut pdf函数，用于切割双栏pdf文件
+def split_and_merge_pdf(input_pdf, output_pdf):
+    writer = PdfWriter()
+    if 'dual' in input_pdf:
+        reader1_1 = PdfReader(input_pdf)
+        reader1_2 = PdfReader(input_pdf)
+        reader2_1 = PdfReader(input_pdf)
+        reader2_2 = PdfReader(input_pdf)
+        for i in range(0, len(reader1_1.pages), 2):
+            page1_1 = reader1_1.pages[i]
+            page1_2 = reader1_2.pages[i]
+            page2_1 = reader2_1.pages[i+1]
+            page2_2 = reader2_2.pages[i+1]
 
+            original_media_box = page1_1.mediabox
+            width = original_media_box.width
+            height = original_media_box.height
+
+            left_page_1 = page1_1
+            left_page_1.mediabox = RectangleObject((0, 0, width / 2, height))
+            left_page_2 = page2_1
+            left_page_2.mediabox = RectangleObject((0, 0, width / 2, height))
+
+            right_page_1 = page1_2
+            right_page_1.mediabox = RectangleObject((width / 2, 0, width, height))
+            right_page_2 = page2_2
+            right_page_2.mediabox = RectangleObject((width / 2, 0, width, height))
+
+            writer.add_page(left_page_1)
+            writer.add_page(left_page_2)
+            writer.add_page(right_page_1)
+            writer.add_page(right_page_2)
+    else:
+        reader1 = PdfReader(input_pdf)
+        reader2 = PdfReader(input_pdf)
+        for i in range(len(reader1.pages)):
+            page1 = reader1.pages[i]
+            page2 = reader2.pages[i]
+
+            original_media_box = page1.mediabox
+            width = original_media_box.width
+            height = original_media_box.height
+
+            left_page = page1
+            left_page.mediabox = RectangleObject((0, 0, width / 2, height))
+
+            right_page = page2
+            right_page.mediabox = RectangleObject((width / 2, 0, width, height))
+
+            writer.add_page(left_page)
+            writer.add_page(right_page)
+
+    with open(output_pdf, "wb") as output_file:
+        writer.write(output_file)
+
+# 新增了一个cut接口，用于切割双栏pdf文件
+@app.route('/cut', methods=['POST'])
+def cut():
+    print("### cut ###")
+    input_path = get_file_from_request(request)
+    try:
+        os.makedirs(translated_dir, exist_ok=True)
+        print("### cutting ###: ", input_path)
+        abs_translated_dir = get_absolute_path(translated_dir)
+        translated_path = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-cut.pdf'))
+        split_and_merge_pdf(input_path, translated_path)
+        if not os.path.exists(translated_path):
+            raise Exception("failed to generate cutted files")
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1: # 命令行参数1: service
+        service = sys.argv[1]
+    if len(sys.argv) > 2: # 命令行参数2: thread_num
+        thread_num = int(sys.argv[2])
+    app.run(host='0.0.0.0', port=port_num)
 ```
 
 ### 添加配置文件 & 修改翻译中文字体（可选）

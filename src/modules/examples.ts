@@ -100,6 +100,13 @@ export class UIExampleFactory {
             commandListener: (ev) => addon.hooks.onDialogEvents("translatePDF"),
             icon: menuIcon,
         });
+        ztoolkit.Menu.register("item", {
+            tag: "menuitem",
+            id: "zotero-itemmenu-translate-pdf",
+            label: "PDF2zh: Cut PDF",
+            commandListener: (ev) => addon.hooks.onDialogEvents("cutPDF"),
+            icon: menuIcon,
+        });
     }
 }
 
@@ -123,6 +130,24 @@ async function safeExists(path: string) {
 }
 
 export class HelperExampleFactory {
+    static async fetchPDF(
+        fileName: string,
+        serverUrl: string,
+        item: Zotero.Item,
+    ) {
+        const response = await axios.get(
+            serverUrl + "/translatedFile/" + fileName,
+            {
+                responseType: "arraybuffer",
+            },
+        );
+        const uint8Array = new Uint8Array(response.data);
+        const tempDir = PathUtils.join(PathUtils.tempDir, fileName);
+        IOUtils.write(tempDir, uint8Array);
+        await HelperExampleFactory.addAttachmentToItem(item, tempDir);
+        IOUtils.remove(tempDir);
+    }
+
     @example
     static async translatePDF() {
         let serverUrl = getPref("serverip")?.toString();
@@ -220,41 +245,18 @@ export class HelperExampleFactory {
                     const fileName1 = fileName.replace(".pdf", "-mono.pdf");
                     const fileName2 = fileName.replace(".pdf", "-dual.pdf");
                     if (result.status === "success") {
-                        const response1 = await axios.get(
-                            serverUrl + "/translatedFile/" + fileName1,
-                            {
-                                responseType: "arraybuffer",
-                            },
-                        );
-                        const uint8Array1 = new Uint8Array(response1.data);
-                        const tempDir1 = PathUtils.join(
-                            PathUtils.tempDir,
-                            fileName1,
-                        );
-                        IOUtils.write(tempDir1, uint8Array1);
-                        await HelperExampleFactory.addAttachmentToItem(
-                            item,
-                            tempDir1,
-                        );
-                        IOUtils.remove(tempDir1);
-
-                        const response2 = await axios.get(
-                            serverUrl + "/translatedFile/" + fileName2,
-                            {
-                                responseType: "arraybuffer",
-                            },
-                        );
-                        const uint8Array = new Uint8Array(response2.data);
-                        const tempDir2 = PathUtils.join(
-                            PathUtils.tempDir,
-                            fileName2,
-                        );
-                        IOUtils.write(tempDir2, uint8Array);
-                        await HelperExampleFactory.addAttachmentToItem(
-                            item,
-                            tempDir2,
-                        );
-                        IOUtils.remove(tempDir2);
+                        await Promise.all([
+                            HelperExampleFactory.fetchPDF(
+                                fileName1,
+                                serverUrl,
+                                item,
+                            ),
+                            HelperExampleFactory.fetchPDF(
+                                fileName2,
+                                serverUrl,
+                                item,
+                            ),
+                        ]);
                     }
                 }
             }
@@ -266,6 +268,89 @@ export class HelperExampleFactory {
         }
     }
 
+    @example
+    static async cutPDF() {
+        let serverUrl = getPref("serverip")?.toString();
+        ztoolkit.log("server url:", serverUrl);
+        if (!serverUrl) {
+            ztoolkit.getGlobal("alert")("请在首选项中配置 Python 服务器地址。");
+            return null;
+        }
+        if (serverUrl.endsWith("/")) {
+            serverUrl = serverUrl.slice(0, -1);
+        }
+        if (serverUrl.endsWith("/translate")) {
+            serverUrl = serverUrl.slice(0, -10);
+        }
+        ztoolkit.log("server url:", serverUrl);
+
+        try {
+            const pane = ztoolkit.getGlobal("ZoteroPane");
+            const selectedItems = pane.getSelectedItems();
+            if (selectedItems.length === 0) {
+                ztoolkit.getGlobal("alert")("请先选择一个条目或附件。");
+                return;
+            }
+
+            for (const item of selectedItems) {
+                let attachItem;
+                if (item.isAttachment()) {
+                    attachItem = item;
+                } else if (item.isRegularItem()) {
+                    const bestItem = await item.getBestAttachment();
+                    attachItem = bestItem;
+                }
+                if (!attachItem) {
+                    continue;
+                }
+                const filepath = attachItem.getFilePath();
+                if (!filepath || !filepath.endsWith(".pdf")) {
+                    ztoolkit.getGlobal("alert")("请选择一个 PDF 附件。");
+                    return;
+                }
+                if (!filepath || (await IOUtils.exists(filepath))) {
+                    const contentRaw = await IOUtils.read(filepath);
+                    const blob = new Blob([contentRaw], {
+                        type: "application/pdf",
+                    });
+                    const base64Blob = await blobToBase64(blob);
+                    const data = {
+                        filePath: filepath,
+                        fileContent: base64Blob,
+                    };
+                    const response = await fetch(serverUrl + "/cut", {
+                        // 发送翻译请求
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`服务器响应失败: ${response.ok}`);
+                    }
+                    const jsonString = await response.text();
+                    const result: TranslationResponse = JSON.parse(jsonString);
+                    const fileName = PathUtils.filename(filepath);
+                    const fileName_cut = fileName.replace(".pdf", "-cut.pdf");
+                    if (result.status === "success") {
+                        await Promise.all([
+                            HelperExampleFactory.fetchPDF(
+                                fileName_cut,
+                                serverUrl,
+                                item,
+                            ),
+                        ]);
+                    }
+                }
+            }
+        } catch (error) {
+            ztoolkit.getGlobal("alert")(
+                "zotero-pdf2zh(cut) 发生错误: \n" + error,
+            );
+            return null;
+        }
+    }
     @example
     static async translateOriginalPDF() {
         try {
