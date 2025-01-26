@@ -102,7 +102,7 @@ export class UIExampleFactory {
         });
         ztoolkit.Menu.register("item", {
             tag: "menuitem",
-            id: "zotero-itemmenu-translate-pdf",
+            id: "zotero-itemmenu-cut-pdf",
             label: "PDF2zh: Cut PDF",
             commandListener: (ev) => addon.hooks.onDialogEvents("cutPDF"),
             icon: menuIcon,
