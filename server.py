@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import os
 import base64
 from flask import Flask, send_file, abort
+import subprocess
 
 ####################################### 配置 #######################################
 pdf2zh = "pdf2zh"                 # 设置pdf2zh指令: 默认为'pdf2zh'
@@ -9,6 +10,7 @@ thread_num = 4                    # 设置线程数: 默认为4
 translated_dir = "./translated/"  # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 port_num = 8888                   # 设置端口号: 默认为8888
 config_path = './config.json'     # 设置配置文件路径
+service = 'google'                # 翻译引擎, 默认为google
 ####################################################################################
 
 def get_absolute_path(path):
@@ -22,6 +24,7 @@ app = Flask(__name__)
 def translate():
     data = request.get_json()
     path = data.get('filePath')
+    path.replace('\\', '/')
     if not os.path.exists(path):
         file_content = data.get('fileContent')
         input_path = os.path.join(translated_dir, os.path.basename(path))
@@ -39,7 +42,16 @@ def translate():
         print("### translating ###: ", input_path)
 
         # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        os.system(pdf2zh + ' \"' + str(input_path) + '\" --t ' + str(thread_num)+ ' --output ' + translated_dir + " --config " + config_path)
+        command = [
+            pdf2zh,
+            input_path,
+            '--t', str(thread_num),
+            '--output', translated_dir,
+            '--service', service
+        ]
+        subprocess.run(command, check=False) 
+        # 此处跳过Check, 在后面检查路径是否存在的时候才会Check
+        # 因为PDF2zh会返回MuPDF的报错
         
         abs_translated_dir = get_absolute_path(translated_dir)  
         translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))

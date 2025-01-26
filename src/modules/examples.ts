@@ -112,6 +112,16 @@ function blobToBase64(blob: Blob): Promise<string> {
     });
 }
 
+// 安全的 exists 检查函数
+async function safeExists(path: string) {
+    try {
+        return await IOUtils.exists(path);
+    } catch (error) {
+        ztoolkit.log(`检查路径 ${path} 时出错:`, error);
+        return false;
+    }
+}
+
 export class HelperExampleFactory {
     @example
     static async translatePDF() {
@@ -181,22 +191,28 @@ export class HelperExampleFactory {
                     const jsonString = await response.text();
                     const result: TranslationResponse = JSON.parse(jsonString);
 
-                    // 如果用的是旧脚本, 直接在本地读取文件也是可以的
+                    // 使用辅助函数进行存在性检查
                     if (
                         result.translatedPath1 != null &&
-                        result.translatedPath2 != null &&
-                        (await IOUtils.exists(result.translatedPath1)) &&
-                        (await IOUtils.exists(result.translatedPath2))
+                        result.translatedPath2 != null
                     ) {
-                        await HelperExampleFactory.addAttachmentToItem(
-                            item,
+                        const exists1 = await safeExists(
                             result.translatedPath1,
-                        );
-                        await HelperExampleFactory.addAttachmentToItem(
-                            item,
+                        ); // 检查文件是否存在
+                        const exists2 = await safeExists(
                             result.translatedPath2,
-                        );
-                        continue;
+                        ); // 检查文件是否存在
+                        if (exists1 && exists2) {
+                            await HelperExampleFactory.addAttachmentToItem(
+                                item,
+                                result.translatedPath1,
+                            );
+                            await HelperExampleFactory.addAttachmentToItem(
+                                item,
+                                result.translatedPath2,
+                            );
+                            continue;
+                        }
                     }
 
                     // 以下是新脚本的处理方式

@@ -22,7 +22,7 @@ pip install pdf2zh          # 安装pdf2zh
 pip install --upgrade pdf2zh # 之前已经安装, 更新
 ```
 
-本插件当前开发使用的 `pdf2zh`版本: v1.8.9
+本插件当前开发使用的 `pdf2zh`版本: v1.9.0
 
 ## 第一步
 
@@ -40,7 +40,7 @@ pdf2zh = "pdf2zh"                 # 设置pdf2zh指令: 默认为'pdf2zh'
 thread_num = 4                    # 设置线程数: 默认为4
 translated_dir = "./translated/"  # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 port_num = 8888                   # 设置端口号: 默认为8888
-config = './config.json'          # config文件路径, (可选)
+config_path = './config.json'     # config文件路径, (可选)
 service = 'google'                # 翻译引擎, 默认为google
 ####################################################################################
 
@@ -80,7 +80,7 @@ def translate():
             '--output', translated_dir,
             '--service', service
         ]
-        subprocess.run(command, check=True)
+        subprocess.run(command, check=False)
 
         abs_translated_dir = get_absolute_path(translated_dir)
         translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
@@ -127,22 +127,14 @@ if __name__ == '__main__':
 步骤1: 设置配置文件路径:
 config_path = './config.json'     # 设置配置文件路径
 
-步骤二: 将
-command = [
-    pdf2zh,
-    input_path,
-    '--t', str(thread_num),
-    '--output', translated_dir,
-    '--service', service
-]
-修改为
+步骤二: 在command中添加config_path选项
 command = [
     pdf2zh,
     input_path,
     '--t', str(thread_num),
     '--output', translated_dir,
     '--service', service,
-    '--config', config_path
+    '--config', config_path # 这是添加的配置文件路径
 ]
 ```
 
@@ -178,5 +170,5 @@ command = [
 # TODO LIST
 
 - [x] 支持远程部署
-- [ ] 跨平台部署测试
+- [ ] 跨平台部署测试 (on-going)
 - [ ] 支持在zotero perference中设置pdf2zh参数
