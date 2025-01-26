@@ -233,13 +233,29 @@ command = [
 
 # 使用方法
 
+## 基础功能: PDF翻译
+
 右键选择条目或者附件 - 点击 Translate PDF
+
+- 如果选择条目的话，将会自动选择该条目下创建时间最早的PDF。
 
  <img src="./image1.png" alt="image" style="zoom:50%;" />
 
 条目中将会添加两个翻译后的文件
 
 <img src="./image3.png" alt="image3" style="zoom:50%;" />
+
+## 新功能: 双栏PDF分割
+
+右键选择条目或者附件 - 点击 Cut PDF
+
+- 如果选择条目的话，将会自动选择该条目下创建时间最早的PDF。
+
+ <img src="./image4.png" alt="image4" style="zoom:50%;" />
+
+条目中将会添加一个分割后的文件
+
+ <img src="./image5.png" alt="image5" style="zoom:50%;" />
 
 # 致谢
 
