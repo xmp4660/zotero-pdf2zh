@@ -225,7 +225,7 @@ command = [
 
 ## 第二步
 
-在Zotero-设置中，输入您的Python Server IP，按回车键确认
+在Zotero-设置中，输入您的Python Server IP，按回车键确认。本插件支持远程部署。
 
 默认为: `http://localhost:8888`
 
