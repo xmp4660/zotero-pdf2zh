@@ -225,7 +225,7 @@ command = [
 
 ## 第二步
 
-在Zotero-设置中，输入您的Python Server IP，按回车键确认。本插件支持远程部署。
+在Zotero-设置中，输入您的Python Server IP，按回车键确认。
 
 默认为: `http://localhost:8888`
 
@@ -246,6 +246,8 @@ command = [
 <img src="./image3.png" alt="image3" style="zoom:50%;" />
 
 ## 新功能: 双栏PDF分割
+
+✨ 将双栏论文剪切拼接为单栏显示，适配手机阅读!
 
 右键选择条目或者附件 - 点击 Cut PDF
 
