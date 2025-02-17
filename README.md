@@ -139,5 +139,5 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 - [ ] 支持远程部署
 - [ ] 跨平台部署测试 (on-going)
-- [ ] 加入插件市场
+- [x] 加入插件市场
 - [x] 支持在zotero perference中设置pdf2zh参数
