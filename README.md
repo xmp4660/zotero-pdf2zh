@@ -104,13 +104,15 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 打开Zotero，右键选择条目或者附件。
 如果选择条目，将会自动选择该条目下创建时间最早的PDF。
 
-### 选项一：PDF2zh：Translate PDF。
+### 选项一：PDF2zh：Translate PDF
 
 本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成mono和dual两个文件。
 
 <img src="./image1.png" alt="image" style="width:350px;" />
 
-### 选项二：PDF2zh：Cut PDF。仅将选中的pdf文件由双栏文件切割为单栏文件。
+### 选项二：PDF2zh：Cut PDF
+
+本选项仅将选中的pdf文件由双栏文件切割为单栏文件。
 
 ✨ 将双栏论文剪切拼接为单栏显示，适配手机阅读!
 
@@ -120,7 +122,9 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 <img src="./image5.png" alt="image5" style="width:350px;" />
 
-### 选项三：PDF2zh：中英双栏对照。仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
+### 选项三：PDF2zh：中英双栏对照
+
+本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
 <img src="./image9.png" alt="image9" style="width:350px;" />
 
