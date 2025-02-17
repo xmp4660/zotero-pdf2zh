@@ -3,31 +3,72 @@
 </linkset>
 
 <groupbox onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window });">
-    <label>
-        <html:h2 data-l10n-id="pref-title"></html:h2>
-    </label>
-    <hbox>
-        <html:label for="zotero-prefpane-__addonRef__-serverip" data-l10n-id="pref-serverip"></html:label>
-        <html:input type="text" id="zotero-prefpane-__addonRef__-serverip"
-            preference="extensions.zotero.__addonRef__.serverip" style="width: 300px"></html:input>
-    </hbox>
     <vbox>
-        <p></p>
+        <!--翻译配置-->
+        <html:h3 data-l10n-id="pref-translate-config"></html:h3>
+        <hbox align="center">
+            <html:label for="zotero-prefpane-__addonRef__-serverip" data-l10n-id="pref-serverip"></html:label>
+            <html:input type="text" id="zotero-prefpane-__addonRef__-serverip"
+                preference="extensions.zotero.__addonRef__.serverip" style="width: 200px"></html:input>
+        </hbox>
+        <hbox align="center">
+            <html:label for="zotero-prefpane-__addonRef__-serverip" data-l10n-id="pref-engine"></html:label>
+            <html:input type="text" id="zotero-prefpane-__addonRef__-engine" flex="1"
+                preference="extensions.zotero.__addonRef__.engine" style="width: 100px"></html:input>
+        </hbox>
+        <hbox align="center">
+            <html:label for="zotero-prefpane-__addonRef__-threadnum" data-l10n-id="pref-thread"></html:label>
+            <html:input type="text" id="zotero-prefpane-__addonRef__-threadnum"
+                preference="extensions.zotero.__addonRef__.threadnum" style="width: 20px"></html:input>
+        </hbox>
+        <vbox align="left">
+            <html:label for="zotero-prefpane-__addonRef__-outputPath" data-l10n-id="pref-outputPath"></html:label>
+            <html:input type="text" id="zotero-prefpane-__addonRef__-outputPath"
+                preference="extensions.zotero.__addonRef__.outputPath" style="width: 300px"></html:input>
+        </vbox>
+        <vbox align="left">
+            <html:label for="zotero-prefpane-__addonRef__-configPath" data-l10n-id="pref-configPath"></html:label>
+            <html:input type="text" id="zotero-prefpane-__addonRef__-configPath"
+                preference="extensions.zotero.__addonRef__.configPath" style="width: 300px"></html:input>
+        </vbox>
     </vbox>
     <vbox>
-        <label>
-            <html:h2>Python Server 脚本 </html:h2>
-        </label>
-        <p>🌷[2025年1月23日v2.0.0] Python脚本已更新, 现在支持远程部署, 请访问主页README.md进行更新:</p>
-        <description><label class="zotero-text-link" value="Zotero PDF2zh README"
-                href="https://github.com/guaguastandup/zotero-pdf2zh"></label></description>
-        <p>如果遇到问题请在github页面提issue, 谢谢! :-)</p>
+        <!-- 生成文件 -->
+        <html:h3 data-l10n-id="pref-default-generate"></html:h3>
+        <hbox>
+            <checkbox native="true" preference="extensions.zotero.__addonRef__.mono" />
+            <html:label data-l10n-id="pref-mono" for="extensions.zotero.__addonRef__.mono" />
+        </hbox>
+        <hbox>
+            <checkbox native="true" preference="extensions.zotero.__addonRef__.dual" />
+            <html:label data-l10n-id="pref-dual" for="extensions.zotero.__addonRef__.dual" />
+        </hbox>
+        <hbox>
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.mono_cut" />
+            <html:label data-l10n-id="pref-mono-cut" for="extensions.zotero.__addonRef__.mono_cut" />
+        </hbox>
+        <hbox>
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.dual_cut" />
+            <html:label data-l10n-id="pref-dual-cut" for="extensions.zotero.__addonRef__.dual_cut" />
+        </hbox>
+        <hbox>
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.compare" />
+            <html:label data-l10n-id="pref-compare" for="extensions.zotero.__addonRef__.compare" />
+        </hbox>
+    </vbox>
+
+    <!-- 说明 -->
+    <vbox>
+        <html:h3>Python Server 脚本 </html:h3>
+        <p>🌷 温馨提示: 本插件需要在本地后端执行Python脚本，才可以使用翻译功能。</p>
+        <p>🌷 [2025年2月17日v2.1.0] Python脚本已更新, 请访问主页README.md进行更新:
+            <description align="center"><label class="zotero-text-link" value="README.md"
+                    href="https://github.com/guaguastandup/zotero-pdf2zh"></label></description>
+        </p>
+        <p>🌷 如果遇到问题请在github页面提issue, 谢谢! :-)</p>
     </vbox>
 </groupbox>
 
-<vbox>
-    <p></p>
-</vbox>
 <vbox>
     <html:h2></html:h2>
     <html:label data-l10n-id="pref-help"

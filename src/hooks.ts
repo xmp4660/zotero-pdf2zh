@@ -188,6 +188,9 @@ function onDialogEvents(type: string) {
         case "cutPDF":
             HelperExampleFactory.cutPDF();
             break;
+        case "comparePDF":
+            HelperExampleFactory.comparePDF();
+            break;
         default:
             break;
     }

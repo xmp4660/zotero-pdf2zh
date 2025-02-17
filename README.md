@@ -12,7 +12,7 @@
 
 # 配置方法
 
-## 第零步
+## 第零步 安装PDF2zh
 
 在本地安装最新的[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
@@ -24,240 +24,107 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 本插件当前开发使用的 `pdf2zh`版本: v1.9.0
 
-## 第一步
+## 第一步 在Zotero中配置插件参数
 
-根据以下python脚本的注释, 按照个人需求修改配置，然后运行:
+<img src="./image7.png" alt="image7" style="50%" />
 
-```python
-from flask import Flask, request, jsonify
-import os
-import base64
-import subprocess
-from flask import Flask, send_file, abort
-from pypdf import PdfWriter, PdfReader
-from pypdf.generic import RectangleObject
-import sys
+### Step 1.1 设置翻译参数
 
-####################################### 配置 #######################################
-pdf2zh = "pdf2zh"                # 设置pdf2zh指令: 默认为'pdf2zh'
-thread_num = 4                   # 设置线程数: 默认为4
-port_num = 8888                  # 设置端口号: 默认为8888
-service = 'bing'                 # 设置翻译服务: 默认为bing
-translated_dir = "./translated/" # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
-config_path = './config.json'    # 设置配置文件路径
-######################################################################################
+- Python Server IP 默认为`http://localhost:8888`, 其中8888为翻译端口号，可以自行修改；
+- 翻译引擎：默认为bing；
+- 线程数：PDF2zh在翻译时的执行线程数，默认为4；
+- 翻译文件输出路径：用于临时存储翻译得到的PDF文件，默认为空；
+- Pdf2zh配置文件路径：用于配置翻译引擎和字体，默认为空。
 
-def get_absolute_path(path): # 获取绝对路径
-    if os.path.isabs(path):
-        return path
-    else:
-        return os.path.abspath(path)
+以上路径建议设置为绝对路径。
 
-def get_file_from_request(request): # 从request中解析pdf文件
-    data = request.get_json()
-    path = data.get('filePath')
-    path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
-    if not os.path.exists(path):
-        file_content = data.get('fileContent')
-        input_path = os.path.join(translated_dir, os.path.basename(path))
-        if file_content:
-            if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
-                file_content = file_content[len('data:application/pdf;base64,'):]
-            file_data = base64.b64decode(file_content) # 解码 Base64 内容
-            with open(input_path, 'wb') as f:
-                f.write(file_data)
-    else:
-        input_path = path
-    return input_path
+如果设置为相对路径，则根路径与接下来Python脚本执行的路径一致。
 
-app = Flask(__name__)
-@app.route('/translate', methods=['POST'])
-def translate():
-    print("### translate ###")
-    input_path = get_file_from_request(request)
-    try:
-        os.makedirs(translated_dir, exist_ok=True)
-        print("### translating ###: ", input_path)
+> 举例：如果python脚本在`/home/xxx/server/`下执行，翻译输出路径设置为临时路径`./translated/`，则实际的输出路径为`/home/xxx/server/translated/`
 
-        # 执行pdf2zh翻译, 用户可以自定义命令内容:
-        command = [
-            pdf2zh,
-            input_path,
-            '--t', str(thread_num),
-            '--output', translated_dir,
-            '--service', service
-        ]
-        subprocess.run(command, check=False)
-        abs_translated_dir = get_absolute_path(translated_dir)
-        print("abs_translated_dir: ", abs_translated_dir)
-        translated_path1 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
-        translated_path2 = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
-        if not os.path.exists(translated_path1) or not os.path.exists(translated_path2):
-            raise Exception("pdf2zh failed to generate translated files")
-        return jsonify({'status': 'success', 'translatedPath1': translated_path1, 'translatedPath2': translated_path2}), 200
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+### Step 1.2 选择默认生成的翻译文件
 
-@app.route('/translatedFile/<filename>')
-def download(filename):
-    directory = translated_dir
-    abs_directory = get_absolute_path(directory)
-    file_path = os.path.join(abs_directory, filename)
-    if not os.path.isfile(file_path):
-        return "File not found", 404
-    return send_file(file_path, as_attachment=True, download_name=filename)
+默认生成mono和dual文件。
 
-# 新增了一个cut pdf函数，用于切割双栏pdf文件
-def split_and_merge_pdf(input_pdf, output_pdf):
-    writer = PdfWriter()
-    if 'dual' in input_pdf:
-        reader1_1 = PdfReader(input_pdf)
-        reader1_2 = PdfReader(input_pdf)
-        reader2_1 = PdfReader(input_pdf)
-        reader2_2 = PdfReader(input_pdf)
-        for i in range(0, len(reader1_1.pages), 2):
-            page1_1 = reader1_1.pages[i]
-            page1_2 = reader1_2.pages[i]
-            page2_1 = reader2_1.pages[i+1]
-            page2_2 = reader2_2.pages[i+1]
+通过勾选默认生成的文件来控制添加到Zotero中的文件。
 
-            original_media_box = page1_1.mediabox
-            width = original_media_box.width
-            height = original_media_box.height
+（请注意，此时临时翻译文件路径里依然存在mono和dual两种文件，因为这是pdf2zh默认生成的）
 
-            left_page_1 = page1_1
-            left_page_1.mediabox = RectangleObject((0, 0, width / 2, height))
-            left_page_2 = page2_1
-            left_page_2.mediabox = RectangleObject((0, 0, width / 2, height))
+## 第二步：添加PDF2zh配置文件 & 修改翻译中文字体（可选）(推荐)
 
-            right_page_1 = page1_2
-            right_page_1.mediabox = RectangleObject((width / 2, 0, width, height))
-            right_page_2 = page2_2
-            right_page_2.mediabox = RectangleObject((width / 2, 0, width, height))
+新建config.json文件，将该配置文件的路径输入到第一步的Zotero翻译配置中。
 
-            writer.add_page(left_page_1)
-            writer.add_page(left_page_2)
-            writer.add_page(right_page_1)
-            writer.add_page(right_page_2)
-    else:
-        reader1 = PdfReader(input_pdf)
-        reader2 = PdfReader(input_pdf)
-        for i in range(len(reader1.pages)):
-            page1 = reader1.pages[i]
-            page2 = reader2.pages[i]
+推荐使用[霞鹜文楷字体](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf)
 
-            original_media_box = page1.mediabox
-            width = original_media_box.width
-            height = original_media_box.height
-
-            left_page = page1
-            left_page.mediabox = RectangleObject((0, 0, width / 2, height))
-
-            right_page = page2
-            right_page.mediabox = RectangleObject((width / 2, 0, width, height))
-
-            writer.add_page(left_page)
-            writer.add_page(right_page)
-
-    with open(output_pdf, "wb") as output_file:
-        writer.write(output_file)
-
-# 新增了一个cut接口，用于切割双栏pdf文件
-@app.route('/cut', methods=['POST'])
-def cut():
-    print("### cut ###")
-    input_path = get_file_from_request(request)
-    try:
-        os.makedirs(translated_dir, exist_ok=True)
-        print("### cutting ###: ", input_path)
-        abs_translated_dir = get_absolute_path(translated_dir)
-        translated_path = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-cut.pdf'))
-        split_and_merge_pdf(input_path, translated_path)
-        if not os.path.exists(translated_path):
-            raise Exception("failed to generate cutted files")
-        return jsonify({'status': 'success'}), 200
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-if __name__ == '__main__':
-    if len(sys.argv) > 1: # 命令行参数1: service
-        service = sys.argv[1]
-    if len(sys.argv) > 2: # 命令行参数2: thread_num
-        thread_num = int(sys.argv[2])
-    app.run(host='0.0.0.0', port=port_num)
-```
-
-### 添加配置文件 & 修改翻译中文字体（可选）
-
-推荐使用霞鹜文楷字体, 配置方法:
-
-0. 下载霞鹜文楷字体: https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf
-1. 新建config.json文件
+config.json文件示例如下:
 
 ```json
 {
-    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"
+    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf",
+    "translators": [
+        {
+            "name": "openai",
+            "envs": {
+                "OPENAI_BASE_URL": "https://api.openai.com/v1",
+                "OPENAI_API_KEY": "sk-xxxxxxxxx-xxxxxxxxxx-xxxxxxxxxxxxx",
+                "OPENAI_MODEL": "gpt-4o-mini"
+            }
+        }
+    ]
 }
 ```
 
-`NOTO_FONT_PATH`为您的自定义字体路径
+`NOTO_FONT_PATH`为您的自定义字体路径。
 
-2. 修改python脚本:
+`translators`中可以配置多个AI翻译引擎（如果使用默认的bing或者google则不需要配置）。
 
-```python
-步骤1: 设置配置文件路径:
-config_path = './config.json'     # 设置配置文件路径
+其他配置的修改同理: 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
 
-步骤二: 在command中添加config_path选项
-command = [
-    pdf2zh,
-    input_path,
-    '--t', str(thread_num),
-    '--output', translated_dir,
-    '--service', service,
-    '--config', config_path # 这是添加的配置文件路径
-]
+## 第三步 执行脚本
+
+打开命令行工具，输入以下命令：
+
+```shell
+# 1. 下载脚本文件（自动）或手动访问链接下载
+wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
+# 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改
+python server.py 8888
 ```
 
-3. 其他配置的修改同理: 具体参考: [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
+请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改端口号。
 
-## 第二步
+Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插件中进行配置，只想在Python脚本中配置，请将Zotero插件中的配置留空。
 
-在Zotero-设置中，输入您的Python Server IP，按回车键确认。
+## 第四步 翻译文件
 
-默认为: `http://localhost:8888`
+<img src="./image8.png" alt="image8" style="zoom:50%; width=100px" />
 
-<img src="./image2.png" alt="image2" style="zoom: 50%;" />
+打开Zotero，右键选择条目或者附件。
+如果选择条目，将会自动选择该条目下创建时间最早的PDF。
 
-# 使用方法
+### 选项一：PDF2zh：Translate PDF。
 
-## 基础功能: PDF翻译
+本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成mono和dual两个文件。
 
-右键选择条目或者附件 - 点击 Translate PDF
+<img src="./image1.png" alt="image" style="zoom:50%;" />
 
-- 如果选择条目的话，将会自动选择该条目下创建时间最早的PDF。
-
- <img src="./image1.png" alt="image" style="zoom:50%;" />
-
-条目中将会添加两个翻译后的文件
-
-<img src="./image3.png" alt="image3" style="zoom:50%;" />
-
-## 新功能: 双栏PDF分割
+### 选项二：PDF2zh：Cut PDF。仅将选中的pdf文件由双栏文件切割为单栏文件。
 
 ✨ 将双栏论文剪切拼接为单栏显示，适配手机阅读!
 
-右键选择条目或者附件 - 点击 Cut PDF
+<img src="./image4.png" alt="image4" style="zoom:50%;" />
 
-- 如果选择条目的话，将会自动选择该条目下创建时间最早的PDF。
+得到后缀中包含`cut`的单栏PDF文件。
 
- <img src="./image4.png" alt="image4" style="zoom:50%;" />
+<img src="./image5.png" alt="image5" style="zoom:50%;" />
 
-条目中将会添加一个分割后的文件
+### 选项三：PDF2zh：中英双栏对照。仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
- <img src="./image5.png" alt="image5" style="zoom:50%;" />
+<img src="./image9.png" alt="image9" style="zoom:50%;" />
+
+得到后缀中包含`compare`的中英双栏对照PDF文件。
+
+<img src="./image6.png" alt="image6" style="zoom:50%;" />
 
 # 致谢
 
@@ -270,7 +137,7 @@ command = [
 
 # TODO LIST
 
-- [x] 支持远程部署
+- [ ] 支持远程部署
 - [ ] 跨平台部署测试 (on-going)
 - [ ] 加入插件市场
-- [ ] 支持在zotero perference中设置pdf2zh参数
+- [x] 支持在zotero perference中设置pdf2zh参数

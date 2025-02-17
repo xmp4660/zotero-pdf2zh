@@ -107,6 +107,13 @@ export class UIExampleFactory {
             commandListener: (ev) => addon.hooks.onDialogEvents("cutPDF"),
             icon: menuIcon,
         });
+        ztoolkit.Menu.register("item", {
+            tag: "menuitem",
+            id: "zotero-itemmenu-compre-pdf",
+            label: "PDF2zh: 中英双栏对照",
+            commandListener: (ev) => addon.hooks.onDialogEvents("comparePDF"),
+            icon: menuIcon,
+        });
     }
 }
 
@@ -164,6 +171,30 @@ export class HelperExampleFactory {
         }
         ztoolkit.log("server url:", serverUrl);
 
+        let threadNum = getPref("threadNum")?.toString();
+        ztoolkit.log("threadNum:", threadNum);
+        if (!threadNum) {
+            threadNum = "";
+        }
+        let engine = getPref("engine")?.toString();
+        ztoolkit.log("engine:", engine);
+        if (!engine) {
+            engine = "";
+        }
+        const mono = getPref("mono")?.toString();
+        const dual = getPref("dual")?.toString();
+        const mono_cut = getPref("mono_cut")?.toString();
+        const dual_cut = getPref("dual_cut")?.toString();
+        const compare = getPref("compare")?.toString();
+        let outputPath = getPref("outputPath")?.toString();
+        let configPath = getPref("configPath")?.toString();
+        if (!outputPath) {
+            outputPath = "";
+        }
+        if (!configPath) {
+            configPath = "";
+        }
+
         try {
             const pane = ztoolkit.getGlobal("ZoteroPane");
             const selectedItems = pane.getSelectedItems();
@@ -171,7 +202,6 @@ export class HelperExampleFactory {
                 ztoolkit.getGlobal("alert")("请先选择一个条目或附件。");
                 return;
             }
-
             for (const item of selectedItems) {
                 let attachItem;
                 if (item.isAttachment()) {
@@ -183,13 +213,11 @@ export class HelperExampleFactory {
                 if (!attachItem) {
                     continue;
                 }
-
                 const filepath = attachItem.getFilePath();
                 if (!filepath || !filepath.endsWith(".pdf")) {
                     ztoolkit.getGlobal("alert")("请选择一个 PDF 附件。");
                     return;
                 }
-
                 if (!filepath || (await IOUtils.exists(filepath))) {
                     const contentRaw = await IOUtils.read(filepath);
                     const blob = new Blob([contentRaw], {
@@ -199,6 +227,15 @@ export class HelperExampleFactory {
                     const data = {
                         filePath: filepath,
                         fileContent: base64Blob,
+                        threadNum: threadNum,
+                        engine: engine,
+                        outputPath: outputPath,
+                        configPath: configPath,
+                        mono: mono,
+                        dual: dual,
+                        mono_cut: mono_cut,
+                        dual_cut: dual_cut,
+                        compare: compare,
                     };
                     const response = await fetch(serverUrl + "/translate", {
                         // 发送翻译请求
@@ -208,55 +245,54 @@ export class HelperExampleFactory {
                         },
                         body: JSON.stringify(data),
                     });
-
                     if (!response.ok) {
                         throw new Error(`服务器响应失败: ${response.ok}`);
                     }
-
                     const jsonString = await response.text();
                     const result: TranslationResponse = JSON.parse(jsonString);
-
-                    // 使用辅助函数进行存在性检查
-                    if (
-                        result.translatedPath1 != null &&
-                        result.translatedPath2 != null
-                    ) {
-                        const exists1 = await safeExists(
-                            result.translatedPath1,
-                        ); // 检查文件是否存在
-                        const exists2 = await safeExists(
-                            result.translatedPath2,
-                        ); // 检查文件是否存在
-                        if (exists1 && exists2) {
-                            await HelperExampleFactory.addAttachmentToItem(
-                                item,
-                                result.translatedPath1,
-                            );
-                            await HelperExampleFactory.addAttachmentToItem(
-                                item,
-                                result.translatedPath2,
-                            );
-                            continue;
-                        }
-                    }
-
                     // 以下是新脚本的处理方式
                     const fileName = PathUtils.filename(filepath);
                     const fileName1 = fileName.replace(".pdf", "-mono.pdf");
                     const fileName2 = fileName.replace(".pdf", "-dual.pdf");
+                    const fileName3 = fileName.replace(".pdf", "-mono-cut.pdf");
+                    const fileName4 = fileName.replace(".pdf", "-dual-cut.pdf");
+                    const fileName5 = fileName.replace(".pdf", "-compare.pdf");
                     if (result.status === "success") {
-                        await Promise.all([
-                            HelperExampleFactory.fetchPDF(
+                        if (mono == "true") {
+                            await HelperExampleFactory.fetchPDF(
                                 fileName1,
                                 serverUrl,
                                 item,
-                            ),
-                            HelperExampleFactory.fetchPDF(
+                            );
+                        }
+                        if (dual === "true") {
+                            await HelperExampleFactory.fetchPDF(
                                 fileName2,
                                 serverUrl,
                                 item,
-                            ),
-                        ]);
+                            );
+                        }
+                        if (mono_cut === "true") {
+                            await HelperExampleFactory.fetchPDF(
+                                fileName3,
+                                serverUrl,
+                                item,
+                            );
+                        }
+                        if (dual_cut === "true") {
+                            HelperExampleFactory.fetchPDF(
+                                fileName4,
+                                serverUrl,
+                                item,
+                            );
+                        }
+                        if (compare === "true") {
+                            await HelperExampleFactory.fetchPDF(
+                                fileName5,
+                                serverUrl,
+                                item,
+                            );
+                        }
                     }
                 }
             }
@@ -352,7 +388,39 @@ export class HelperExampleFactory {
         }
     }
     @example
-    static async translateOriginalPDF() {
+    static async comparePDF() {
+        let serverUrl = getPref("serverip")?.toString();
+        ztoolkit.log("server url:", serverUrl);
+        if (!serverUrl) {
+            ztoolkit.getGlobal("alert")("请在首选项中配置 Python 服务器地址。");
+            return null;
+        }
+        if (serverUrl.endsWith("/")) {
+            serverUrl = serverUrl.slice(0, -1);
+        }
+        if (serverUrl.endsWith("/translate")) {
+            serverUrl = serverUrl.slice(0, -10);
+        }
+        ztoolkit.log("server url:", serverUrl);
+
+        let threadNum = getPref("threadNum")?.toString();
+        ztoolkit.log("threadNum:", threadNum);
+        if (!threadNum) {
+            threadNum = "";
+        }
+        let engine = getPref("engine")?.toString();
+        ztoolkit.log("engine:", engine);
+        if (!engine) {
+            engine = "";
+        }
+        let outputPath = getPref("outputPath")?.toString();
+        let configPath = getPref("configPath")?.toString();
+        if (!outputPath) {
+            outputPath = "";
+        }
+        if (!configPath) {
+            configPath = "";
+        }
         try {
             const pane = ztoolkit.getGlobal("ZoteroPane");
             const selectedItems = pane.getSelectedItems();
@@ -372,64 +440,61 @@ export class HelperExampleFactory {
                 if (!attachItem) {
                     continue;
                 }
-                const filePath = attachItem.getFilePath();
-                ztoolkit.log("selected attachment item filePath:", filePath);
-                if (!filePath || !filePath.endsWith(".pdf")) {
+                const filepath = attachItem.getFilePath();
+                if (!filepath || !filepath.endsWith(".pdf")) {
                     ztoolkit.getGlobal("alert")("请选择一个 PDF 附件。");
                     return;
                 }
-                await HelperExampleFactory.runPythonScript(filePath, item);
+                if (!filepath || (await IOUtils.exists(filepath))) {
+                    const contentRaw = await IOUtils.read(filepath);
+                    const blob = new Blob([contentRaw], {
+                        type: "application/pdf",
+                    });
+                    const base64Blob = await blobToBase64(blob);
+                    const data = {
+                        filePath: filepath,
+                        fileContent: base64Blob,
+                        threadNum: threadNum,
+                        engine: engine,
+                        outputPath: outputPath,
+                        configPath: configPath,
+                    };
+                    const response = await fetch(serverUrl + "/cut-compare", {
+                        // 发送翻译请求
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`服务器响应失败: ${response.ok}`);
+                    }
+                    const jsonString = await response.text();
+                    const result: TranslationResponse = JSON.parse(jsonString);
+                    const fileName = PathUtils.filename(filepath);
+                    const fileName_cut = fileName.replace(
+                        ".pdf",
+                        "-compare.pdf",
+                    );
+                    if (result.status === "success") {
+                        await Promise.all([
+                            HelperExampleFactory.fetchPDF(
+                                fileName_cut,
+                                serverUrl,
+                                item,
+                            ),
+                        ]);
+                    }
+                }
             }
         } catch (error) {
             ztoolkit.getGlobal("alert")(
-                "zotero-pdf2zh 插件发生错误: \n" + error,
+                "zotero-pdf2zh(中英对照) 发生错误: \n" + error,
             );
             return null;
         }
     }
-
-    static async runPythonScript(
-        inputPath: string,
-        item: Zotero.Item,
-    ): Promise<boolean | null> {
-        const serverUrl = getPref("serverip")?.toString();
-        ztoolkit.log("server url:", serverUrl);
-        if (!serverUrl) {
-            ztoolkit.getGlobal("alert")("请在首选项中配置 Python 服务器地址。");
-            return null;
-        }
-        const response = await fetch(serverUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                filePath: inputPath,
-            }),
-        });
-        if (!response.ok) {
-            throw new Error(`服务器响应失败: ${response.ok}`);
-        }
-
-        const jsonString = await response.text();
-        const result: TranslationResponse = JSON.parse(jsonString);
-        if (result.status === "success") {
-            await Promise.all([
-                await HelperExampleFactory.addAttachmentToItem(
-                    item,
-                    result.translatedPath1,
-                ),
-                await HelperExampleFactory.addAttachmentToItem(
-                    item,
-                    result.translatedPath2,
-                ),
-            ]);
-            return true;
-        } else {
-            throw new Error(`服务器响应失败, 响应状态: ${response.status}`);
-        }
-    }
-
     static async addAttachmentToItem(
         item: Zotero.Item,
         translatedPath: string,
