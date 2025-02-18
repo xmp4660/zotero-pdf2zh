@@ -40,6 +40,20 @@ class Config:
         self.mono_cut = request.get_json().get('mono_cut')
         self.dual_cut = request.get_json().get('dual_cut')
         self.compare = request.get_json().get('compare')
+        self.mono = request.get_json().get('mono')
+        self.dual = request.get_json().get('dual')
+
+        print("################# Config #################")
+        print("thread_num: ", self.thread_num)
+        print("service: ", self.service)
+        print("translated_dir: ", self.translated_dir)
+        print("config_path: ", self.config_path)
+        print("mono_cut: ", self.mono_cut)
+        print("dual_cut: ", self.dual_cut)
+        print("compare: ", self.compare)
+        print("mono", self.mono)
+        print("dual", self.dual)
+        print("##########################################")
 
 def get_absolute_path(path):
     if os.path.isabs(path):

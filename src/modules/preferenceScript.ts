@@ -107,34 +107,81 @@ async function updatePrefsUI() {
 function bindPrefEvents() {
     addon.data
         .prefs!.window.document.querySelector(
-            `#zotero-prefpane-${config.addonRef}-enable`,
+            `#zotero-prefpane-${config.addonRef}-mono`,
         )
         ?.addEventListener("command", (e) => {
-            ztoolkit.log(e);
-            addon.data.prefs!.window.alert(
-                `Successfully changed to ${(e.target as XUL.Checkbox).checked}!`,
-            );
+            setPref("mono", (e.target as XUL.Checkbox).checked);
+        });
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-dual`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("dual", (e.target as XUL.Checkbox).checked);
         });
 
     addon.data
         .prefs!.window.document.querySelector(
-            `#zotero-prefpane-${config.addonRef}-input`,
+            `#zotero-prefpane-${config.addonRef}-mono-cut`,
         )
-        ?.addEventListener("change", (e) => {
-            ztoolkit.log(e);
-            addon.data.prefs!.window.alert(
-                `Successfully changed to ${(e.target as HTMLInputElement).value}!`,
-            );
+        ?.addEventListener("command", (e) => {
+            setPref("mono_cut", (e.target as XUL.Checkbox).checked);
         });
+
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-dual-cut`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("dual-cut", (e.target as XUL.Checkbox).checked);
+        });
+
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-compare`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("compare", (e.target as XUL.Checkbox).checked);
+        });
+
+    // ########################################################
     addon.data
         .prefs!.window.document.querySelector(
             `#zotero-prefpane-${config.addonRef}-serverip`,
         )
         ?.addEventListener("change", (e) => {
             setPref("serverip", (e.target as HTMLInputElement).value);
-            ztoolkit.log(e);
-            addon.data.prefs!.window.alert(
-                `Successfully changed to ${(e.target as HTMLInputElement).value}!`,
-            );
+        });
+
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-engine`,
+        )
+        ?.addEventListener("change", (e) => {
+            setPref("engine", (e.target as HTMLInputElement).value);
+        });
+
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-threadNum`,
+        )
+        ?.addEventListener("change", (e) => {
+            setPref("threadNum", (e.target as HTMLInputElement).value);
+        });
+
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-outputPath`,
+        )
+        ?.addEventListener("change", (e) => {
+            setPref("outputPath", (e.target as HTMLInputElement).value);
+        });
+
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-configPath`,
+        )
+        ?.addEventListener("change", (e) => {
+            setPref("configPath", (e.target as HTMLInputElement).value);
         });
 }

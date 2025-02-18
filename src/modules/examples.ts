@@ -169,32 +169,29 @@ export class HelperExampleFactory {
         if (serverUrl.endsWith("/translate")) {
             serverUrl = serverUrl.slice(0, -10);
         }
-        ztoolkit.log("server url:", serverUrl);
 
         let threadNum = getPref("threadNum")?.toString();
-        ztoolkit.log("threadNum:", threadNum);
         if (!threadNum) {
             threadNum = "";
         }
         let engine = getPref("engine")?.toString();
-        ztoolkit.log("engine:", engine);
         if (!engine) {
             engine = "";
         }
+
         const mono = getPref("mono")?.toString();
         const dual = getPref("dual")?.toString();
-        const mono_cut = getPref("mono_cut")?.toString();
-        const dual_cut = getPref("dual_cut")?.toString();
+        const mono_cut = getPref("mono-cut")?.toString();
+        const dual_cut = getPref("dual-cut")?.toString();
         const compare = getPref("compare")?.toString();
         let outputPath = getPref("outputPath")?.toString();
-        let configPath = getPref("configPath")?.toString();
         if (!outputPath) {
             outputPath = "";
         }
+        let configPath = getPref("configPath")?.toString();
         if (!configPath) {
             configPath = "";
         }
-
         try {
             const pane = ztoolkit.getGlobal("ZoteroPane");
             const selectedItems = pane.getSelectedItems();
@@ -307,7 +304,6 @@ export class HelperExampleFactory {
     @example
     static async cutPDF() {
         let serverUrl = getPref("serverip")?.toString();
-        ztoolkit.log("server url:", serverUrl);
         if (!serverUrl) {
             ztoolkit.getGlobal("alert")("请在首选项中配置 Python 服务器地址。");
             return null;
@@ -401,15 +397,12 @@ export class HelperExampleFactory {
         if (serverUrl.endsWith("/translate")) {
             serverUrl = serverUrl.slice(0, -10);
         }
-        ztoolkit.log("server url:", serverUrl);
 
         let threadNum = getPref("threadNum")?.toString();
-        ztoolkit.log("threadNum:", threadNum);
         if (!threadNum) {
             threadNum = "";
         }
         let engine = getPref("engine")?.toString();
-        ztoolkit.log("engine:", engine);
         if (!engine) {
             engine = "";
         }
