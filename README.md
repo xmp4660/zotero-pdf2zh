@@ -28,7 +28,7 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 ## 第一步 在Zotero中配置插件参数
 
-<img src="./image7.png" alt="image7" />
+<img src="./images/image7.png" alt="image7" />
 
 ### Step 1.1 设置翻译参数
 
@@ -99,7 +99,7 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 ## 第四步 翻译文件
 
-<img src="./image8.png" alt="image8" style="width:350px" />
+<img src="./images/image8.png" alt="image8" style="width:350px" />
 
 打开Zotero，右键选择条目或者附件。
 如果选择条目，将会自动选择该条目下创建时间最早的PDF。
@@ -108,7 +108,7 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成mono和dual两个文件。
 
-<img src="./image1.png" alt="image" style="width:350px;" />
+<img src="./images/image1.png" alt="image" style="width:350px;" />
 
 ### 选项二：PDF2zh：Cut PDF
 
@@ -116,21 +116,21 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 ✨ 将双栏论文剪切拼接为单栏显示，适配手机阅读!
 
-<img src="./image4.png" alt="image4" style="width:350px;" />
+<img src="./images/image4.png" alt="image4" style="width:350px;" />
 
 得到后缀中包含`cut`的单栏PDF文件。
 
-<img src="./image5.png" alt="image5" style="width:350px;" />
+<img src="./images/image5.png" alt="image5" style="width:350px;" />
 
 ### 选项三：PDF2zh：中英双栏对照
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
-<img src="./image9.png" alt="image9" style="width:350px;" />
+<img src="./images/image9.png" alt="image9" style="width:350px;" />
 
 得到后缀中包含`compare`的中英双栏对照PDF文件。
 
-<img src="./image6.png" alt="image6" style="width:400px;" />
+<img src="./images/image6.png" alt="image6" style="width:400px;" />
 
 # 致谢
 
