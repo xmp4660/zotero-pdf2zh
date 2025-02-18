@@ -253,7 +253,10 @@ export class HelperExampleFactory {
                     const fileName2 = fileName.replace(".pdf", "-dual.pdf");
                     const fileName3 = fileName.replace(".pdf", "-mono-cut.pdf");
                     const fileName4 = fileName.replace(".pdf", "-dual-cut.pdf");
-                    const fileName5 = fileName.replace(".pdf", "-compare.pdf");
+                    const fileName5 = fileName.replace(
+                        ".pdf",
+                        "-dual-compare.pdf",
+                    );
                     if (result.status === "success") {
                         if (mono == "true") {
                             await HelperExampleFactory.fetchPDF(
@@ -468,7 +471,7 @@ export class HelperExampleFactory {
                     const fileName = PathUtils.filename(filepath);
                     const fileName_cut = fileName.replace(
                         ".pdf",
-                        "-compare.pdf",
+                        "-dual-compare.pdf",
                     );
                     if (result.status === "success") {
                         await Promise.all([
