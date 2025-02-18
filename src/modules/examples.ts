@@ -471,7 +471,7 @@ export class HelperExampleFactory {
                     const fileName = PathUtils.filename(filepath);
                     const fileName_cut = fileName.replace(
                         ".pdf",
-                        "-dual-compare.pdf",
+                        "-compare.pdf",
                     );
                     if (result.status === "success") {
                         await Promise.all([

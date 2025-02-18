@@ -104,13 +104,13 @@ def translate():
     input_path, config = get_file_from_request(request)
     try:
         mono, dual = translate_pdf(input_path, config)
-        if config.mono_cut:
+        if config.mono_cut == "true":
             path = mono.replace('-mono.pdf', '-mono-cut.pdf')
             split_and_merge_pdf(mono, path, compare = False)
-        if config.dual_cut:
+        if config.dual_cut == "true":
             path = dual.replace('-dual.pdf', '-dual-cut.pdf')
             split_and_merge_pdf(dual, path, compare = False)
-        if config.compare:
+        if config.compare == "true":
             path = dual.replace('.pdf', '-compare.pdf')
             split_and_merge_pdf(dual, path, compare=True)
         if not os.path.exists(mono) or not os.path.exists(dual):
@@ -134,6 +134,7 @@ def download(filename):
 # 新增了一个cut pdf函数，用于切割双栏pdf文件
 def split_and_merge_pdf(input_pdf, output_pdf, compare=False):
     writer = PdfWriter()
+    print("### cutting file ###: ", input_pdf)
     if 'dual' in input_pdf:
         readers = [PdfReader(input_pdf) for i in range(4)]
         for i in range(0, len(readers[0].pages), 2):
@@ -213,7 +214,7 @@ def cut_compare():
             split_and_merge_pdf(input_path, translated_path, compare=True)
         else:
             _, dual = translate_pdf(input_path, config)
-            translated_path = dual.replace('.pdf', '-compare.pdf')
+            translated_path = dual.replace('-dual.pdf', '-compare.pdf')
             split_and_merge_pdf(dual, translated_path, compare=True)
 
         if not os.path.exists(translated_path):
