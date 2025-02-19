@@ -125,21 +125,27 @@ def download(filename):
 def split_and_merge_pdf(input_pdf, output_pdf, compare=False):
     writer = PdfWriter()
     if 'dual' in input_pdf:
-        readers = [PdfReader(input_pdf) for i in range(4)]
-        for i in range(0, len(readers[0].pages), 2):
-            original_media_box = readers[0].pages[i].mediabox
+        reader = PdfReader(input_pdf)
+        for i in range(0, len(reader.pages), 2):
+            original_media_box = reader.pages[i].mediabox
             width = original_media_box.width
             height = original_media_box.height
 
-            left_page_1 = readers[0].pages[i]
-            left_page_1.mediabox= RectangleObject((0, 0, width / 2, height))
-            left_page_2 = readers[1].pages[i+1]
-            left_page_2.mediabox = RectangleObject((0, 0, width / 2, height))
+            left_page_1 = reader.pages[i].clone(writer, True)
+            for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                setattr(left_page_1, box, RectangleObject((0, 0, width/2, height)))
 
-            right_page_1 = readers[2].pages[i]
-            right_page_1.mediabox = RectangleObject((width / 2, 0, width, height))
-            right_page_2 = readers[3].pages[i+1]
-            right_page_2.mediabox = RectangleObject((width / 2, 0, width, height))
+            left_page_2 = reader.pages[i+1].clone(writer, True)
+            for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                setattr(left_page_2, box, RectangleObject((0, 0, width/2, height)))
+
+            right_page_1 = reader.pages[i].clone(writer, True)
+            for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                setattr(right_page_1, box, RectangleObject((width/2, 0, width, height)))
+
+            right_page_2 = reader.pages[i+1].clone(writer, True)
+            for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                setattr(right_page_2, box, RectangleObject((width/2, 0, width, height)))
 
             if compare == True:
                 blank_page_1 = writer.add_blank_page(width, height)
