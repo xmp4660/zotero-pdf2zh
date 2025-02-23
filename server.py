@@ -17,6 +17,8 @@ thread_num = 4                      # 设置线程数: 默认为4
 service = 'bing'                    # 设置翻译服务: 默认为bing
 translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 config_path = './config.json'       # 设置PDF2zh配置文件路径
+
+global_translated_dir = translated_dir
 ##########################################################################################
 
 class Config:
@@ -32,14 +34,23 @@ class Config:
         self.translated_dir = request.get_json().get('outputPath')
         if self.translated_dir == None or self.translated_dir == "":
             self.translated_dir = translated_dir
+        self.translated_dir = get_absolute_path(self.translated_dir)
+        os.makedirs(self.translated_dir, exist_ok=True)
 
         self.config_path = request.get_json().get('configPath')
         if self.config_path == None or self.config_path == "":
             self.config_path = config_path
+        self.config_path = get_absolute_path(self.config_path)
 
         self.mono_cut = request.get_json().get('mono_cut')
         self.dual_cut = request.get_json().get('dual_cut')
         self.compare = request.get_json().get('compare')
+
+        print("outputPath: ", self.translated_dir)
+        print("configPath: ", self.config_path)
+
+        global global_translated_dir
+        global_translated_dir = self.translated_dir
 
 def get_absolute_path(path):
     if os.path.isabs(path):
@@ -51,36 +62,48 @@ def get_file_from_request(request):
     config = Config(request)
     data = request.get_json()
     path = data.get('filePath')
-    path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
-    if not os.path.exists(path):
-        file_content = data.get('fileContent')
-        input_path = os.path.join(config.translated_dir, os.path.basename(path))
-        if file_content:
-            if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
-                file_content = file_content[len('data:application/pdf;base64,'):]
-            file_data = base64.b64decode(file_content) # 解码 Base64 内容
-            with open(input_path, 'wb') as f:
-                f.write(file_data)
-    else:
-        input_path = path
+    print("filePath: ", path)
+    # path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
+    file_content = data.get('fileContent')
+    input_path = os.path.join(config.translated_dir, os.path.basename(path))
+    input_path = get_absolute_path(input_path)
+    print("input path: ", input_path)
+    if file_content:
+        if file_content.startswith('data:application/pdf;base64,'): # 移除 Base64 编码中的前缀(如果有)
+            file_content = file_content[len('data:application/pdf;base64,'):]
+        file_data = base64.b64decode(file_content) # 解码 Base64 内容
+        with open(input_path, 'wb') as f:
+            f.write(file_data)
     return input_path, config
 
 def translate_pdf(input_path, config):
     print("\n############# Translating #############")
-    os.makedirs(config.translated_dir, exist_ok=True)
+    print("## translate file path ## : ", input_path)
+
     # 执行pdf2zh翻译, 用户可以自定义命令内容:
-    command = [
-        pdf2zh,
-        input_path,
-        '--t', str(config.thread_num),
-        '--output', config.translated_dir,
-        '--service', config.service,
-        '--config', config.config_path
-    ]
+    if not os.path.exists(config.config_path):
+        command = [
+            pdf2zh,
+            input_path,
+            '--t', str(config.thread_num),
+            '--output', config.translated_dir,
+            '--service', config.service
+        ]
+    else:
+        command = [
+            pdf2zh,
+            input_path,
+            '--t', str(config.thread_num),
+            '--output', config.translated_dir,
+            '--service', config.service,
+            '--config', config.config_path
+        ]
     subprocess.run(command, check=False)
-    abs_translated_dir = get_absolute_path(config.translated_dir)  
-    mono =  os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
-    dual = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+
+    mono =  os.path.join(config.translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
+    dual = os.path.join(config.translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+    if not os.path.exists(mono) or not os.path.exists(dual):
+        raise Exception("[Failed to generate translated files]: ", mono, dual)
     print("[mono file generated]: ", mono)
     print("[dual file generated]: ", dual)
     return mono, dual
@@ -94,34 +117,39 @@ def translate():
         if config.mono_cut and config.mono_cut == "true":
             path = mono.replace('-mono.pdf', '-mono-cut.pdf')
             split_and_merge_pdf(mono, path, compare = False)
+            if not os.path.exists(path):
+                raise Exception("[Failed to generate cutted files]: ", path)
             print("[mono-cut file generated]: ", path)
         if config.dual_cut and config.dual_cut == "true":
             path = dual.replace('-dual.pdf', '-dual-cut.pdf')
             split_and_merge_pdf(dual, path, compare = False)
+            if not os.path.exists(path):
+                raise Exception("[Failed to generate cutted files]: ", path)
             print("[dual-cut file generated]: ", path)
         if config.compare and config.compare == "true":
             path = dual.replace('.pdf', '-compare.pdf')
             split_and_merge_pdf(dual, path, compare=True)
+            if not os.path.exists(path):
+                raise Exception("[Failed to generate compare files]: ", path)
             print("[compare file generated]: ", path)
         if not os.path.exists(mono) or not os.path.exists(dual):
             raise Exception("[Pdf2zh failed to generate translated files]: ", mono, dual)
         return jsonify({'status': 'success'}), 200
     except Exception as e:
-        print(f"[Error]: {e}")
+        print(f"[translate() Error]: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/translatedFile/<filename>')
 def download(filename):
     print("\n############# Downloading #############")
-    directory = translated_dir
-    abs_directory = get_absolute_path(directory)
-    file_path = os.path.join(abs_directory, filename)
+    file_path = os.path.join(get_absolute_path(global_translated_dir), filename)
     if not os.path.isfile(file_path):
-        return "File not found", 404
+        print("[Download File not found]: ", file_path)
+        return "[Download File not found]: " + file_path, 404
     print("[Download file]: ", file_path)
     return send_file(file_path, as_attachment=True, download_name=filename)
 
-# 新增了一个cut pdf函数，用于切割双栏pdf文件
+# 工具函数, 用于切割双栏pdf文件
 def split_and_merge_pdf(input_pdf, output_pdf, compare=False):
     writer = PdfWriter()
     if 'dual' in input_pdf:
@@ -179,15 +207,13 @@ def split_and_merge_pdf(input_pdf, output_pdf, compare=False):
     with open(output_pdf, "wb") as output_file:
         writer.write(output_file)
 
-# 新增了一个cut接口，用于切割双栏pdf文件
+# 用于切割双栏pdf文件
 @app.route('/cut', methods=['POST'])
 def cut():
     print("\n############# Cutting #############")
-    input_path, _ = get_file_from_request(request)
+    input_path, config = get_file_from_request(request)
     try:
-        os.makedirs(translated_dir, exist_ok=True)
-        abs_translated_dir = get_absolute_path(translated_dir)  
-        translated_path = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-cut.pdf'))
+        translated_path = os.path.join(config.translated_dir, os.path.basename(input_path).replace('.pdf', '-cut.pdf'))
         split_and_merge_pdf(input_path, translated_path)
 
         if not os.path.exists(translated_path):
@@ -198,16 +224,14 @@ def cut():
         print(f"[Cut File Error]: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
-# 新增了一个cut-compare接口，用于生成中英对照文件
+# 用于生成中英对照文件
 @app.route('/cut-compare', methods=['POST'])
 def cut_compare():
     print("\n############# Comparing #############")
     input_path, config = get_file_from_request(request)
     try:
-        os.makedirs(config.translated_dir, exist_ok=True)
-        abs_translated_dir = get_absolute_path(translated_dir)  
         if 'dual' in input_path:
-            translated_path = os.path.join(abs_translated_dir, os.path.basename(input_path).replace('.pdf', '-compare.pdf'))
+            translated_path = os.path.join(config.translated_dir, os.path.basename(input_path).replace('.pdf', '-compare.pdf'))
             split_and_merge_pdf(input_path, translated_path, compare=True)
         else:
             _, dual = translate_pdf(input_path, config)
@@ -219,7 +243,7 @@ def cut_compare():
         print("[Compare file generated]: ", translated_path)
         return jsonify({'status': 'success'}), 200
     except Exception as e:
-        print(f"[Error]: {e}")
+        print(f"[cut_compare() Error]: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
     
 if __name__ == '__main__':

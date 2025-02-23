@@ -87,11 +87,13 @@ config.json文件示例如下:
 打开命令行工具，输入以下命令：
 
 ```shell
-# 1. 下载脚本文件（自动）或手动访问链接下载
+# 1. 下载脚本文件
 wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
 # 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改
 python server.py 8888
 ```
+
+或者手动下载脚本：[Python脚本](https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py)
 
 请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改端口号。
 

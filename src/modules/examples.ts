@@ -319,6 +319,22 @@ export class HelperExampleFactory {
         }
         ztoolkit.log("server url:", serverUrl);
 
+        let threadNum = getPref("threadNum")?.toString();
+        if (!threadNum) {
+            threadNum = "";
+        }
+        let engine = getPref("engine")?.toString();
+        if (!engine) {
+            engine = "";
+        }
+        let outputPath = getPref("outputPath")?.toString();
+        let configPath = getPref("configPath")?.toString();
+        if (!outputPath) {
+            outputPath = "";
+        }
+        if (!configPath) {
+            configPath = "";
+        }
         try {
             const pane = ztoolkit.getGlobal("ZoteroPane");
             const selectedItems = pane.getSelectedItems();
@@ -352,6 +368,10 @@ export class HelperExampleFactory {
                     const data = {
                         filePath: filepath,
                         fileContent: base64Blob,
+                        threadNum: threadNum,
+                        engine: engine,
+                        outputPath: outputPath,
+                        configPath: configPath,
                     };
                     const response = await fetch(serverUrl + "/cut", {
                         // 发送翻译请求
