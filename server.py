@@ -8,9 +8,6 @@ from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
 import sys
 
-import sys
-sys.setrecursionlimit(10000)
-
 ######################################## 默认配置 ########################################
 port_num = 8888                     # 设置端口号: 默认为8888
 pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
