@@ -8,6 +8,9 @@ from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
 import sys
 
+import sys
+sys.setrecursionlimit(10000)
+
 ######################################## 默认配置 ########################################
 port_num = 8888                     # 设置端口号: 默认为8888
 pdf2zh = "pdf2zh"                   # 设置pdf2zh指令: 默认为'pdf2zh'
@@ -153,25 +156,25 @@ def download(filename):
 def split_and_merge_pdf(input_pdf, output_pdf, compare=False):
     writer = PdfWriter()
     if 'dual' in input_pdf:
-        reader = PdfReader(input_pdf)
-        for i in range(0, len(reader.pages), 2):
-            original_media_box = reader.pages[i].mediabox
+        readers = [PdfReader(input_pdf) for _ in range(4)]
+        for i in range(0, len(readers[0].pages), 2):
+            original_media_box = readers[0].pages[i].mediabox
             width = original_media_box.width
             height = original_media_box.height
 
-            left_page_1 = reader.pages[i].clone(writer, True)
+            left_page_1 = readers[0].pages[i]
             for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
                 setattr(left_page_1, box, RectangleObject((0, 0, width/2, height)))
 
-            left_page_2 = reader.pages[i+1].clone(writer, True)
+            left_page_2 = readers[1].pages[i+1]
             for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
                 setattr(left_page_2, box, RectangleObject((0, 0, width/2, height)))
 
-            right_page_1 = reader.pages[i].clone(writer, True)
+            right_page_1 = readers[2].pages[i]
             for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
                 setattr(right_page_1, box, RectangleObject((width/2, 0, width, height)))
 
-            right_page_2 = reader.pages[i+1].clone(writer, True)
+            right_page_2 = readers[3].pages[i+1]
             for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
                 setattr(right_page_2, box, RectangleObject((width/2, 0, width, height)))
 
@@ -188,17 +191,17 @@ def split_and_merge_pdf(input_pdf, output_pdf, compare=False):
                 writer.add_page(right_page_1)
                 writer.add_page(right_page_2)
     else: 
-        reader = PdfReader(input_pdf)
-        for i in range(len(reader.pages)):
-            page = reader.pages[i]
+        readers = [PdfReader(input_pdf) for _ in range(2)]
+        for i in range(len(readers[0].pages)):
+            page = readers[0].pages[i]
 
             original_media_box = page.mediabox
             width = original_media_box.width
             height = original_media_box.height
 
-            left_page = copy.deepcopy(page)
+            left_page = readers[0].pages[i]
             left_page.mediabox = RectangleObject((0, 0, width / 2, height))
-            right_page = copy.deepcopy(page)
+            right_page = readers[1].pages[i]
             right_page.mediabox = RectangleObject((width / 2, 0, width, height))
 
             writer.add_page(left_page)
