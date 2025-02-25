@@ -20,7 +20,7 @@
                     preference="extensions.zotero.__addonRef__.engine" style="min-width: 120px; " />
                 <!-- 下拉选择框 -->
                 <html:select id="zotero-prefpane-__addonRef__-preset" style="min-width: 120px;"
-                    preference="zotero-prefpane-__addonRef__.preset">
+                    preference="extensions.zotero.__addonRef__.preset">
                     <html:option value="google">google</html:option>
                     <html:option value="bing">bing</html:option>
 
@@ -68,42 +68,53 @@
                 preference="extensions.zotero.__addonRef__.configPath" style="width: 300px"></html:input>
         </vbox>
         <hbox>
-            <checkbox native="true" preference="extensions.zotero.__addonRef__.rename" />
-            <html:label data-l10n-id="pref-rename" for="extensions.zotero.__addonRef__.rename" />
+            <checkbox native="true" id="zotero-prefpane-__addonRef__-rename"
+                preference="extensions.zotero.__addonRef__.rename" />
+            <html:label data-l10n-id="pref-rename" for="zotero-prefpane-__addonRef__-rename" />
         </hbox>
     </vbox>
     <vbox>
         <!-- 生成文件 -->
         <html:h3 data-l10n-id="pref-default-generate"></html:h3>
         <hbox>
-            <checkbox native="true" preference="extensions.zotero.__addonRef__.mono" />
-            <html:label data-l10n-id="pref-mono" for="extensions.zotero.__addonRef__.mono" />
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.mono-open" />
-            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.mono-open" />
+            <checkbox native="true" id="zotero-prefpane-__addonRef__-mono"
+                preference="extensions.zotero.__addonRef__.mono" />
+            <html:label data-l10n-id="pref-mono" for="zotero-prefpane-__addonRef__-mono" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-mono-open"
+                preference="extensions.zotero.__addonRef__.mono-open" />
+            <html:label data-l10n-id="pref-open" for="zotero-prefpane-__addonRef__-mono-open" />
         </hbox>
         <hbox>
-            <checkbox native="true" preference="extensions.zotero.__addonRef__.dual" />
-            <html:label data-l10n-id="pref-dual" for="extensions.zotero.__addonRef__.dual" />
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.dual-open" />
-            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.dual-open" />
+            <checkbox native="true" id="zotero-prefpane-__addonRef__-dual"
+                preference="extensions.zotero.__addonRef__.dual" />
+            <html:label data-l10n-id="pref-dual" for="zotero-prefpane-__addonRef__-dual" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-open"
+                preference="extensions.zotero.__addonRef__.dual-open" />
+            <html:label data-l10n-id="pref-open" for="zotero-prefpane-__addonRef__-dual-open" />
         </hbox>
         <hbox>
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.mono-cut" />
-            <html:label data-l10n-id="pref-mono-cut" for="extensions.zotero.__addonRef__.mono-cut" />
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.mono-cut-open" />
-            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.mono-cut-open" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-mono-cut"
+                preference="extensions.zotero.__addonRef__.mono-cut" />
+            <html:label data-l10n-id="pref-mono-cut" for="zotero-prefpane-__addonRef__-mono-cut" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-mono-cut-open"
+                preference="extensions.zotero.__addonRef__.mono-cut-open" />
+            <html:label data-l10n-id="pref-open" for="zotero-prefpane-__addonRef__-mono-cut-open" />
         </hbox>
         <hbox>
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.dual-cut" />
-            <html:label data-l10n-id="pref-dual-cut" for="extensions.zotero.__addonRef__.dual-cut" />
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.dual-cut-open" />
-            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.dual-cut-open" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-dual-cut"
+                preference="extensions.zotero.__addonRef__.dual-cut" />
+            <html:label data-l10n-id="pref-dual-cut" for="zotero-prefpane-__addonRef__-dual-cut" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-dual-cut-open"
+                preference="extensions.zotero.__addonRef__.dual-cut-open" />
+            <html:label data-l10n-id="pref-open" for="-zotero-prefpane-__addonRef__dual-cut-open" />
         </hbox>
         <hbox>
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.compare" />
-            <html:label data-l10n-id="pref-compare" for="extensions.zotero.__addonRef__.compare" />
-            <checkbox native="false" preference="extensions.zotero.__addonRef__.compare-open" />
-            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.compare-open" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-compare"
+                preference="extensions.zotero.__addonRef__.compare" />
+            <html:label data-l10n-id="pref-compare" for="zotero-prefpane-__addonRef__-compare" />
+            <checkbox native="false" id="zotero-prefpane-__addonRef__-compare-open"
+                preference="extensions.zotero.__addonRef__.compare-open" />
+            <html:label data-l10n-id="pref-open" for="zotero-prefpane-__addonRef__-compare-open" />
         </hbox>
     </vbox>
 
