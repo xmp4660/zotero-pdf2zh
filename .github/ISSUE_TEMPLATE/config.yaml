@@ -1,0 +1,59 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+projects: []
+assignees:
+    - octocat
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for taking the time to fill out this bug report!
+
+    - type: textarea
+      id: what-happened
+      attributes:
+          label: 问题描述
+          description: Tell us what happened？
+          placeholder: Tell us what happened？
+      validations:
+          required: true
+
+    - type: dropdown
+      id: version
+      attributes:
+          label: 脚本执行环境
+          description: Script Execution Environment
+          options:
+              - Windows
+              - MacOS
+              - Linux
+              - Others
+          default: 0
+      validations:
+          required: true
+
+    - type: dropdown
+      id: version
+      attributes:
+          label: Zotero执行环境
+          description: Zotero Execution Environment
+          options:
+              - Windows
+              - MacOS
+              - Linux
+              - Others
+          default: 0
+      validations:
+          required: true
+
+    - type: checkboxes
+      id: terms
+      attributes:
+          label: Latest Version
+          description: 脚本，插件，Zotero是否是最新版本？
+          options:
+              - label: Yes
+              - label: No
+                required: true
