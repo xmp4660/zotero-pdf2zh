@@ -15,5 +15,10 @@ pref("__prefsPrefix__.threadNum", 4);
 pref("__prefsPrefix__.outputPath", "");
 pref("__prefsPrefix__.configPath", "");
 
-pref("__prefsPrefix__.open", true);
+pref("__prefsPrefix__.mono-open", false);
+pref("__prefsPrefix__.dual-open", false);
+pref("__prefsPrefix__.mono-cut-open", false);
+pref("__prefsPrefix__.dual-cut-open", false);
+pref("__prefsPrefix__.compare", false);
+
 pref("__prefsPrefix__.rename", false);
