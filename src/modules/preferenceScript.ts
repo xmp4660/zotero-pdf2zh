@@ -1,6 +1,6 @@
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
-import { setPref } from "../utils/prefs";
+import { setPref, getPref } from "../utils/prefs";
 
 export async function registerPrefsScripts(_window: Window) {
     // This function is called when the prefs window is opened
@@ -144,6 +144,50 @@ function bindPrefEvents() {
             setPref("compare", (e.target as XUL.Checkbox).checked);
         });
 
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-rename`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("rename", (e.target as XUL.Checkbox).checked);
+        });
+
+    // ###### open #####
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-mono-open`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("mono-open", (e.target as XUL.Checkbox).checked);
+        });
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-dual-open`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("dual-open", (e.target as XUL.Checkbox).checked);
+        });
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-mono-cut-open`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("mono-cut-open", (e.target as XUL.Checkbox).checked);
+        });
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-dual-cut-open`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("dual-cut-open", (e.target as XUL.Checkbox).checked);
+        });
+    addon.data
+        .prefs!.window.document.querySelector(
+            `#zotero-prefpane-${config.addonRef}-compare-open`,
+        )
+        ?.addEventListener("command", (e) => {
+            setPref("compare-open", (e.target as XUL.Checkbox).checked);
+        });
     // ########################################################
     addon.data
         .prefs!.window.document.querySelector(
@@ -183,5 +227,19 @@ function bindPrefEvents() {
         )
         ?.addEventListener("change", (e) => {
             setPref("configPath", (e.target as HTMLInputElement).value);
+        });
+
+    // engine
+    addon.data.prefs?.window.document
+        .querySelector(`#zotero-prefpane-${config.addonRef}-preset`)
+        ?.addEventListener("change", (e) => {
+            setPref("preset", (e.target as HTMLSelectElement).value);
+            setPref("engine", (e.target as HTMLSelectElement).value);
+        });
+
+    addon.data.prefs?.window.document
+        .querySelector(`#zotero-prefpane-${config.addonRef}-engine`)
+        ?.addEventListener("change", (e) => {
+            setPref("engine", (e.target as HTMLInputElement).value);
         });
 }

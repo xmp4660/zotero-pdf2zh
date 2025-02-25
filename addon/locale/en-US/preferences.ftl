@@ -18,3 +18,5 @@ pref-configPath = Pdf2zh Config File Path
 pref-default-generate = Defualt Generate Files
 
 pref-translate-config = Translation Config
+pref-rename = Rename Generated File
+pref-open = Open Generated File Automatically

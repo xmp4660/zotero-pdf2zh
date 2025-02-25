@@ -141,6 +141,9 @@ export class HelperExampleFactory {
         fileName: string,
         serverUrl: string,
         item: Zotero.Item,
+        title: string = "",
+        rename: string = "false",
+        open: string = "false",
     ) {
         const response = await axios.get(
             serverUrl + "/translatedFile/" + fileName,
@@ -151,7 +154,13 @@ export class HelperExampleFactory {
         const uint8Array = new Uint8Array(response.data);
         const tempDir = PathUtils.join(PathUtils.tempDir, fileName);
         IOUtils.write(tempDir, uint8Array);
-        await HelperExampleFactory.addAttachmentToItem(item, tempDir);
+        await HelperExampleFactory.addAttachmentToItem(
+            item,
+            tempDir,
+            title,
+            rename,
+            open,
+        );
         IOUtils.remove(tempDir);
     }
 
@@ -184,6 +193,13 @@ export class HelperExampleFactory {
         const mono_cut = getPref("mono-cut")?.toString();
         const dual_cut = getPref("dual-cut")?.toString();
         const compare = getPref("compare")?.toString();
+        const rename = getPref("rename")?.toString();
+        const mono_open = getPref("mono-open")?.toString();
+        const dual_open = getPref("dual-open")?.toString();
+        const mono_cut_open = getPref("mono-cut-open")?.toString();
+        const dual_cut_open = getPref("dual-cut-open")?.toString();
+        const compare_open = getPref("compare-open")?.toString();
+
         let outputPath = getPref("outputPath")?.toString();
         if (!outputPath) {
             outputPath = "";
@@ -263,6 +279,9 @@ export class HelperExampleFactory {
                                 fileName1,
                                 serverUrl,
                                 item,
+                                "mono",
+                                rename,
+                                mono_open,
                             );
                         }
                         if (dual === "true") {
@@ -270,6 +289,9 @@ export class HelperExampleFactory {
                                 fileName2,
                                 serverUrl,
                                 item,
+                                "dual",
+                                rename,
+                                dual_open,
                             );
                         }
                         if (mono_cut === "true") {
@@ -277,6 +299,9 @@ export class HelperExampleFactory {
                                 fileName3,
                                 serverUrl,
                                 item,
+                                "mono-cut",
+                                rename,
+                                mono_cut_open,
                             );
                         }
                         if (dual_cut === "true") {
@@ -284,6 +309,9 @@ export class HelperExampleFactory {
                                 fileName4,
                                 serverUrl,
                                 item,
+                                "dual-cut",
+                                rename,
+                                dual_cut_open,
                             );
                         }
                         if (compare === "true") {
@@ -291,6 +319,9 @@ export class HelperExampleFactory {
                                 fileName5,
                                 serverUrl,
                                 item,
+                                "dual-compare",
+                                rename,
+                                compare_open,
                             );
                         }
                     }
@@ -335,6 +366,12 @@ export class HelperExampleFactory {
         if (!configPath) {
             configPath = "";
         }
+        const rename = getPref("rename")?.toString();
+        const mono_open = getPref("mono-open")?.toString();
+        const dual_open = getPref("dual-open")?.toString();
+        const mono_cut_open = getPref("mono-cut-open")?.toString();
+        const dual_cut_open = getPref("dual-cut-open")?.toString();
+        const compare_open = getPref("compare-open")?.toString();
         try {
             const pane = ztoolkit.getGlobal("ZoteroPane");
             const selectedItems = pane.getSelectedItems();
@@ -388,12 +425,29 @@ export class HelperExampleFactory {
                     const result: TranslationResponse = JSON.parse(jsonString);
                     const fileName = PathUtils.filename(filepath);
                     const fileName_cut = fileName.replace(".pdf", "-cut.pdf");
+                    let title = "";
+                    let open = "";
+                    if (fileName_cut.indexOf("-mono") != -1) {
+                        title = "mono-cut";
+                        if (mono_cut_open == "true") {
+                            open = "true";
+                        }
+                    }
+                    if (fileName_cut.indexOf("-dual") != -1) {
+                        title = "dual-cut";
+                        if (dual_cut_open == "true") {
+                            open = "true";
+                        }
+                    }
                     if (result.status === "success") {
                         await Promise.all([
                             HelperExampleFactory.fetchPDF(
                                 fileName_cut,
                                 serverUrl,
                                 item,
+                                title,
+                                rename,
+                                open,
                             ),
                         ]);
                     }
@@ -437,6 +491,12 @@ export class HelperExampleFactory {
         if (!configPath) {
             configPath = "";
         }
+        const rename = getPref("rename")?.toString();
+        const mono_open = getPref("mono-open")?.toString();
+        const dual_open = getPref("dual-open")?.toString();
+        const mono_cut_open = getPref("mono-cut-open")?.toString();
+        const dual_cut_open = getPref("dual-cut-open")?.toString();
+        const compare_open = getPref("compare-open")?.toString();
         try {
             const pane = ztoolkit.getGlobal("ZoteroPane");
             const selectedItems = pane.getSelectedItems();
@@ -493,12 +553,19 @@ export class HelperExampleFactory {
                         ".pdf",
                         "-compare.pdf",
                     );
+                    let open = "";
+                    if (compare_open == "true") {
+                        open = "true";
+                    }
                     if (result.status === "success") {
                         await Promise.all([
                             HelperExampleFactory.fetchPDF(
                                 fileName_cut,
                                 serverUrl,
                                 item,
+                                "dual-compare",
+                                rename,
+                                open,
                             ),
                         ]);
                     }
@@ -514,14 +581,18 @@ export class HelperExampleFactory {
     static async addAttachmentToItem(
         item: Zotero.Item,
         translatedPath: string,
+        title: string = "",
+        rename: string = "",
+        open: string = "",
     ): Promise<void> {
+        ztoolkit.log("rename:", rename);
+        ztoolkit.log("title:", title);
         const itemID = item.id;
         const libraryID = item.libraryID;
         const collectionID = item.getCollections()[0];
-
         if (item.isAttachment()) {
             const parentItemID = item.parentItemID;
-            await Promise.all([
+            const newItem = await Promise.all([
                 Zotero.Attachments.importFromFile({
                     file: translatedPath,
                     parentItemID:
@@ -534,17 +605,34 @@ export class HelperExampleFactory {
                         collectionID != null
                             ? [collectionID]
                             : undefined,
+                    title:
+                        title != "" &&
+                        parentItemID != null &&
+                        parentItemID != false &&
+                        rename == "true"
+                            ? title
+                            : PathUtils.filename(translatedPath),
                 }),
             ]);
             ztoolkit.log(`已将翻译后的 PDF 附件添加到库 ${libraryID} 中。`);
+            if (open == "true" && newItem.length > 0 && newItem[0].id) {
+                Zotero.Reader.open(newItem[0].id);
+            }
         } else {
-            await Promise.all([
+            const newItem = await Promise.all([
                 Zotero.Attachments.importFromFile({
                     file: translatedPath,
                     parentItemID: itemID,
+                    title:
+                        title != "" && itemID != null
+                            ? title
+                            : PathUtils.filename(translatedPath),
                 }),
             ]);
             ztoolkit.log(`已将翻译后的 PDF 附件添加到项目 ${itemID} 中。`);
+            if (open == "true" && newItem.length > 0 && newItem[0].id) {
+                Zotero.Reader.open(newItem[0].id);
+            }
         }
     }
 }

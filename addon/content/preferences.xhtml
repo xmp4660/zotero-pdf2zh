@@ -11,12 +11,48 @@
             <html:input type="text" id="zotero-prefpane-__addonRef__-serverip"
                 preference="extensions.zotero.__addonRef__.serverip" style="width: 200px"></html:input>
         </hbox>
+
         <hbox align="center">
-            <html:label for="zotero-prefpane-__addonRef__-engine" data-l10n-id="pref-engine"></html:label>
-            <html:input type="text" id="zotero-prefpane-__addonRef__-engine" flex="1"
-                preference="extensions.zotero.__addonRef__.engine" style="width: 100px"></html:input>
+            <html:label for="zotero-prefpane-__addonRef__-engine" data-l10n-id="pref-engine" />
+            <hbox flex="1">
+                <!-- 输入框（保留原有preference绑定） -->
+                <html:input type="text" id="zotero-prefpane-__addonRef__-engine" flex="1"
+                    preference="extensions.zotero.__addonRef__.engine" style="min-width: 120px; " />
+                <!-- 下拉选择框 -->
+                <html:select id="zotero-prefpane-__addonRef__-preset" style="min-width: 120px;"
+                    preference="zotero-prefpane-__addonRef__.preset">
+                    <html:option value="google">google</html:option>
+                    <html:option value="bing">bing</html:option>
+
+                    <html:option value="deepl">deepl</html:option>
+                    <html:option value="deeplx">deeplx</html:option>
+                    <html:option value="xinference">xinference</html:option>
+
+                    <html:option value="openai">openai</html:option>
+                    <html:option value="azure-openai">azure-openai</html:option>
+                    <html:option value="zhipu">zhipu</html:option>
+
+                    <html:option value="ModelScope">ModelScope</html:option>
+                    <html:option value="silicon">silicon</html:option>
+                    <html:option value="gemini">gemini</html:option>
+                    <html:option value="azure">azure</html:option>
+
+                    <html:option value="tencent">tencent</html:option>
+                    <html:option value="dify">dify</html:option>
+                    <html:option value="anythingllm">anythingllm</html:option>
+
+                    <html:option value="argos">argos</html:option>
+
+                    <html:option value="deepseek">deepseek</html:option>
+
+                    <html:option value="openailiked">openailiked</html:option>
+                    <html:option value="qwen-mt">qwen-mt</html:option>
+
+                </html:select>
+            </hbox>
         </hbox>
-        <hbox align="center">
+
+        <hbox align=" center">
             <html:label for="zotero-prefpane-__addonRef__-threadNum" data-l10n-id="pref-thread"></html:label>
             <html:input type="text" id="zotero-prefpane-__addonRef__-threadNum"
                 preference="extensions.zotero.__addonRef__.threadNum" style="width: 20px"></html:input>
@@ -31,6 +67,10 @@
             <html:input type="text" id="zotero-prefpane-__addonRef__-configPath"
                 preference="extensions.zotero.__addonRef__.configPath" style="width: 300px"></html:input>
         </vbox>
+        <hbox>
+            <checkbox native="true" preference="extensions.zotero.__addonRef__.rename" />
+            <html:label data-l10n-id="pref-rename" for="extensions.zotero.__addonRef__.rename" />
+        </hbox>
     </vbox>
     <vbox>
         <!-- 生成文件 -->
@@ -38,22 +78,32 @@
         <hbox>
             <checkbox native="true" preference="extensions.zotero.__addonRef__.mono" />
             <html:label data-l10n-id="pref-mono" for="extensions.zotero.__addonRef__.mono" />
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.mono-open" />
+            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.mono-open" />
         </hbox>
         <hbox>
             <checkbox native="true" preference="extensions.zotero.__addonRef__.dual" />
             <html:label data-l10n-id="pref-dual" for="extensions.zotero.__addonRef__.dual" />
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.dual-open" />
+            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.dual-open" />
         </hbox>
         <hbox>
             <checkbox native="false" preference="extensions.zotero.__addonRef__.mono-cut" />
             <html:label data-l10n-id="pref-mono-cut" for="extensions.zotero.__addonRef__.mono-cut" />
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.mono-cut-open" />
+            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.mono-cut-open" />
         </hbox>
         <hbox>
             <checkbox native="false" preference="extensions.zotero.__addonRef__.dual-cut" />
             <html:label data-l10n-id="pref-dual-cut" for="extensions.zotero.__addonRef__.dual-cut" />
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.dual-cut-open" />
+            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.dual-cut-open" />
         </hbox>
         <hbox>
             <checkbox native="false" preference="extensions.zotero.__addonRef__.compare" />
             <html:label data-l10n-id="pref-compare" for="extensions.zotero.__addonRef__.compare" />
+            <checkbox native="false" preference="extensions.zotero.__addonRef__.compare-open" />
+            <html:label data-l10n-id="pref-open" for="extensions.zotero.__addonRef__.compare-open" />
         </hbox>
     </vbox>
 
@@ -61,7 +111,7 @@
     <vbox>
         <html:h3>Python Server 脚本 </html:h3>
         <p>🌷 温馨提示: 本插件需要在本地后端执行Python脚本，才可以使用翻译功能。</p>
-        <p>🌷 [2025年2月24日v2.1.8] Python脚本已更新, 请访问主页README.md进行更新:
+        <p>🌷 [2025年2月24日v2.1.9] Python脚本已更新, 请访问主页README.md进行更新:
             <description align="center"><label class="zotero-text-link" value="README.md"
                     href="https://github.com/guaguastandup/zotero-pdf2zh"></label></description>
         </p>
