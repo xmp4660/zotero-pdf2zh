@@ -17,6 +17,8 @@ thread_num = 4                      # 设置线程数: 默认为4
 service = 'bing'                    # 设置翻译服务: 默认为bing
 translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 config_path = './config.json'       # 设置PDF2zh配置文件路径
+source_languages = 'en'             # 设置源语言
+target_languages = 'zh'             # 设置目标语言
 
 global_translated_dir = translated_dir
 ##########################################################################################
@@ -30,6 +32,14 @@ class Config:
         self.service = request.get_json().get('engine')
         if self.service == None or self.service == "":
             self.service = service
+
+        self.source_languages = request.get_json().get('sourceLanguages')
+        if self.source_languages == None or self.source_languages == "":
+            self.source_languages = source_languages
+
+        self.target_languages = request.get_json().get('targetLanguages')
+        if self.target_languages == None or self.target_languages == "":
+            self.target_languages = target_languages
 
         self.translated_dir = request.get_json().get('outputPath')
         if self.translated_dir == None or self.translated_dir == "":
@@ -87,7 +97,9 @@ def translate_pdf(input_path, config):
             input_path,
             '--t', str(config.thread_num),
             '--output', config.translated_dir,
-            '--service', config.service
+            '--service', config.service, 
+            '--lang-in', config.source_languages, 
+            '--lang-out', config.target_languages 
         ]
     else:
         command = [
@@ -95,7 +107,9 @@ def translate_pdf(input_path, config):
             input_path,
             '--t', str(config.thread_num),
             '--output', config.translated_dir,
-            '--service', config.service,
+            '--service', config.service, 
+            '--lang-in', config.source_languages, 
+            '--lang-out', config.target_languages, 
             '--config', config.config_path
         ]
     subprocess.run(command, check=False)
