@@ -5,8 +5,7 @@
 [![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 ![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=yellow)
-
-<!-- [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/main/LICENSE) -->
+[![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/main/LICENSE)
 
 <!-- ![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow) -->
 
@@ -148,7 +147,18 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 # TODO LIST
 
+- [ ] 提供共享远程翻译服务（基于SealOS）
+- [ ] 批量翻译功能优化
+- [ ] 兼容babeldoc
+- [ ] 完善Docker部署文档
+- [ ] Zotero端显示翻译进度
+- [ ] 支持Obsidian式配置（不需要打开设置页面）
 - [ ] 支持远程部署
 - [ ] 跨平台部署测试 (on-going)
 - [x] 加入插件市场
 - [x] 支持在zotero perference中设置pdf2zh参数
+
+# 其他
+
+- SiliconFlow邀请链接：https://cloud.siliconflow.cn/i/a7s9DdQR
+- InfiniBand邀请码：5UPJW

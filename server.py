@@ -17,6 +17,8 @@ thread_num = 4                      # 设置线程数: 默认为4
 service = 'bing'                    # 设置翻译服务: 默认为bing
 translated_dir = "./translated/"    # 设置翻译文件的输出路径(临时路径, 可以在翻译后删除)
 config_path = './config.json'       # 设置PDF2zh配置文件路径
+babeldoc = False                     # 是否使用babeldoc
+
 source_languages = 'en'             # 设置源语言
 target_languages = 'zh'             # 设置目标语言
 
@@ -33,14 +35,6 @@ class Config:
         if self.service == None or self.service == "":
             self.service = service
 
-        self.source_languages = request.get_json().get('sourceLanguages')
-        if self.source_languages == None or self.source_languages == "":
-            self.source_languages = source_languages
-
-        self.target_languages = request.get_json().get('targetLanguages')
-        if self.target_languages == None or self.target_languages == "":
-            self.target_languages = target_languages
-
         self.translated_dir = request.get_json().get('outputPath')
         if self.translated_dir == None or self.translated_dir == "":
             self.translated_dir = translated_dir
@@ -52,10 +46,22 @@ class Config:
             self.config_path = config_path
         self.config_path = get_absolute_path(self.config_path)
 
+        self.babeldoc = request.get_json().get('babeldoc')
+        if self.babeldoc == None or self.babeldoc == "":
+            self.babeldoc = babeldoc
+
         self.mono_cut = request.get_json().get('mono_cut')
         self.dual_cut = request.get_json().get('dual_cut')
         self.compare = request.get_json().get('compare')
 
+        self.source_languages = request.get_json().get('sourceLanguages')
+        if self.source_languages == None or self.source_languages == "":
+            self.source_languages = source_languages
+
+        self.target_languages = request.get_json().get('targetLanguages')
+        if self.target_languages == None or self.target_languages == "":
+            self.target_languages = target_languages
+        
         print("outputPath: ", self.translated_dir)
         print("configPath: ", self.config_path)
 
@@ -73,7 +79,7 @@ def get_file_from_request(request):
     data = request.get_json()
     path = data.get('filePath')
     print("filePath: ", path)
-    # path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
+    path = path.replace('\\', '/') # 把所有反斜杠\替换为正斜杠/ (Windows->Linux/MacOS)
     file_content = data.get('fileContent')
     input_path = os.path.join(config.translated_dir, os.path.basename(path))
     input_path = get_absolute_path(input_path)
@@ -89,33 +95,30 @@ def get_file_from_request(request):
 def translate_pdf(input_path, config):
     print("\n############# Translating #############")
     print("## translate file path ## : ", input_path)
-
+    if not os.path.exists(input_path):
+        raise Exception("[translate_pdf()]: input file path not found", input_path)
+    
     # 执行pdf2zh翻译, 用户可以自定义命令内容:
-    if not os.path.exists(config.config_path):
-        command = [
-            pdf2zh,
-            input_path,
-            '--t', str(config.thread_num),
-            '--output', config.translated_dir,
-            '--service', config.service, 
-            '--lang-in', config.source_languages, 
-            '--lang-out', config.target_languages 
-        ]
-    else:
-        command = [
-            pdf2zh,
-            input_path,
-            '--t', str(config.thread_num),
-            '--output', config.translated_dir,
-            '--service', config.service, 
-            '--lang-in', config.source_languages, 
-            '--lang-out', config.target_languages, 
-            '--config', config.config_path
-        ]
+    command = [
+        pdf2zh,
+        input_path,
+        '--t', str(config.thread_num),
+        '--output', config.translated_dir,
+        '--service', config.service,
+        '--lang-in', config.source_languages, 
+        '--lang-out', config.target_languages 
+    ]
+    if os.path.exists(config.config_path):
+        command.append('--config')
+        command.append(config.config_path)
+    if config.babeldoc:
+        command.append('--babeldoc')
     subprocess.run(command, check=False)
 
     mono =  os.path.join(config.translated_dir, os.path.basename(input_path).replace('.pdf', '-mono.pdf'))
     dual = os.path.join(config.translated_dir, os.path.basename(input_path).replace('.pdf', '-dual.pdf'))
+    mono = mono.replace('.zh.mono.pdf', '-mono.pdf')
+    dual = dual.replace('.zh.dual.pdf', '-dual.pdf')
     if not os.path.exists(mono) or not os.path.exists(dual):
         raise Exception("[Failed to generate translated files]: ", mono, dual)
     print("[mono file generated]: ", mono)
