@@ -120,21 +120,21 @@ Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插�
 
 ✨ 将双栏论文剪切拼接为单栏显示，适配手机阅读!
 
-<img src="./images/image4.png" alt="image4" style="width:350px;" />
+<img src="./images/image4.png" alt="image4" style="width:300px;" />
 
 得到后缀中包含`cut`的单栏PDF文件。
 
-<img src="./images/image5.png" alt="image5" style="width:350px;" />
+<img src="./images/image5.png" alt="image5" style="width:300px;" />
 
 ### 选项三：PDF2zh：中英双栏对照
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
-<img src="./images/image9.png" alt="image9" style="width:350px;" />
+<img src="./images/image9.png" alt="image9" style="width:300px;" />
 
 得到后缀中包含`compare`的中英双栏对照PDF文件。
 
-<img src="./images/image6.png" alt="image6" style="width:400px;" />
+<img src="./images/image6.png" alt="image6" style="width:300px;" />
 
 # 致谢
 
