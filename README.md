@@ -25,7 +25,7 @@ pip install pdf2zh          # 安装pdf2zh
 pip install --upgrade pdf2zh # 之前已经安装, 更新
 ```
 
-本插件当前开发使用的 `pdf2zh`版本: v1.9.0
+本插件当前开发使用的 `pdf2zh`版本: `v1.9.1`
 
 ## 第一步 在Zotero中配置插件参数
 
@@ -33,12 +33,12 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 ### Step 1.1 设置翻译参数
 
-- Python Server IP 默认为`http://localhost:8888`, 其中8888为翻译端口号，可以自行修改；
-- 翻译引擎：默认为bing；(可以从下拉菜单选择，也可以自行输入)
-- 线程数：PDF2zh在翻译时的执行线程数，默认为4；
-- 翻译文件输出路径：用于临时存储翻译得到的PDF文件，默认为空；
-- Pdf2zh配置文件路径：用于配置翻译引擎和字体，默认为空。
-- 重命名为短标题：将新增文件的条目标题命名为短标题，包括：`mono`，`dual`，`dual-cut`，`mono-cut`，`compare`，但是不会改变原文件的命名。
+> - Python Server IP 默认为`http://localhost:8888`, 其中8888为翻译端口号，可以自行修改；
+> - 翻译引擎：默认为bing；(可以从下拉菜单选择，也可以自行输入)
+> - 线程数：PDF2zh在翻译时的执行线程数，默认为4；
+> - 翻译文件输出路径：用于临时存储翻译得到的PDF文件，默认为空；
+> - Pdf2zh配置文件路径：用于配置翻译引擎和字体，默认为空。
+> - 重命名为短标题：将新增文件的条目标题命名为短标题，包括：`mono`，`dual`，`dual-cut`，`mono-cut`，`compare`，但是不会改变原文件的命名。
 
 以上路径建议设置为绝对路径。
 
@@ -46,7 +46,7 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 > 举例：如果python脚本在`/home/xxx/server/`下执行，翻译输出路径设置为临时路径`./translated/`，则实际的输出路径为`/home/xxx/server/translated/`
 
-### Step 1.2 选择默认生成的翻译文件
+### Step 1.2 设置默认生成的翻译文件格式
 
 默认生成mono和dual文件。
 
@@ -56,13 +56,13 @@ pip install --upgrade pdf2zh # 之前已经安装, 更新
 
 （请注意，此时临时翻译文件路径里依然存在mono和dual两种文件，因为这是pdf2zh默认生成的）
 
-## 第二步：添加PDF2zh配置文件 & 修改翻译中文字体（可选）(推荐)
+## 第二步：添加PDF2zh配置文件 & 修改翻译中文字体（可选 & 推荐)
 
-新建config.json文件，将该配置文件的路径输入到第一步的Zotero翻译配置中。
+新建``config.json`文件，将该配置文件的路径输入到第一步的Zotero翻译配置中。
 
 推荐使用[霞鹜文楷字体](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf)
 
-config.json文件示例如下:
+`config.json`文件示例如下:
 
 ```json
 {
@@ -88,6 +88,8 @@ config.json文件示例如下:
 
 ## 第三步 执行脚本
 
+### **命令行方式启动**
+
 打开命令行工具，输入以下命令：
 
 ```shell
@@ -97,23 +99,25 @@ wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.p
 python server.py 8888
 ```
 
-或者手动下载脚本：[Python脚本](https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py)
+或手动下载脚本：[Python脚本](https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py)
 
 请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改端口号。
 
 Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插件中进行配置，只想在Python脚本中配置，请将Zotero插件中的配置留空。
 
-**docker方式启动**
+### **docker方式启动**
 
 checkout代码或者下载Dockerfile文件
+
 ```cmd
 docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.5 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/tags/v2.2.3/server.py -t zotero-pdf2zh .
 docker run zotero-pdf2zh
 ```
 
-**docker-compose方式启动**
+### **docker-compose方式启动**
 
 checkout代码或者下载Dockerfile、docker-compose.yaml文件
+
 ```cmd
 docker compose build
 docker compose up -d
@@ -130,7 +134,7 @@ docker compose up -d
 
 本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成mono和dual两个文件。
 
-<img src="./images/image1.png" alt="image" style="width:350px;" />
+<img src="./images/image1.png" alt="image" style="width:300px;" />
 
 ### 选项二：PDF2zh：Cut PDF
 
@@ -159,6 +163,10 @@ docker compose up -d
 - @Byaidu [PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 - @windingwind [zotero-plugin-template](https://github.com/windingwind/zotero-plugin-template)
 
+# 贡献者
+
+<a href="https://github.com/guaguastandup/zotero-pdf2zh/graphs/contributors"> <img src="https://contrib.rocks/image?repo=guaguastandup/zotero-pdf2zh" /> </a>
+
 # 💗
 
 欢迎提issue或者参与贡献
@@ -168,11 +176,11 @@ docker compose up -d
 - [ ] 提供共享远程翻译服务（基于SealOS）
 - [ ] 批量翻译功能优化
 - [ ] 兼容babeldoc
-- [ ] 完善Docker部署文档
 - [ ] Zotero端显示翻译进度
 - [ ] 支持Obsidian式配置（不需要打开设置页面）
 - [ ] 支持远程部署
 - [ ] 跨平台部署测试 (on-going)
+- [x] 完善Docker部署文档
 - [x] 加入插件市场
 - [x] 支持在zotero perference中设置pdf2zh参数
 
