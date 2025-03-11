@@ -16,6 +16,8 @@
 
 ## 第零步 安装PDF2zh
 
+**docker或docker compose方式启动此步骤跳过。**
+
 在本地安装最新的[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
 ```cmd
@@ -101,6 +103,22 @@ python server.py 8888
 请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改端口号。
 
 Zotero插件配置会覆盖Python脚本中的配置。如果不想在Zotero插件中进行配置，只想在Python脚本中配置，请将Zotero插件中的配置留空。
+
+**docker方式启动**
+
+checkout代码或者下载Dockerfile文件
+```cmd
+docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.5 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/tags/v2.2.3/server.py -t zotero-pdf2zh .
+docker run zotero-pdf2zh
+```
+
+**docker-compose方式启动**
+
+checkout代码或者下载Dockerfile、docker-compose.yaml文件
+```cmd
+docker compose build
+docker compose up -d
+```
 
 ## 第四步 翻译文件
 
