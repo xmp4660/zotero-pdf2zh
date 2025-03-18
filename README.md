@@ -179,6 +179,7 @@ docker compose up -d
 - [ ] Zotero端显示翻译进度
 - [ ] 支持Obsidian式配置（不需要打开设置页面）
 - [ ] 支持远程部署
+- [ ] 取消传递绝对路径，只传输文件名
 - [ ] 跨平台部署测试 (on-going)
 - [x] 完善Docker部署文档
 - [x] 加入插件市场
@@ -186,5 +187,5 @@ docker compose up -d
 
 # 其他
 
-- SiliconFlow邀请链接：https://cloud.siliconflow.cn/i/a7s9DdQR
-- InfiniBand邀请码：5UPJW
+- [SiliconFlow邀请链接](https://cloud.siliconflow.cn/i/a7s9DdQR) 邀请码：a7s9DdQR
+- [InfiniCloud](https://infini-cloud.net/en/) 邀请码：5UPJW
