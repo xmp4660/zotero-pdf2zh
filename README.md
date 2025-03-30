@@ -243,5 +243,5 @@ docker compose up -d
 
 可以访问Siliconflow邀请链接注册账号，注册和邀请双方都可以获得14元赠送金额，我会在未来考虑开放公共服务端口（正在寻求低成本的方法，欢迎给出建议）。
 
-- SiliconFlow邀请链接：https://cloud.siliconflow.cn/i/a7s9DdQR
-- InfiniBand邀请码：5UPJW
+- [SiliconFlow邀请链接](https://cloud.siliconflow.cn/i/a7s9DdQR) 邀请码：a7s9DdQR
+- [InfiniCloud](https://infini-cloud.net/en/) 邀请码：5UPJW
