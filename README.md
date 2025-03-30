@@ -24,12 +24,15 @@
 pip install uv
 uv tool install --python 3.12 pdf2zh
 ```
+
 或
+
 ```cmd
 pip install pdf2zh  # 安装pdf2zh
 pip install --upgrade pdf2zh # 更新pdf2zh
 pdf2zh --version  # 检验是否正常安装
 ```
+
 3.  测试PDF2zh的安装
 
 ```cmd
@@ -40,7 +43,7 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 
 ## 第一步 在Zotero中配置插件参数
 
-<img src="./images/image1.png" alt="image1" style="width: 1000px" align="center"/>
+<img src="./images/image1.png" alt="image1" style="width: 800px" align="center"/>
 
 ### Step 1.1 设置翻译参数
 
@@ -179,7 +182,7 @@ docker compose up -d
 打开Zotero，右键选择条目或者附件。
 如果选择条目，将会自动选择该条目下创建时间**最早**的PDF。
 
-<img src="./images/image2.png" alt="image2" style="width: 1000px" align="center"/>
+<img src="./images/image2.png" alt="image2" style="width: 800px" align="center"/>
 
 ### 选项一：PDF2zh：翻译PDF
 
@@ -210,11 +213,11 @@ docker compose up -d
 
 ## 翻译效果展示
 
-<img src="./images/image5.png" alt="image5" style="width: 1000px" align="center"/>
+<img src="./images/image5.png" alt="image5" style="width: 500px" align="center"/>
 
-<img src="./images/image4.png" alt="image4" style="width: 1000px" align="center"/>
+<img src="./images/image4.png" alt="image4" style="width: 400px" align="center"/>
 
-<img src="./images/image3.png" alt="image4" style="width: 1000px"  align="center"/>
+<img src="./images/image3.png" alt="image4" style="width: 400px"  align="center"/>
 
 # 致谢
 

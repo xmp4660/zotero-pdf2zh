@@ -125,9 +125,21 @@ export class UIExampleFactory {
     static registerRightClickMenuItem() {
         const menuIcon = `chrome://${addon.data.config.addonRef}/content/icons/favicon@0.5x.svg`;
         const MENU_ITEMS = [
-            { id: "translate-pdf", label: "翻译PDF", command: "translatePDF" },
-            { id: "cut-pdf", label: "裁剪PDF", command: "cutPDF" },
-            { id: "compare-pdf", label: "双栏对照", command: "comparePDF" },
+            {
+                id: "translate-pdf",
+                label: getString("prefs-menu-translate"),
+                command: "translatePDF",
+            },
+            {
+                id: "cut-pdf",
+                label: getString("prefs-menu-cut"),
+                command: "cutPDF",
+            },
+            {
+                id: "compare-pdf",
+                label: getString("prefs-menu-compare"),
+                command: "comparePDF",
+            },
         ];
         MENU_ITEMS.forEach(({ id, label, command }) => {
             ztoolkit.Menu.register("item", {

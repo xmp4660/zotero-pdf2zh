@@ -9,3 +9,7 @@ prefs-table-title = 标题
 prefs-table-detail = 详情
 tabpanel-lib-tab-label = 库标签
 tabpanel-reader-tab-label = 阅读器标签
+
+prefs-menu-translate = 翻译PDF
+prefs-menu-cut = 裁剪PDF
+prefs-menu-compare = 双栏对照

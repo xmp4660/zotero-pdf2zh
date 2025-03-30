@@ -16,11 +16,8 @@ async function onStartup() {
     ]);
 
     initLocale();
-
     BasicExampleFactory.registerPrefs();
-
     BasicExampleFactory.registerNotifier();
-
     await Promise.all(
         Zotero.getMainWindows().map((win) => onMainWindowLoad(win)),
     );
