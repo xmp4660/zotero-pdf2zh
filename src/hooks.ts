@@ -183,13 +183,13 @@ function onShortcuts(type: string) {
 function onDialogEvents(type: string) {
     switch (type) {
         case "translatePDF":
-            HelperExampleFactory.translatePDF();
+            HelperExampleFactory.processWorker("translate");
             break;
         case "cutPDF":
-            HelperExampleFactory.cutPDF();
+            HelperExampleFactory.processWorker("cut");
             break;
         case "comparePDF":
-            HelperExampleFactory.comparePDF();
+            HelperExampleFactory.processWorker("compare");
             break;
         default:
             break;

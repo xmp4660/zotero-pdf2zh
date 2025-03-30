@@ -13,14 +13,34 @@
         </hbox>
 
         <hbox align="center">
+            <html:label for="zotero-prefpane-__addonRef__-sourceLang" data-l10n-id="pref-sourceLang" />
+            <html:input type="text" id="zotero-prefpane-__addonRef__-sourceLang" flex="1"
+                preference="extensions.zotero.__addonRef__.sourceLang" style="width: 50px; " />
+            <html:label for="zotero-prefpane-__addonRef__-targetLang" data-l10n-id="pref-targetLang" />
+            <html:input type="text" id="zotero-prefpane-__addonRef__-targetLang" flex="1"
+                preference="extensions.zotero.__addonRef__.targetLang" style="width: 50px; " />
+        </hbox>
+
+        <hbox align="center">
             <html:label for="zotero-prefpane-__addonRef__-engine" data-l10n-id="pref-engine" />
             <hbox flex="1">
-                <!-- 输入框（保留原有preference绑定） -->
                 <html:input type="text" id="zotero-prefpane-__addonRef__-engine" flex="1"
-                    preference="extensions.zotero.__addonRef__.engine" style="min-width: 120px; " />
-                <!-- 下拉选择框 -->
-                <html:select id="zotero-prefpane-__addonRef__-preset" style="min-width: 120px;"
-                    preference="extensions.zotero.__addonRef__.preset">
+                    preference="extensions.zotero.__addonRef__.engine" style="width: 120px; " />
+                <html:select id="zotero-prefpane-__addonRef__-engineselect" style="width: 120px;"
+                    preference="extensions.zotero.__addonRef__.engineselect">
+                    <html:option value="pdf2zh">pdf2zh</html:option>
+                    <!-- <html:option value="EbookTranslator">EbookTranslator</html:option> -->
+                </html:select>
+            </hbox>
+        </hbox>
+
+        <hbox align="center">
+            <html:label for="zotero-prefpane-__addonRef__-service" data-l10n-id="pref-service" />
+            <hbox flex="1">
+                <html:input type="text" id="zotero-prefpane-__addonRef__-service" flex="1"
+                    preference="extensions.zotero.__addonRef__.service" style="width: 120px; " />
+                <html:select id="zotero-prefpane-__addonRef__-serviceselect" style="width: 120px;"
+                    preference="extensions.zotero.__addonRef__.serviceselect">
                     <html:option value="google">google</html:option>
                     <html:option value="bing">bing</html:option>
 
@@ -52,13 +72,12 @@
 
                     <html:option value="openailiked">openailiked</html:option>
                     <html:option value="qwen-mt">qwen-mt</html:option>
-
                 </html:select>
             </hbox>
         </hbox>
 
         <hbox align=" center">
-            <html:label for="zotero-prefpane-__addonRef__-threadNum" data-l10n-id="pref-thread"></html:label>
+            <html:label for="zotero-prefpane-__addonRef__-threadNum" data-l10n-id="pref-threadNum"></html:label>
             <html:input type="text" id="zotero-prefpane-__addonRef__-threadNum"
                 preference="extensions.zotero.__addonRef__.threadNum" style="width: 20px"></html:input>
         </hbox>
@@ -77,9 +96,13 @@
                 preference="extensions.zotero.__addonRef__.rename" />
             <html:label data-l10n-id="pref-rename" for="zotero-prefpane-__addonRef__-rename" />
         </hbox>
+        <hbox>
+            <checkbox native="true" id="zotero-prefpane-__addonRef__-babeldoc"
+                preference="extensions.zotero.__addonRef__.babeldoc" />
+            <html:label data-l10n-id="pref-babeldoc" for="zotero-prefpane-__addonRef__-babeldoc" />
+        </hbox>
     </vbox>
     <vbox>
-        <!-- 生成文件 -->
         <html:h3 data-l10n-id="pref-default-generate"></html:h3>
         <hbox>
             <checkbox native="true" id="zotero-prefpane-__addonRef__-mono"
@@ -93,7 +116,7 @@
             <checkbox native="true" id="zotero-prefpane-__addonRef__-dual"
                 preference="extensions.zotero.__addonRef__.dual" />
             <html:label data-l10n-id="pref-dual" for="zotero-prefpane-__addonRef__-dual" />
-            <checkbox native="false" id="zotero-prefpane-__addonRef__-open"
+            <checkbox native="false" id="zotero-prefpane-__addonRef__dual-open"
                 preference="extensions.zotero.__addonRef__.dual-open" />
             <html:label data-l10n-id="pref-open" for="zotero-prefpane-__addonRef__-dual-open" />
         </hbox>
@@ -126,8 +149,8 @@
     <!-- 说明 -->
     <vbox>
         <html:h3>Python Server 脚本 </html:h3>
-        <p>🌷 温馨提示: 本插件需要在本地后端执行Python脚本，才可以使用翻译功能。</p>
-        <p>🌷 [2025年2月26日v2.2.0] Python脚本已更新, 请访问主页README.md进行更新:
+        <p>🌷 温馨提示: 本插件需要使用终端或docker执行Python脚本，才可以使用翻译功能。</p>
+        <p>🌷 [2025年3月30日v2.3.0] Python脚本已更新，请访问主页README.md进行更新:
             <description align="center"><label class="zotero-text-link" value="README.md"
                     href="https://github.com/guaguastandup/zotero-pdf2zh"></label></description>
         </p>
