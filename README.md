@@ -224,7 +224,7 @@ docker compose up -d
 
 欢迎提issue或者参与贡献
 
-提issue前请先访问本链接，查看自己的问题是否被解决过：
+提issue前请先访问本链接，查看自己的问题是否被解决过：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 
 # TODO LIST
 
