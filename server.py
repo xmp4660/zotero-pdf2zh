@@ -5,7 +5,6 @@ import subprocess
 from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
 import sys
-import copy
 
 class PDFTranslator:
     DEFAULT_CONFIG = {
@@ -27,7 +26,7 @@ class PDFTranslator:
     def setup_routes(self):
         self.app.add_url_rule('/translate', 'translate', self.translate, methods=['POST'])
         self.app.add_url_rule('/cut', 'cut', self.cut_pdf, methods=['POST'])
-        self.app.add_url_rule('/cut-compare', 'cut_compare', self.cut_compare, methods=['POST'])
+        self.app.add_url_rule('/compare', 'compare', self.compare, methods=['POST'])
         self.app.add_url_rule('/translatedFile/<filename>', 'download', self.download_file)
 
     class Config:
@@ -38,14 +37,14 @@ class PDFTranslator:
             self.outputPath = self.get_abs_path(data.get('outputPath', PDFTranslator.DEFAULT_CONFIG['outputPath']))
             self.configPath = self.get_abs_path(data.get('configPath', PDFTranslator.DEFAULT_CONFIG['configPath']))
             self.sourceLang = data.get('sourceLang', PDFTranslator.DEFAULT_CONFIG['sourceLang'])
-            self.target_lang = data.get('targetLang', PDFTranslator.DEFAULT_CONFIG['targetLang'])
+            self.targetLang = data.get('targetLang', PDFTranslator.DEFAULT_CONFIG['targetLang'])
             self.babeldoc = data.get('babeldoc', False)
             self.mono_cut = data.get('mono_cut', False)
             self.dual_cut = data.get('dual_cut', False)
             self.compare = data.get('compare', False)
             
             os.makedirs(self.outputPath, exist_ok=True)
-
+            print("[config]: ", self.__dict__)
         @staticmethod
         def get_abs_path(path):
             return path if os.path.isabs(path) else os.path.abspath(path)
@@ -70,7 +69,6 @@ class PDFTranslator:
             'mono': os.path.join(config.outputPath, f"{base_name}-mono.pdf"),
             'dual': os.path.join(config.outputPath, f"{base_name}-dual.pdf")
         }
-
         cmd = [
             config.engine,
             input_path,
@@ -78,20 +76,22 @@ class PDFTranslator:
             '--output', config.outputPath,
             '--service', config.service,
             '--lang-in', config.sourceLang,
-            '--lang-out', config.target_lang,
+            '--lang-out', config.targetLang,
+            '--config', config.configPath
         ]
-        if config.babeldoc:
+        if config.babeldoc == True or config.babeldoc == 'true':
             cmd.append('--babeldoc')
-        if config.configPath:
-            cmd.extend(['--config', config.configPath])
-
         subprocess.run(cmd, check=True)
+        if config.babeldoc == True or config.babeldoc == 'true':
+            os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.mono.pdf"), output_files['mono'])
+            os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
         return output_files['mono'], output_files['dual']
 
-    def split_pdf(self, input_path, output_path, compare=False):
+        # 工具函数, 用于切割双栏pdf文件
+    def split_pdf(self, input_pdf, output_pdf, compare=False):
         writer = PdfWriter()
-        if 'dual' in input_path:
-            readers = [PdfReader(input_path) for _ in range(4)]
+        if 'dual' in input_pdf or compare == True:
+            readers = [PdfReader(input_pdf) for _ in range(4)]
             for i in range(0, len(readers[0].pages), 2):
                 original_media_box = readers[0].pages[i].mediabox
                 width = original_media_box.width
@@ -126,7 +126,7 @@ class PDFTranslator:
                     writer.add_page(right_page_1)
                     writer.add_page(right_page_2)
         else: 
-            readers = [PdfReader(input_path) for _ in range(2)]
+            readers = [PdfReader(input_pdf) for _ in range(2)]
             for i in range(len(readers[0].pages)):
                 page = readers[0].pages[i]
 
@@ -142,14 +142,14 @@ class PDFTranslator:
                 writer.add_page(left_page)
                 writer.add_page(right_page)
 
-        with open(output_path, "wb") as output_file:
+        with open(output_pdf, "wb") as output_file:
             writer.write(output_file)
 
     def translate(self):
+        print("\n########## translating ##########")
         try:
             input_path, config = self.process_request()
             mono, dual = self.translate_pdf(input_path, config)
-            
             processed_files = []
             if config.mono_cut:
                 output = mono.replace('-mono.pdf', '-mono-cut.pdf')
@@ -165,28 +165,37 @@ class PDFTranslator:
                 output = dual.replace('-dual.pdf', '-compare.pdf')
                 self.split_pdf(dual, output, compare=True)
                 processed_files.append(output)
-            
             return jsonify({'status': 'success', 'processed': processed_files}), 200
         
         except Exception as e:
+            print("[translate error]: ", e)
             return jsonify({'status': 'error', 'message': str(e)}), 500
 
     def cut_pdf(self):
+        print("\n########## cutting ##########")
         try:
             input_path, config = self.process_request()
             output_path = input_path.replace('.pdf', '-cut.pdf')
             self.split_pdf(input_path, output_path)
             return jsonify({'status': 'success', 'path': output_path}), 200
         except Exception as e:
+            print("[cut error]: ", e)
             return jsonify({'status': 'error', 'message': str(e)}), 500
 
-    def cut_compare(self):
+    def compare(self):
+        print("\n########## compare ##########")
         try:
             input_path, config = self.process_request()
-            output_path = input_path.replace('.pdf', '-compare.pdf')
+            if 'mono' in input_path:
+                raise Exception('Please provide dual PDF or origial PDF for dual-comparison')
+            if not 'dual' in input_path:
+                _, dual = self.translate_pdf(input_path, config)
+                input_path = dual
+            output_path = input_path.replace('-dual.pdf', '-compare.pdf')
             self.split_pdf(input_path, output_path, compare=True)
             return jsonify({'status': 'success', 'path': output_path}), 200
         except Exception as e:
+            print("[compare error]: ", e)
             return jsonify({'status': 'error', 'message': str(e)}), 500
 
     def download_file(self, filename):

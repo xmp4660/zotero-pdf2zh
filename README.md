@@ -24,7 +24,12 @@
 pip install uv
 uv tool install --python 3.12 pdf2zh
 ```
-
+或
+```cmd
+pip install pdf2zh  # 安装pdf2zh
+pip install --upgrade pdf2zh # 更新pdf2zh
+pdf2zh --version  # 检验是否正常安装
+```
 3.  测试PDF2zh的安装
 
 ```cmd
@@ -224,7 +229,7 @@ docker compose up -d
 
 欢迎提issue或者参与贡献
 
-提issue前请先访问本链接，查看自己的问题是否被解决过：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
+提issue前请先阅读本链接：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 
 # TODO LIST
 
