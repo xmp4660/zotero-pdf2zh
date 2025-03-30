@@ -164,7 +164,7 @@ python server.py 8888
 checkout代码或者下载Dockerfile文件
 
 ```cmd
-docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/tags/v2.3.0/server.py -t zotero-pdf2zh .
+docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/tags/v2.3.1/server.py -t zotero-pdf2zh .
 docker run zotero-pdf2zh
 ```
 
