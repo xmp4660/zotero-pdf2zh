@@ -6,6 +6,17 @@ from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
 import sys
 
+services = [
+    'bing', 'google',
+    'deepl', 'deeplx',
+    'ollama', 'xinference',
+    'openai', 'azure-openai',
+    'zhipu', 'ModelScope',
+    'silicon', 'gemini', 'azure',
+    'tencent', 'dify', 'anythingllm',
+    'argos', 'grok', 'groq',
+    'deepseek', 'openailiked', 'qwen-mt'
+]
 class PDFTranslator:
     DEFAULT_CONFIG = {
         'port': 8888,
@@ -42,8 +53,14 @@ class PDFTranslator:
             self.mono_cut = data.get('mono_cut', False)
             self.dual_cut = data.get('dual_cut', False)
             self.compare = data.get('compare', False)
-            
+            if len(self.outputPath) == 0:
+                self.outputPath = PDFTranslator.DEFAULT_CONFIG['outputPath']
+            if len(self.configPath) == 0:
+                self.configPath = PDFTranslator.DEFAULT_CONFIG['configPath']
             os.makedirs(self.outputPath, exist_ok=True)
+            if (self.engine != 'pdf2zh' or self.engine != 'EbookTranslator') and self.engine in services:
+                self.engine = 'pdf2zh'
+                print("[Warning - Zotero设置]: 请在Zotero设置面板中重新设置翻译engine参数为pdf2zh")
             print("[config]: ", self.__dict__)
         @staticmethod
         def get_abs_path(path):
