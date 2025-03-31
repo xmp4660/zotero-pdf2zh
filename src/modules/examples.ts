@@ -220,6 +220,10 @@ export class HelperExampleFactory {
             ];
             for (const { type, enabled } of operations) {
                 ztoolkit.log(type, enabled);
+                if (type == PDFType.COMPARE && config.babeldoc == "true") {
+                    ztoolkit.log("Babeldoc enabled, skipping compare PDF");
+                    continue;
+                }
                 if (enabled == true || enabled == "true") {
                     ztoolkit.log(`Processing ${type} PDF`);
                     const variantFileName = fileName.replace(

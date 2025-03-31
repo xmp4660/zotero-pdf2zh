@@ -105,31 +105,26 @@ class PDFTranslator:
         return output_files['mono'], output_files['dual']
 
         # 工具函数, 用于切割双栏pdf文件
-    def split_pdf(self, input_pdf, output_pdf, compare=False):
+    def split_pdf(self, input_pdf, output_pdf, compare=False, babeldoc=False):
         writer = PdfWriter()
-        if 'dual' in input_pdf or compare == True:
+        if ('dual' in input_pdf or compare == True) and babeldoc == False:
             readers = [PdfReader(input_pdf) for _ in range(4)]
             for i in range(0, len(readers[0].pages), 2):
                 original_media_box = readers[0].pages[i].mediabox
                 width = original_media_box.width
                 height = original_media_box.height
-
                 left_page_1 = readers[0].pages[i]
-                for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
                     setattr(left_page_1, box, RectangleObject((0, 0, width/2, height)))
-
                 left_page_2 = readers[1].pages[i+1]
-                for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
                     setattr(left_page_2, box, RectangleObject((0, 0, width/2, height)))
-
                 right_page_1 = readers[2].pages[i]
-                for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
                     setattr(right_page_1, box, RectangleObject((width/2, 0, width, height)))
-
                 right_page_2 = readers[3].pages[i+1]
-                for box in ['mediabox', 'cropbox', 'trimbox', 'bleedbox', 'artbox']:
+                for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
                     setattr(right_page_2, box, RectangleObject((width/2, 0, width, height)))
-
                 if compare == True:
                     blank_page_1 = writer.add_blank_page(width, height)
                     blank_page_1.merge_transformed_page(left_page_1, (1, 0, 0, 1, 0, 0))
@@ -168,20 +163,19 @@ class PDFTranslator:
             input_path, config = self.process_request()
             mono, dual = self.translate_pdf(input_path, config)
             processed_files = []
-            if config.mono_cut:
+            if config.mono_cut == True or config.mono_cut == "true":
                 output = mono.replace('-mono.pdf', '-mono-cut.pdf')
                 self.split_pdf(mono, output)
                 processed_files.append(output)
-            
-            if config.dual_cut:
+            if config.dual_cut == True or config.dual_cut == "true":
                 output = dual.replace('-dual.pdf', '-dual-cut.pdf')
-                self.split_pdf(dual, output)
+                self.split_pdf(dual, output, False, config.babeldoc == True or config.babeldoc == "true")
                 processed_files.append(output)
-            
-            if config.compare:
-                output = dual.replace('-dual.pdf', '-compare.pdf')
-                self.split_pdf(dual, output, compare=True)
-                processed_files.append(output)
+            if config.babeldoc == False or config.babeldoc == "false":
+                if config.compare == True or config.compare == "true":
+                    output = dual.replace('-dual.pdf', '-compare.pdf')
+                    self.split_pdf(dual, output, compare=True, babeldoc=False)
+                    processed_files.append(output)
             return jsonify({'status': 'success', 'processed': processed_files}), 200
         
         except Exception as e:
@@ -193,7 +187,7 @@ class PDFTranslator:
         try:
             input_path, config = self.process_request()
             output_path = input_path.replace('.pdf', '-cut.pdf')
-            self.split_pdf(input_path, output_path)
+            self.split_pdf(input_path, output_path) # 保留原逻辑
             return jsonify({'status': 'success', 'path': output_path}), 200
         except Exception as e:
             print("[cut error]: ", e)
