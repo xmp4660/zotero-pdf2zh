@@ -74,6 +74,8 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 
 2.  `NOTO_FONT_PATH`为您的自定义字体路径。推荐下载使用[霞鹜文楷字体](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf)，具有更强的可读性。
 
+- 如果使用docker方法启动，则需要挂载该字体文件: `- ./zotero-pdf2zh/LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf`
+
 3.  `translators`中配置多个AI翻译引擎。如果使用默认的bing或者google则不需要配置，推荐使用**智谱AI**服务。
 
 4.  其他的配置设置，请参考PDF2zh原文档： [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
@@ -213,11 +215,9 @@ docker compose up -d
 
 ## 翻译效果展示
 
-<img src="./images/image5.png" alt="image5" style="width: 500px" align="center"/>
+<img src="./images/image3.png" alt="image3" style="width: 500px" align="center"/>
 
-<img src="./images/image4.png" alt="image4" style="width: 400px" align="center"/>
-
-<img src="./images/image3.png" alt="image4" style="width: 400px"  align="center"/>
+<img src="./images/image4.png" alt="image4" style="width: 500px" align="center"/>
 
 # 致谢
 

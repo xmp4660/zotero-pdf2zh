@@ -16,3 +16,4 @@ services:
         volumes:
             - ./zotero-pdf2zh/translated:/app/translated
             - ./zotero-pdf2zh/config.json:/app/config.json
+            - ./zotero-pdf2zh/LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf
