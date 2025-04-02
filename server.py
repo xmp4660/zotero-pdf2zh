@@ -32,7 +32,6 @@ class PDFTranslator:
     def __init__(self):
         self.app = Flask(__name__)
         self.setup_routes()
-        self.translated_dir = self.DEFAULT_CONFIG['outputPath']
 
     def setup_routes(self):
         self.app.add_url_rule('/translate', 'translate', self.translate, methods=['POST'])
@@ -69,6 +68,7 @@ class PDFTranslator:
     def process_request(self):
         data = request.get_json()
         config = self.Config(data)
+        self.translated_dir = config.outputPath
         
         file_content = data.get('fileContent', '')
         if file_content.startswith('data:application/pdf;base64,'):
