@@ -41,26 +41,28 @@ class PDFTranslator:
 
     class Config:
         def __init__(self, data):
-            self.threads = data.get('threadNum', PDFTranslator.DEFAULT_CONFIG['threadNum'])
-            self.service = data.get('service', PDFTranslator.DEFAULT_CONFIG['service'])
-            self.engine = data.get('engine', PDFTranslator.DEFAULT_CONFIG['engine'])
-            self.outputPath = self.get_abs_path(data.get('outputPath', PDFTranslator.DEFAULT_CONFIG['outputPath']))
-            self.configPath = self.get_abs_path(data.get('configPath', PDFTranslator.DEFAULT_CONFIG['configPath']))
-            self.sourceLang = data.get('sourceLang', PDFTranslator.DEFAULT_CONFIG['sourceLang'])
-            self.targetLang = data.get('targetLang', PDFTranslator.DEFAULT_CONFIG['targetLang'])
+            self.threads = data.get('threadNum') if data.get('threadNum') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['threadNum']
+            self.service = data.get('service') if data.get('service') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['service']
+            self.engine = data.get('engine') if data.get('engine') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['engine']
+            self.outputPath = data.get('outputPath') if data.get('outputPath') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['outputPath']
+            self.configPath = data.get('configPath') if data.get('configPath') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['configPath']
+            self.sourceLang = data.get('sourceLang') if data.get('sourceLang') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['sourceLang']
+            self.targetLang = data.get('targetLang') if data.get('targetLang') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['targetLang']
+
             self.babeldoc = data.get('babeldoc', False)
             self.mono_cut = data.get('mono_cut', False)
             self.dual_cut = data.get('dual_cut', False)
             self.compare = data.get('compare', False)
-            if len(self.outputPath) == 0:
-                self.outputPath = PDFTranslator.DEFAULT_CONFIG['outputPath']
-            if len(self.configPath) == 0:
-                self.configPath = PDFTranslator.DEFAULT_CONFIG['configPath']
+
+            self.outputPath = self.get_abs_path(self.outputPath)
+            self.configPath = self.get_abs_path(self.configPath)
+        
             os.makedirs(self.outputPath, exist_ok=True)
             if (self.engine != 'pdf2zh' or self.engine != 'EbookTranslator') and self.engine in services:
                 self.engine = 'pdf2zh'
                 print("[Warning - Zotero设置]: 请在Zotero设置面板中重新设置翻译engine参数为pdf2zh")
             print("[config]: ", self.__dict__)
+            
         @staticmethod
         def get_abs_path(path):
             return path if os.path.isabs(path) else os.path.abspath(path)
