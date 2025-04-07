@@ -239,6 +239,7 @@ docker compose up -d
 - [ ] 基于babeldoc在Zotero端显示翻译进度
 - [ ] 提供共享远程翻译服务（基于SealOS）
 - [ ] 支持Obsidian式配置（不需要打开设置页面）
+- [ ] 增加Drop Last功能，跳过引用文献不翻译
 - [x] 兼容babeldoc
 - [x] 支持远程部署
 - [x] 适配[PolyglotPDF](https://github.com/CBIhalsen/PolyglotPDF/tree/main)
