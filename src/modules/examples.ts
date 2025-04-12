@@ -405,6 +405,15 @@ export class HelperExampleFactory {
         const { item, filePath, options, type } = params;
         let attachment;
         if (item.isAttachment()) {
+            let newTitle = type;
+            const parentItemID = this.getParentItemID(item);
+            if (parentItemID) {
+                const parentItem = Zotero.Items.get(parentItemID);
+                const shortTitle = parentItem.getField("shortTitle");
+                if (shortTitle && shortTitle.length > 0) {
+                    newTitle = shortTitle + "-" + type;
+                }
+            }
             attachment = await Zotero.Attachments.importFromFile({
                 file: filePath,
                 parentItemID: this.getParentItemID(item),
@@ -412,15 +421,20 @@ export class HelperExampleFactory {
                 collections: this.getCollections(item),
                 title:
                     options.rename && this.getParentItemID(item)
-                        ? type
+                        ? newTitle
                         : PathUtils.filename(filePath),
             });
         } else {
+            const shortTitle = item.getField("shortTitle");
+            let newTitle = type;
+            if (shortTitle && shortTitle.length > 0) {
+                newTitle = shortTitle + "-" + type;
+            }
             attachment = await Zotero.Attachments.importFromFile({
                 file: filePath,
                 parentItemID: item.id,
                 libraryID: item.libraryID,
-                title: options.rename ? type : PathUtils.filename(filePath),
+                title: options.rename ? newTitle : PathUtils.filename(filePath),
             });
         }
         if (options.openAfterProcess && attachment?.id) {

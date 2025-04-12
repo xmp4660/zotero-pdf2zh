@@ -22,7 +22,7 @@ pref-configPath = Pdf2zh配置文件路径(配置翻译引擎&字体)
 pref-default-generate = 默认生成文件
 pref-translate-config = 翻译配置
 
-pref-rename = 重命名条目为短标题（如'dual', 'mono', 实际文件名不变)
+pref-rename = 重命名条目为短标题（如‘短标题-dual', 实际文件名不变)
 pref-babeldoc = 启用Babeldoc (Experimental)
 pref-open = 生成后自动打开文件
 
