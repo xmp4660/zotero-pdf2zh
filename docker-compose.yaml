@@ -5,7 +5,7 @@ services:
             dockerfile: Dockerfile
             args:
                 - ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6
-                - ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/tags/v2.3.5/server.py
+                - ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://github.com/guaguastandup/zotero-pdf2zh/blob/main/server.py
         container_name: zotero-pdf2zh
         restart: unless-stopped
         ports:

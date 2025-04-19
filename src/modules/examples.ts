@@ -401,17 +401,18 @@ export class HelperExampleFactory {
         filePath: string;
         options: PDFOperationOptions;
         type: string;
+        service: string;
     }) {
-        const { item, filePath, options, type } = params;
+        const { item, filePath, options, type, service } = params;
         let attachment;
         if (item.isAttachment()) {
-            let newTitle = type;
+            let newTitle = type + "-" + service;
             const parentItemID = this.getParentItemID(item);
             if (parentItemID) {
                 const parentItem = Zotero.Items.get(parentItemID);
                 const shortTitle = parentItem.getField("shortTitle");
                 if (shortTitle && shortTitle.length > 0) {
-                    newTitle = shortTitle + "-" + type;
+                    newTitle = shortTitle + "-" + type + "-" + service;
                 }
             }
             attachment = await Zotero.Attachments.importFromFile({
@@ -426,9 +427,9 @@ export class HelperExampleFactory {
             });
         } else {
             const shortTitle = item.getField("shortTitle");
-            let newTitle = type;
+            let newTitle = type + "-" + service;
             if (shortTitle && shortTitle.length > 0) {
-                newTitle = shortTitle + "-" + type;
+                newTitle = shortTitle + "-" + type + "-" + service;
             }
             attachment = await Zotero.Attachments.importFromFile({
                 file: filePath,
@@ -470,6 +471,7 @@ export class HelperExampleFactory {
             filePath: tempPath,
             options: options,
             type: type,
+            service: config.service,
         });
         await IOUtils.remove(tempPath);
     }

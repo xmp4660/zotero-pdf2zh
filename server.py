@@ -56,7 +56,7 @@ class PDFTranslator:
 
             self.outputPath = self.get_abs_path(self.outputPath)
             self.configPath = self.get_abs_path(self.configPath)
-        
+
             os.makedirs(self.outputPath, exist_ok=True)
             if (self.engine != 'pdf2zh' or self.engine != 'EbookTranslator') and self.engine in services:
                 self.engine = 'pdf2zh'
@@ -96,7 +96,8 @@ class PDFTranslator:
             '--service', config.service,
             '--lang-in', config.sourceLang,
             '--lang-out', config.targetLang,
-            '--config', config.configPath
+            '--config', config.configPath, 
+            # '--skip-subset-fonts', # 如果生成pdf错误，可以尝试打开这个选项
         ]
         if config.babeldoc == True or config.babeldoc == 'true':
             cmd.append('--babeldoc')
@@ -106,7 +107,7 @@ class PDFTranslator:
             os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
         return output_files['mono'], output_files['dual']
 
-        # 工具函数, 用于切割双栏pdf文件
+    # 工具函数, 用于切割双栏pdf文件
     def split_pdf(self, input_pdf, output_pdf, compare=False, babeldoc=False):
         writer = PdfWriter()
         if ('dual' in input_pdf or compare == True) and babeldoc == False:
@@ -116,17 +117,20 @@ class PDFTranslator:
                 width = original_media_box.width
                 height = original_media_box.height
                 left_page_1 = readers[0].pages[i]
+
+                offset = width/20
+                ratio = 4.7
                 for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
-                    setattr(left_page_1, box, RectangleObject((0, 0, width/2, height)))
+                    setattr(left_page_1, box, RectangleObject((offset, 0, width/2+offset/ratio, height)))
                 left_page_2 = readers[1].pages[i+1]
                 for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
-                    setattr(left_page_2, box, RectangleObject((0, 0, width/2, height)))
+                    setattr(left_page_2, box, RectangleObject((offset, 0, width/2+offset/ratio, height)))
                 right_page_1 = readers[2].pages[i]
                 for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
-                    setattr(right_page_1, box, RectangleObject((width/2, 0, width, height)))
+                    setattr(right_page_1, box, RectangleObject((width/2-offset/ratio, 0, width-offset, height)))
                 right_page_2 = readers[3].pages[i+1]
                 for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
-                    setattr(right_page_2, box, RectangleObject((width/2, 0, width, height)))
+                    setattr(right_page_2, box, RectangleObject((width/2-offset/ratio, 0, width-offset, height)))
                 if compare == True:
                     blank_page_1 = writer.add_blank_page(width, height)
                     blank_page_1.merge_transformed_page(left_page_1, (1, 0, 0, 1, 0, 0))
@@ -148,11 +152,15 @@ class PDFTranslator:
                 width = original_media_box.width
                 height = original_media_box.height
 
+                # 8, 20 
+                w_offset = width/20
+                w_ratio = 4.7
+                h_offset = height/20
+                h_ratio = 2.5
                 left_page = readers[0].pages[i]
-                left_page.mediabox = RectangleObject((0, 0, width / 2, height))
+                left_page.mediabox = RectangleObject((w_offset, h_offset, width/2+w_offset/w_ratio, height-h_offset))
                 right_page = readers[1].pages[i]
-                right_page.mediabox = RectangleObject((width / 2, 0, width, height))
-
+                right_page.mediabox = RectangleObject((width/2-w_offset/w_ratio, h_offset, width-w_offset, height-h_offset))
                 writer.add_page(left_page)
                 writer.add_page(right_page)
 
