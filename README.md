@@ -28,8 +28,7 @@ uv tool install --python 3.12 pdf2zh flask pypdf # 通过uv安装需要的包
 或
 
 ```cmd
-pip install pdf2zh flask pypdf # 安装pdf2zh和需要的包
-pip install --upgrade pdf2zh # 更新pdf2zh
+pip install pdf2zh==1.9.6 flask pypdf # 安装pdf2zh和需要的包
 pdf2zh --version  # 检验是否正常安装
 ```
 
