@@ -22,8 +22,7 @@
 
 ```cmd
 pip install uv
-uv tool install --python 3.12 pdf2z
-pip install flask pypdf # 安装需要的包
+uv tool install --python 3.12 pdf2zh flask pypdf # 通过uv安装需要的包
 ```
 
 或
