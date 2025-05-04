@@ -22,13 +22,14 @@
 
 ```cmd
 pip install uv
-uv tool install --python 3.12 pdf2zh
+uv tool install --python 3.12 pdf2z
+pip install flask pypdf # 安装需要的包
 ```
 
 或
 
 ```cmd
-pip install pdf2zh  # 安装pdf2zh
+pip install pdf2zh flask pypdf # 安装pdf2zh和需要的包
 pip install --upgrade pdf2zh # 更新pdf2zh
 pdf2zh --version  # 检验是否正常安装
 ```
@@ -130,7 +131,7 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 ```shell
 # 1. 自动或手动下载脚本文件
 wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
-# 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改
+# 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改 (需要确保端口是开放的)
 python server.py 8888
 ```
 
