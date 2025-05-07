@@ -42,7 +42,7 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 
 | 选项             | 值                            | 备注                                                                                                                                                                                          |
 | ---------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Python Server IP | 默认为`http://localhost:8888` | 其中8888为翻译端口号，可以自行修改                                                                                                                                                            |
+| Python Server IP | 默认为`http://localhost:8888` | 其中8888为翻译端口号, 端口号与脚本执行的端口号对应                                                                                                                                            |
 | 源语言           | 默认为`en`                    | 翻译源语言，默认为英文                                                                                                                                                                        |
 | 目标语言         | 默认为`zh`                    | 翻译目标语言，默认为中文                                                                                                                                                                      |
 | 翻译引擎         | `pdf2zh`                      | 目前仅支持PDF2zh                                                                                                                                                                              |
@@ -131,7 +131,7 @@ python server.py 8888
 
 > ### 💡Tips
 >
-> - 请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改端口号。
+> - 请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改Python Server IP端口号。
 
 ### 方法二：docker方式启动
 
@@ -189,7 +189,9 @@ docker compose up -d
 
 <img src="./images/image3.png" alt="image3" style="width: 500px" align="center"/>
 
-<img src="./images/image4.png" alt="image4" style="width: 500px" align="center"/>
+<img src="./images/image4-1.png" alt="image4-1" style="width: 500px" align="center"/>
+
+<img src="./images/image4-2.png" alt="image4-2" style="width: 500px" align="center"/>
 
 # 致谢
 
