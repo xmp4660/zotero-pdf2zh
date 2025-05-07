@@ -19,7 +19,7 @@
 
 1. 利用conda创建虚拟环境并安装pdf2zh
 
-```cmd
+```shell
 conda create -n zotero-pdf2zh python=3.12   # 如果不使用conda则省略此步骤
 conda activate zotero-pdf2zh                # 如果不使用conda则省略此步骤
 python -m pip install pdf2zh==1.9.6 flask pypdf       # 安装需要的包
@@ -28,7 +28,7 @@ python -m pip install pdfminer.six==20250416          # 修正pdfminer安装版�
 
 3.  测试PDF2zh的安装
 
-```cmd
+```shell
 pdf2zh document.pdf # document.pdf是待翻译的文件
 ```
 
@@ -137,7 +137,7 @@ python server.py 8888
 
 checkout代码或者下载Dockerfile文件
 
-```cmd
+```shell
 docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://github.com/guaguastandup/zotero-pdf2zh/blob/main/server.py -t zotero-pdf2zh .
 docker run zotero-pdf2zh
 ```
@@ -146,7 +146,7 @@ docker run zotero-pdf2zh
 
 checkout代码或者下载Dockerfile、docker-compose.yaml文件
 
-```cmd
+```shell
 docker compose build
 docker compose up -d
 ```
@@ -206,7 +206,7 @@ docker compose up -d
 
 提issue前请先阅读本链接：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 
-本项目交流QQ群: 971960014, 入群口令: github
+本项目交流QQ群: 971960014, 入群验证回答: github
 
 # TODO LIST
 
