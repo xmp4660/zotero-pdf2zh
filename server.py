@@ -38,6 +38,7 @@ class PDFTranslator:
             self.sourceLang = data.get('sourceLang') if data.get('sourceLang') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['sourceLang']
             self.targetLang = data.get('targetLang') if data.get('targetLang') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['targetLang']
             self.skip_last_pages = data.get('skip_last_pages') if data.get('skip_last_pages') not in [None, ''] else 0
+            self.skip_last_pages = int(self.skip_last_pages) if str(self.skip_last_pages).isdigit() else 0
 
             self.babeldoc = data.get('babeldoc', False)
             self.mono_cut = data.get('mono_cut', False)
@@ -89,8 +90,7 @@ class PDFTranslator:
         if config.skip_last_pages and config.skip_last_pages > 0:
             # get pages num of the pdf
             end = len(PdfReader(input_path).pages) - config.skip_last_pages
-            cmd.append('--start', 0)
-            cmd.append('--end', end)
+            cmd.append('-p '+str(1)+'-'+str(end))
         if config.skip_subset_fonts == True or config.skip_subset_fonts == 'true':
             cmd.append('--skip-subset-fonts')
         if config.babeldoc == True or config.babeldoc == 'true':
