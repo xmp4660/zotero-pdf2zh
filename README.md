@@ -53,6 +53,8 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 | 重命名为短标题   | 默认勾选                      | 将新增文件的条目标题命名为**短标题**，但是不会改变原文件的命名；<br />**命名规则**：`短标题-翻译类型-翻译服务名`，如果短标题不存在，则命名为`翻译类型-翻译服务名`。例如`vLLM-dual-deepseek`。 |
 | 启用babeldoc     | 默认不勾选                    | 是否在PDF2zh中启用`babeldoc`                                                                                                                                                                  |
 | 默认生成翻译     | 默认生成mono和dual文件        | 通过勾选默认生成的文件来控制添加到Zotero中的文件。同时可以进一步勾选是否在生成该文件后自动打开。临时文件夹中默认生成`mono`和`dual`两种文件。                                                  |
+| 跳过子集化       | 默认不勾选                    | 在翻译正常进行但是最后渲染PDF失败的情况下可以考虑勾选                                                                                                                                         |
+| 跳过最后几页     | 默认值为0                     | 为了节约LLM的token用量,可以跳过最后几页引用文献不翻译                                                                                                                                         |
 
 > ### 💡Tips
 >
@@ -196,7 +198,7 @@ docker compose up -d
 
 # 贡献者
 
-<a href="https://github.com/guaguastandup/zotero-pdf2zh/graphs/contributors"> <img src="https://contrib.rocks/image?repo=guaguastandup/zotero-pdf2zh" /> </a>
+<a href="https://github.com/guaguastandup/zotero-pdf2zh/graphs/contributors"> <img src="https://contrib.rocks/image?repo=guaguastandup/zotero-pdf2zh" /></a>
 
 # 💗
 
@@ -204,12 +206,14 @@ docker compose up -d
 
 提issue前请先阅读本链接：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 
+本项目交流QQ群: 971960014, 入群口令: github
+
 # TODO LIST
 
 - [ ] 基于babeldoc在Zotero端显示翻译进度
 - [ ] 提供共享远程翻译服务（基于SealOS）
 - [ ] 支持Obsidian式配置（不需要打开设置页面）
-- [ ] 增加Drop Last功能，跳过引用文献不翻译（需要识别references避免跳过附录）
+- [x] 增加Drop Last功能，跳过引用文献不翻译
 - [x] 兼容babeldoc
 - [x] 支持远程部署
 - [x] 适配[PolyglotPDF](https://github.com/CBIhalsen/PolyglotPDF/tree/main)
