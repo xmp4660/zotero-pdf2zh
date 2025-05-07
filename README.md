@@ -17,20 +17,13 @@
 
 **docker或docker compose方式启动此步骤跳过。**
 
-1.  在本地安装Python(3.10 <= version <=3.12)
-2.  在本地安装最新的[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+1. 利用conda创建虚拟环境(或在全局安装Python, 版本要求3.10 <= version <=3.12)
 
 ```cmd
-pip install uv
-uv tool install --python 3.12 pdf2zh # 通过uv安装pdf2zh
-uv pip install --python 3.12 flask pypdf
-```
-
-或
-
-```cmd
-pip install pdf2zh==1.9.6 flask pypdf # 安装pdf2zh和需要的包
-pdf2zh --version  # 检验是否正常安装
+conda create -n zotero-pdf2zh python=3.12   # 如果不使用conda则省略此步骤
+conda activate zotero-pdf2zh                # 如果不使用conda则省略此步骤
+pip install pdf2zh==1.9.6 flask pypdf       # 安装需要的包
+pip install pdfminer.six==20250416          # 修正pdfminer安装版本
 ```
 
 3.  测试PDF2zh的安装

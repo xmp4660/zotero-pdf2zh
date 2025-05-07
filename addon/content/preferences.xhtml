@@ -91,10 +91,20 @@
             <html:input type="text" id="zotero-prefpane-__addonRef__-configPath"
                 preference="extensions.zotero.__addonRef__.configPath" style="width: 300px"></html:input>
         </vbox>
+        <hbox align="left">
+            <html:label for="zotero-prefpane-__addonRef__-skip-last-pages" data-l10n-id="pref-skip-last-pages"></html:label>
+            <html:input type="text" id="zotero-prefpane-__addonRef__-skip-last-pages"
+                preference="extensions.zotero.__addonRef__.skip-last-pages" style="width: 50px"></html:input>
+        </hbox>
         <hbox>
             <checkbox native="true" id="zotero-prefpane-__addonRef__-rename"
                 preference="extensions.zotero.__addonRef__.rename" />
             <html:label data-l10n-id="pref-rename" for="zotero-prefpane-__addonRef__-rename" />
+        </hbox>
+        <hbox>
+            <checkbox native="true" id="zotero-prefpane-__addonRef__-skip-subset-fonts"
+                preference="extensions.zotero.__addonRef__.skip-subset-fonts" />
+            <html:label data-l10n-id="pref-skip-subset-fonts" for="zotero-prefpane-__addonRef__-skip-subset-fonts" />
         </hbox>
         <hbox>
             <checkbox native="true" id="zotero-prefpane-__addonRef__-babeldoc"
@@ -150,7 +160,7 @@
     <vbox>
         <html:h3>Python Server 脚本 </html:h3>
         <p>🌷 温馨提示: 本插件需要使用终端或docker执行Python脚本，才可以使用翻译功能。</p>
-        <p>🌷 [2025年4月19日v2.3.8] Python脚本已更新，优化pdf分割与短标题命名方式，请访问主页README.md进行更新:
+        <p>🌷 [2025年5月7日v2.4.0] Python脚本已更新，增加跳过子集化与跳过引用翻译，请访问主页README.md进行更新:
             <description align="center"><label class="zotero-text-link" value="README.md"
                     href="https://github.com/guaguastandup/zotero-pdf2zh"></label></description>
         </p>

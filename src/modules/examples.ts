@@ -10,7 +10,6 @@ export enum PDFType {
     COMPARE = "compare",
 }
 export interface ServerConfig {
-    // 传输到客户端脚本
     serverUrl: string;
     threadNum: string;
     engine: string;
@@ -23,6 +22,8 @@ export interface ServerConfig {
     dual_cut: string;
     compare: string;
     babeldoc: string;
+    skip_subset_fonts: string;
+    skip_last_pages: string;
     sourceLang: string;
     targetLang: string;
 }
@@ -195,8 +196,10 @@ export class HelperExampleFactory {
                 ...config,
             }),
         });
-
-        if (!response.ok) throw new Error(`服务器错误: ${response.status}`);
+        if (!response.ok)
+            throw new Error(
+                `服务器错误: ${response.status} ${response.statusText}`,
+            );
         return JSON.parse(await response.text());
     }
 
@@ -208,7 +211,6 @@ export class HelperExampleFactory {
         endpoint: string,
     ) {
         if (response.status !== "success") throw new Error(response.message);
-        ztoolkit.log(endpoint, "response", response);
         if (endpoint == "translate") {
             ztoolkit.log("Processing translation PDF");
             const operations = [
@@ -338,6 +340,8 @@ export class HelperExampleFactory {
             dual_cut: getPref("dual-cut")?.toString() || "",
             compare: getPref("compare")?.toString() || "",
             babeldoc: getPref("babeldoc")?.toString() || "",
+            skip_subset_fonts: getPref("skip-subset-fonts")?.toString() || "",
+            skip_last_pages: getPref("skip-last-pages")?.toString() || "",
             sourceLang: getPref("sourceLang")?.toString() || "",
             targetLang: getPref("targetLang")?.toString() || "",
         };
@@ -372,14 +376,9 @@ export class HelperExampleFactory {
             const config = this.getServerConfig();
             await operation(item, { fileName, base64 }, config);
         } catch (error) {
-            this.handleError(error);
+            const message = error instanceof Error ? error.message : "未知错误";
+            ztoolkit.getGlobal("alert")(`错误: ${message}`);
         }
-    }
-
-    static async handleError(error: unknown) {
-        const message = error instanceof Error ? error.message : "未知错误";
-        ztoolkit.getGlobal("alert")(`PDF处理错误: ${message}`);
-        ztoolkit.log(`Error: ${message}`, error);
     }
 
     static getParentItemID(item: Zotero.Item): number | undefined {

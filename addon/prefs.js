@@ -28,3 +28,5 @@ pref("__prefsPrefix__.babeldoc", false);
 
 pref("__prefsPrefix__.sourceLang", "en");
 pref("__prefsPrefix__.targetLang", "zh");
+pref("__prefsPrefix__.skip-subset-fonts", false);
+pref("__prefsPrefix__.skip-last-pages", 0);

@@ -24,6 +24,8 @@ pref-translate-config = 翻译配置
 
 pref-rename = 重命名条目为短标题（如‘短标题-dual', 实际文件名不变)
 pref-babeldoc = 启用Babeldoc (Experimental)
+pref-skip-subset-fonts = 跳过字体子集化(在PDF渲染失败时可以尝试)
+pref-skip-last-pages = 跳过最后几页不翻译
 pref-open = 生成后自动打开文件
 
 pref-sourceLang = 源语言

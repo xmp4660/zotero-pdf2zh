@@ -24,6 +24,8 @@ pref-translate-config = Translation Config
 
 pref-rename = Rename 
 pref-babeldoc = Enable Babeldoc (Experimental)
+pref-skip-subset-fonts = Skip Subset Fonts(Try it when meet error)
+pref-skip-last-pages = Skip the last few pages without translating
 pref-open = Open Generated File Automatically
 
 pref-sourceLang = Source Language

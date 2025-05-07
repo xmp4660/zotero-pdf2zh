@@ -6,17 +6,6 @@ from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
 import sys
 
-services = [
-    'bing', 'google',
-    'deepl', 'deeplx',
-    'ollama', 'xinference',
-    'openai', 'azure-openai',
-    'zhipu', 'ModelScope',
-    'silicon', 'gemini', 'azure',
-    'tencent', 'dify', 'anythingllm',
-    'argos', 'grok', 'groq',
-    'deepseek', 'openailiked', 'qwen-mt'
-]
 class PDFTranslator:
     DEFAULT_CONFIG = {
         'port': 8888,
@@ -48,19 +37,18 @@ class PDFTranslator:
             self.configPath = data.get('configPath') if data.get('configPath') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['configPath']
             self.sourceLang = data.get('sourceLang') if data.get('sourceLang') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['sourceLang']
             self.targetLang = data.get('targetLang') if data.get('targetLang') not in [None, ''] else PDFTranslator.DEFAULT_CONFIG['targetLang']
+            self.skip_last_pages = data.get('skip_last_pages') if data.get('skip_last_pages') not in [None, ''] else 0
 
             self.babeldoc = data.get('babeldoc', False)
             self.mono_cut = data.get('mono_cut', False)
             self.dual_cut = data.get('dual_cut', False)
             self.compare = data.get('compare', False)
+            self.skip_subset_fonts = data.get('skip_subset_fonts', False)
 
             self.outputPath = self.get_abs_path(self.outputPath)
             self.configPath = self.get_abs_path(self.configPath)
 
             os.makedirs(self.outputPath, exist_ok=True)
-            if (self.engine != 'pdf2zh' or self.engine != 'EbookTranslator') and self.engine in services:
-                self.engine = 'pdf2zh'
-                print("[Warning - Zotero设置]: 请在Zotero设置面板中重新设置翻译engine参数为pdf2zh")
             print("[config]: ", self.__dict__)
             
         @staticmethod
@@ -97,8 +85,14 @@ class PDFTranslator:
             '--lang-in', config.sourceLang,
             '--lang-out', config.targetLang,
             '--config', config.configPath, 
-            # '--skip-subset-fonts', # 如果生成pdf错误，可以尝试打开这个选项
         ]
+        if config.skip_last_pages and config.skip_last_pages > 0:
+            # get pages num of the pdf
+            end = len(PdfReader(input_path).pages) - config.skip_last_pages
+            cmd.append('--start', 0)
+            cmd.append('--end', end)
+        if config.skip_subset_fonts == True or config.skip_subset_fonts == 'true':
+            cmd.append('--skip-subset-fonts')
         if config.babeldoc == True or config.babeldoc == 'true':
             cmd.append('--babeldoc')
         subprocess.run(cmd, check=True)

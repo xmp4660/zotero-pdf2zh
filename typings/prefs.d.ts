@@ -31,6 +31,8 @@ declare namespace _ZoteroTypes {
       "babeldoc": boolean;
       "sourceLang": string;
       "targetLang": string;
+      "skip-subset-fonts": boolean;
+      "skip-last-pages": number;
     };
   }
 }
