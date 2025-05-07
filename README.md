@@ -17,13 +17,13 @@
 
 **docker或docker compose方式启动此步骤跳过。**
 
-1. 利用conda创建虚拟环境(或在全局安装Python, 版本要求3.10 <= version <=3.12)
+1. 利用conda创建虚拟环境并安装pdf2zh
 
 ```cmd
 conda create -n zotero-pdf2zh python=3.12   # 如果不使用conda则省略此步骤
 conda activate zotero-pdf2zh                # 如果不使用conda则省略此步骤
-pip install pdf2zh==1.9.6 flask pypdf       # 安装需要的包
-pip install pdfminer.six==20250416          # 修正pdfminer安装版本
+python -m pip install pdf2zh==1.9.6 flask pypdf       # 安装需要的包
+python -m pip install pdfminer.six==20250416          # 修正pdfminer安装版本
 ```
 
 3.  测试PDF2zh的安装
