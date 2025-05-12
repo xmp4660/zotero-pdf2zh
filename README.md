@@ -71,7 +71,7 @@ docker compose up -d
 
 ## 第二步：添加PDF2zh配置文件 & 修改翻译中文字体
 
-1.  新建`config.json`文件，将该配置文件的路径输入到第一步的Zotero翻译配置中。
+1.  在server.py同目录下，新建`config.json`文件。
 2.  `NOTO_FONT_PATH`为您的自定义字体路径。推荐下载使用[霞鹜文楷字体](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf)或微信读书AI楷（贴吧搜索下载），具有更强的可读性。
 
 - 如果使用docker方法启动，则需要挂载字体文件: `- ./zotero-pdf2zh/LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf`
