@@ -6,6 +6,18 @@ from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
 import sys
 
+services = [    
+    'bing', 'google',
+    'deepl', 'deeplx',
+    'ollama', 'xinference',
+    'openai', 'azure-openai',
+    'zhipu', 'ModelScope',
+    'silicon', 'gemini', 'azure',
+    'tencent', 'dify', 'anythingllm',
+    'argos', 'grok', 'groq',
+    'deepseek', 'openailiked', 'qwen-mt'
+]
+
 class PDFTranslator:
     DEFAULT_CONFIG = {
         'port': 8888,
@@ -26,6 +38,7 @@ class PDFTranslator:
         self.app.add_url_rule('/translate', 'translate', self.translate, methods=['POST'])
         self.app.add_url_rule('/cut', 'cut', self.cut_pdf, methods=['POST'])
         self.app.add_url_rule('/compare', 'compare', self.compare, methods=['POST'])
+        self.app.add_url_rule('/singlecompare', 'singlecompare', self.single_compare, methods=['POST'])
         self.app.add_url_rule('/translatedFile/<filename>', 'download', self.download_file)
 
     class Config:
@@ -43,13 +56,19 @@ class PDFTranslator:
             self.babeldoc = data.get('babeldoc', False)
             self.mono_cut = data.get('mono_cut', False)
             self.dual_cut = data.get('dual_cut', False)
-            self.compare = data.get('compare', False)
+            self.compare = data.get('compare', False) # 双栏PDF左右对照
+            self.single_compare = data.get('single_compare', False) # 单栏PDF左右对照
             self.skip_subset_fonts = data.get('skip_subset_fonts', False)
 
             self.outputPath = self.get_abs_path(self.outputPath)
             self.configPath = self.get_abs_path(self.configPath)
 
             os.makedirs(self.outputPath, exist_ok=True)
+
+            if self.engine != 'pdf2zh' and self.engine in services:
+                print('Engine only support PDF2zh')
+                self.engine = 'pdf2zh'
+
             print("[config]: ", self.__dict__)
             
         @staticmethod
@@ -101,6 +120,31 @@ class PDFTranslator:
             os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
         return output_files['mono'], output_files['dual']
 
+    # 工具函数, 用于将pdf左右拼接
+    def merge_pages_side_by_side(self, input_pdf, output_pdf):
+        reader = PdfReader(input_pdf)
+        writer = PdfWriter()
+        num_pages = len(reader.pages)
+        i = 0
+        while i < num_pages:
+            left_page = reader.pages[i]
+            left_width = left_page.mediabox.width
+            height = left_page.mediabox.height
+            if i + 1 < num_pages:
+                right_page = reader.pages[i + 1]
+                right_width = right_page.mediabox.width
+            else:
+                right_page = None
+                right_width = left_width  # Assume same width
+            new_width = left_width + right_width
+            new_page = writer.add_blank_page(width=new_width, height=height)
+            new_page.merge_transformed_page(left_page, (1, 0, 0, 1, 0, 0))
+            if right_page:
+                new_page.merge_transformed_page(right_page, (1, 0, 0, 1, left_width, 0))
+            i += 2
+        with open(output_pdf, "wb") as f:
+            writer.write(f)
+
     # 工具函数, 用于切割双栏pdf文件
     def split_pdf(self, input_pdf, output_pdf, compare=False, babeldoc=False):
         writer = PdfWriter()
@@ -111,7 +155,6 @@ class PDFTranslator:
                 width = original_media_box.width
                 height = original_media_box.height
                 left_page_1 = readers[0].pages[i]
-
                 offset = width/20
                 ratio = 4.7
                 for box in ['mediabox', 'cropbox', 'bleedbox', 'trimbox', 'artbox']:
@@ -141,23 +184,18 @@ class PDFTranslator:
             readers = [PdfReader(input_pdf) for _ in range(2)]
             for i in range(len(readers[0].pages)):
                 page = readers[0].pages[i]
-
                 original_media_box = page.mediabox
                 width = original_media_box.width
                 height = original_media_box.height
-
-                # 8, 20 
                 w_offset = width/20
                 w_ratio = 4.7
                 h_offset = height/20
-                h_ratio = 2.5
                 left_page = readers[0].pages[i]
                 left_page.mediabox = RectangleObject((w_offset, h_offset, width/2+w_offset/w_ratio, height-h_offset))
                 right_page = readers[1].pages[i]
                 right_page.mediabox = RectangleObject((width/2-w_offset/w_ratio, h_offset, width-w_offset, height-h_offset))
                 writer.add_page(left_page)
                 writer.add_page(right_page)
-
         with open(output_pdf, "wb") as output_file:
             writer.write(output_file)
 
@@ -180,6 +218,10 @@ class PDFTranslator:
                     output = dual.replace('-dual.pdf', '-compare.pdf')
                     self.split_pdf(dual, output, compare=True, babeldoc=False)
                     processed_files.append(output)
+                if config.single_compare == True or config.single_compare == "true":
+                    output = dual.replace('-dual.pdf', '-single-compare.pdf')
+                    self.merge_pages_side_by_side(dual, output)
+                    processed_files.append(output)
             return jsonify({'status': 'success', 'processed': processed_files}), 200
         
         except Exception as e:
@@ -197,6 +239,22 @@ class PDFTranslator:
             print("[cut error]: ", e)
             return jsonify({'status': 'error', 'message': str(e)}), 500
 
+    def single_compare(self):
+        print("\n########## single compare ##########")
+        try:
+            input_path, config = self.process_request()
+            if 'mono' in input_path:
+                raise Exception('Please provide dual PDF or origial PDF for dual-comparison')
+            if not 'dual' in input_path:
+                _, dual = self.translate_pdf(input_path, config)
+                input_path = dual
+            output_path = input_path.replace('-dual.pdf', '-single-compare.pdf')
+            self.merge_pages_side_by_side(input_path, output_path)
+            return jsonify({'status': 'success', 'path': output_path}), 200
+        except Exception as e:
+            print("[compare error]: ", e)
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+        
     def compare(self):
         print("\n########## compare ##########")
         try:
