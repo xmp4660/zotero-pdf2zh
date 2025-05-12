@@ -6,11 +6,12 @@ pref-serverip = Python Server IP
 
 pref-help = { $name } Build { $version } { $time }
 
-pref-mono = generate mono file (chinese only)
-pref-dual = generate dual file (zh & en)
+pref-mono = generate mono file (Translated language only)
+pref-dual = generate dual file (Bilingual translation)
 pref-mono-cut = generate single-column mono file
 pref-dual-cut = generate single-column dual file
-pref-compare = generate single-column zh-en file
+pref-compare = generate compare file (for double column PDF)
+pref-single-compare = generate compare file (for single column PDF)
 
 pref-engine = Translation Engine
 pref-service = Translation Services

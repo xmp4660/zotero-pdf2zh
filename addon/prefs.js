@@ -13,6 +13,7 @@ pref("__prefsPrefix__.dual", true);
 pref("__prefsPrefix__.mono-cut", false);
 pref("__prefsPrefix__.dual-cut", false);
 pref("__prefsPrefix__.compare", false);
+pref("__prefsPrefix__.singel-compare", false);
 pref("__prefsPrefix__.threadNum", 4);
 pref("__prefsPrefix__.outputPath", "./translated/");
 pref("__prefsPrefix__.configPath", "./config.json");
@@ -22,6 +23,7 @@ pref("__prefsPrefix__.dual-open", false);
 pref("__prefsPrefix__.mono-cut-open", false);
 pref("__prefsPrefix__.dual-cut-open", false);
 pref("__prefsPrefix__.compare-open", false);
+pref("__prefsPrefix__.single-compare-open", false);
 
 pref("__prefsPrefix__.rename", true);
 pref("__prefsPrefix__.babeldoc", false);

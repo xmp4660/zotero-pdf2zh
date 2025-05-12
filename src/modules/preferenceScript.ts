@@ -9,6 +9,7 @@ const PREF_KEYS = {
     MONO_CUT: "mono_cut",
     DUAL_CUT: "dual-cut",
     COMPARE: "compare",
+    SINGLE_COMPARE: "single_compare",
     RENAME: "rename",
     SERVER_IP: "serverip",
     SERVICE: "service",
@@ -28,12 +29,14 @@ const CHECKBOX_CONFIGS = [
     { selectorSuffix: "mono-cut", prefKey: PREF_KEYS.MONO_CUT },
     { selectorSuffix: "dual-cut", prefKey: PREF_KEYS.DUAL_CUT },
     { selectorSuffix: "compare", prefKey: PREF_KEYS.COMPARE },
+    { selectorSuffix: "single-compare", prefKey: PREF_KEYS.SINGLE_COMPARE },
     { selectorSuffix: "rename", prefKey: PREF_KEYS.RENAME },
     { selectorSuffix: "mono-open", prefKey: "mono-open" },
     { selectorSuffix: "dual-open", prefKey: "dual-open" },
     { selectorSuffix: "mono-cut-open", prefKey: "mono-cut-open" },
     { selectorSuffix: "dual-cut-open", prefKey: "dual-cut-open" },
     { selectorSuffix: "compare-open", prefKey: "compare-open" },
+    { selectorSuffix: "single-compare-open", prefKey: "single-compare-open" },
 ];
 
 const INPUT_CONFIGS = [

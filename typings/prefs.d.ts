@@ -19,6 +19,7 @@ declare namespace _ZoteroTypes {
       "mono-cut": boolean;
       "dual-cut": boolean;
       "compare": boolean;
+      "singel-compare": boolean;
       "threadNum": number;
       "outputPath": string;
       "configPath": string;
@@ -27,6 +28,7 @@ declare namespace _ZoteroTypes {
       "mono-cut-open": boolean;
       "dual-cut-open": boolean;
       "compare-open": boolean;
+      "single-compare-open": boolean;
       "rename": boolean;
       "babeldoc": boolean;
       "sourceLang": string;

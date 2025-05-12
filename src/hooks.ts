@@ -188,6 +188,9 @@ function onDialogEvents(type: string) {
         case "comparePDF":
             HelperExampleFactory.processWorker("compare");
             break;
+        case "singlecomparePDF":
+            HelperExampleFactory.processWorker("singlecompare");
+            break;
         default:
             break;
     }

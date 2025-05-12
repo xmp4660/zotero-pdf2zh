@@ -8,6 +8,7 @@ export enum PDFType {
     MONO_CUT = "mono-cut",
     DUAL_CUT = "dual-cut",
     COMPARE = "compare",
+    SINGLE_COMPARE = "single-compare",
 }
 export interface ServerConfig {
     serverUrl: string;
@@ -21,6 +22,7 @@ export interface ServerConfig {
     mono_cut: string;
     dual_cut: string;
     compare: string;
+    single_compare: string;
     babeldoc: string;
     skip_subset_fonts: string;
     skip_last_pages: string;
@@ -141,6 +143,11 @@ export class UIExampleFactory {
                 label: getString("prefs-menu-compare"),
                 command: "comparePDF",
             },
+            {
+                id: "single-compare-pdf",
+                label: getString("prefs-menu-single-compare"),
+                command: "singlecomparePDF",
+            },
         ];
         MENU_ITEMS.forEach(({ id, label, command }) => {
             ztoolkit.Menu.register("item", {
@@ -219,6 +226,10 @@ export class HelperExampleFactory {
                 { type: PDFType.MONO_CUT, enabled: getPref("mono-cut") },
                 { type: PDFType.DUAL_CUT, enabled: getPref("dual-cut") },
                 { type: PDFType.COMPARE, enabled: getPref("compare") },
+                {
+                    type: PDFType.SINGLE_COMPARE,
+                    enabled: getPref("single-compare"),
+                },
             ];
             for (const { type, enabled } of operations) {
                 ztoolkit.log(type, enabled);
@@ -272,6 +283,27 @@ export class HelperExampleFactory {
                 item: item,
                 options: options,
                 type: PDFType.COMPARE,
+            });
+        } else if (endpoint == "singlecompare") {
+            const options = this.getPDFOptions(PDFType.SINGLE_COMPARE);
+            let variantFileName;
+            if (fileName.indexOf("-dual") != -1) {
+                variantFileName = fileName.replace(
+                    "-dual.pdf",
+                    `-single-compare.pdf`,
+                );
+            } else {
+                variantFileName = fileName.replace(
+                    ".pdf",
+                    `-single-compare.pdf`,
+                );
+            }
+            await this.fetchAndAttachPDF({
+                fileName: variantFileName,
+                config: config,
+                item: item,
+                options: options,
+                type: PDFType.SINGLE_COMPARE,
             });
         }
     }
@@ -339,6 +371,7 @@ export class HelperExampleFactory {
             mono_cut: getPref("mono-cut")?.toString() || "",
             dual_cut: getPref("dual-cut")?.toString() || "",
             compare: getPref("compare")?.toString() || "",
+            single_compare: getPref("single-compare")?.toString() || "",
             babeldoc: getPref("babeldoc")?.toString() || "",
             skip_subset_fonts: getPref("skip-subset-fonts")?.toString() || "",
             skip_last_pages: getPref("skip-last-pages")?.toString() || "",
@@ -405,13 +438,13 @@ export class HelperExampleFactory {
         const { item, filePath, options, type, service } = params;
         let attachment;
         if (item.isAttachment()) {
-            let newTitle = type + "-" + service;
+            let newTitle = service + "-" + type;
             const parentItemID = this.getParentItemID(item);
             if (parentItemID) {
                 const parentItem = Zotero.Items.get(parentItemID);
                 const shortTitle = parentItem.getField("shortTitle");
                 if (shortTitle && shortTitle.length > 0) {
-                    newTitle = shortTitle + "-" + type + "-" + service;
+                    newTitle = shortTitle + "-" + service + "-" + type;
                 }
             }
             attachment = await Zotero.Attachments.importFromFile({
@@ -426,9 +459,9 @@ export class HelperExampleFactory {
             });
         } else {
             const shortTitle = item.getField("shortTitle");
-            let newTitle = type + "-" + service;
+            let newTitle = service + "-" + type;
             if (shortTitle && shortTitle.length > 0) {
-                newTitle = shortTitle + "-" + type + "-" + service;
+                newTitle = shortTitle + "-" + service + "-" + type;
             }
             attachment = await Zotero.Attachments.importFromFile({
                 file: filePath,

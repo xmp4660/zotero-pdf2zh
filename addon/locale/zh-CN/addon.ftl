@@ -12,4 +12,5 @@ tabpanel-reader-tab-label = 阅读器标签
 
 prefs-menu-translate = 翻译PDF
 prefs-menu-cut = 裁剪PDF
-prefs-menu-compare = 双栏对照
+prefs-menu-compare = 双语对照(双栏)
+prefs-menu-single-compare = 双语对照(单栏)

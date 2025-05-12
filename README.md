@@ -153,7 +153,7 @@ docker compose up -d
 
 ## 第四步 翻译文件
 
-打开Zotero，右键选择条目或者附件。
+打开Zotero，右键选择条目或者附件。（支持批量选择）
 如果选择条目，将会自动选择该条目下创建时间**最早**的PDF。
 
 <img src="./images/image2.png" alt="image2" style="width: 600px" align="center"/>
@@ -208,13 +208,21 @@ docker compose up -d
 
 提issue前请先阅读本链接：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 
-本项目交流QQ群: 971960014, 入群验证回答: github
+本项目交流QQ群: 971960014 入群验证回答: github
+
+# 如何支持我
+
+💐Donation
+<img src="https://github.com/user-attachments/assets/4e2d7991-3795-4cac-9198-ab3a3e34a65e" width="80px">
+<img src="https://github.com/user-attachments/assets/fcc2d22c-fbfa-4464-919c-981ba94516f2" width="80px">
 
 # TODO LIST
 
 - [ ] 基于babeldoc在Zotero端显示翻译进度
 - [ ] 提供共享远程翻译服务（基于SealOS）
 - [ ] 支持Obsidian式配置（不需要打开设置页面）
+- [ ] 支持Zotero插件页面配置API Key
+- [x] 支持单栏左右对照和双栏左右对照
 - [x] 增加Drop Last功能，跳过引用文献不翻译
 - [x] 兼容babeldoc
 - [x] 支持远程部署
@@ -224,9 +232,6 @@ docker compose up -d
 - [x] 加入插件市场
 - [x] 支持在zotero perference中设置pdf2zh参数
 
-# 如何支持我
+# 友链
 
-可以访问Siliconflow邀请链接注册账号，注册和邀请双方都可以获得14元赠送金额，我会在未来考虑开放公共服务端口（正在寻求低成本的方法，欢迎给出建议）。
-
-- [SiliconFlow邀请链接](https://cloud.siliconflow.cn/i/a7s9DdQR) 邀请码：a7s9DdQR
-- [InfiniCloud](https://infini-cloud.net/en/) 邀请码：5UPJW
+- [immersive-translate/zotero-immersivetranslate](https://github.com/immersive-translate/zotero-immersivetranslate) Immersive Translate Pro members can use the immersive-translate/zotero-immersivetranslate plugin
