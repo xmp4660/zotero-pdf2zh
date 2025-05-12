@@ -170,19 +170,33 @@ docker compose up -d
 
 得到后缀中包含`cut`的单栏PDF文件，如`mono-cut`, `dual-cut`,`origin-cut`
 
-### 选项三：PDF2zh：双栏对照
+### 选项三：PDF2zh：双语对照(双栏)
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
-得到后缀中包含`compare`的中英双栏对照PDF文件。
+- 如果已有`dual`文件，则对该`dual`附件右键-点击PDF2zh双语对照(双栏)
+
+它会将翻译后的双栏PDF竖向切成两半，然后对裁剪后的单栏进行左右双语拼接。
+
+得到后缀中包含`compare`的双语左右对照PDF文件。
+
+### 选项三：PDF2zh：双语对照(单栏)
+
+本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
+
+- 如果已有`dual`文件，则对该`dual`附件右键-点击PDF2zh双语对照(单栏)
+
+它会直接将翻译后的PDF进行左右双语拼接，不切割。
+
+得到后缀中包含`single-compare`的双语左右对照PDF文件。
 
 > ### 💡Tips
 >
-> 双栏对照(Compare)方法仅对双栏PDF有限。
+> 如果启用babeldoc
 >
 > 如果需要对单栏的PDF生成左右对照的文件，有两种方法：
 >
-> 1.  可以启用`babeldoc`，其生成的`dual`文件就是左右中英对照的文件。
+> 1.  可以启用`babeldoc`，其生成的`dual`文件就是
 > 2.  不启用`babeldoc`，打开生成的`dual`文件，然后在Zotero阅读器页面右键，打开`竖向分割`，便可以进行左右对照。
 
 ## 翻译效果展示
@@ -192,6 +206,8 @@ docker compose up -d
 <img src="./images/image4-1.png" alt="image4-1" style="width: 500px" align="center"/>
 
 <img src="./images/image4-2.png" alt="image4-2" style="width: 500px" align="center"/>
+
+<img src="./images/image4-3.png" alt="image4-3" style="width: 500px" align="center"/>
 
 # 致谢
 
