@@ -34,7 +34,42 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 
 本插件当前开发使用的 `pdf2zh`版本: `v1.9.6`
 
-## 第一步 在Zotero中配置插件参数
+## 第一步 执行脚本
+
+### 方法一：命令行方式启动
+
+打开命令行工具，输入以下命令：
+
+```shell
+# 1. 自动或手动下载脚本文件
+wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
+# 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改 (需要确保端口是开放的)
+python server.py 8888
+```
+
+> ### 💡Tips
+>
+> - 请注意，如果在本步骤中修改了端口号，那么在第二步的Zotero配置中，也需要相应地修改Python Server IP端口号。
+
+### 方法二：docker方式启动
+
+checkout代码或者下载Dockerfile文件
+
+```shell
+docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://github.com/guaguastandup/zotero-pdf2zh/blob/main/server.py -t zotero-pdf2zh .
+docker run zotero-pdf2zh
+```
+
+### 方法三：docker-compose方式启动
+
+checkout代码或者下载Dockerfile、docker-compose.yaml文件
+
+```shell
+docker compose build
+docker compose up -d
+```
+
+## 第二步 在Zotero中配置插件参数
 
 <img src="./images/image1.png" alt="image1" style="width: 600px" align="center"/>
 
@@ -63,9 +98,9 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 > 3.  以上路径建议设置为绝对路径。如果设置为相对路径，则根路径与接下来Python脚本执行的路径一致。
 >     - 举例：如果python脚本在`/home/xxx/server/`下执行，翻译输出路径设置为临时路径`./translated/`，则实际的输出路径为`/home/xxx/server/translated/`
 
-## 第二步：添加PDF2zh配置文件 & 修改翻译中文字体
+## 第三步：添加PDF2zh配置文件 & 修改翻译中文字体
 
-1.  新建``config.json`文件，将该配置文件的路径输入到第一步的Zotero翻译配置中。
+1.  新建`config.json`文件，将该配置文件的路径输入到第一步的Zotero翻译配置中。
 2.  `NOTO_FONT_PATH`为您的自定义字体路径。推荐下载使用[霞鹜文楷字体](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf)或微信读书AI楷（贴吧搜索下载），具有更强的可读性。
 
 - 如果使用docker方法启动，则需要挂载字体文件: `- ./zotero-pdf2zh/LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf`
@@ -116,47 +151,12 @@ pdf2zh document.pdf # document.pdf是待翻译的文件
 }
 ```
 
-## 第三步 执行脚本
-
-### 方法一：命令行方式启动
-
-打开命令行工具，输入以下命令：
-
-```shell
-# 1. 自动或手动下载脚本文件
-wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
-# 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改 (需要确保端口是开放的)
-python server.py 8888
-```
-
-> ### 💡Tips
->
-> - 请注意，如果命令行修改了端口号，那么在第一步的Zotero配置中，也需要相应地修改Python Server IP端口号。
-
-### 方法二：docker方式启动
-
-checkout代码或者下载Dockerfile文件
-
-```shell
-docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://github.com/guaguastandup/zotero-pdf2zh/blob/main/server.py -t zotero-pdf2zh .
-docker run zotero-pdf2zh
-```
-
-### 方法三：docker-compose方式启动
-
-checkout代码或者下载Dockerfile、docker-compose.yaml文件
-
-```shell
-docker compose build
-docker compose up -d
-```
-
 ## 第四步 翻译文件
 
 打开Zotero，右键选择条目或者附件。（支持批量选择）
 如果选择条目，将会自动选择该条目下创建时间**最早**的PDF。
 
-<img src="./images/image2.png" alt="image2" style="width: 800px" align="center"/>
+<img src="./images/image2.png" alt="image2" style="width: 1000px" align="center"/>
 
 ### 选项一：PDF2zh：翻译PDF
 
@@ -171,6 +171,7 @@ docker compose up -d
 得到后缀中包含`cut`的单栏PDF文件，如`mono-cut`, `dual-cut`,`origin-cut`
 
 ### 选项三：PDF2zh：双语对照(双栏)
+本选项适用于不启动`babeldoc`选项的情况。
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
@@ -181,6 +182,7 @@ docker compose up -d
 得到后缀中包含`compare`的双语左右对照PDF文件。
 
 ### 选项三：PDF2zh：双语对照(单栏)
+本选项适用于不启动`babeldoc`选项的情况。
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
 
@@ -192,12 +194,7 @@ docker compose up -d
 
 > ### 💡Tips
 >
-> 如果启用babeldoc
->
-> 如果需要对单栏的PDF生成左右对照的文件，有两种方法：
->
-> 1.  可以启用`babeldoc`，其生成的`dual`文件就是
-> 2.  不启用`babeldoc`，打开生成的`dual`文件，然后在Zotero阅读器页面右键，打开`竖向分割`，便可以进行左右对照。
+> 如果启用babeldoc，则生成的dual文件等效于双语对照（单栏）
 
 ## 翻译效果展示
 
