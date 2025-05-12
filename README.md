@@ -156,7 +156,7 @@ docker compose up -d
 打开Zotero，右键选择条目或者附件。（支持批量选择）
 如果选择条目，将会自动选择该条目下创建时间**最早**的PDF。
 
-<img src="./images/image2.png" alt="image2" style="width: 600px" align="center"/>
+<img src="./images/image2.png" alt="image2" style="width: 800px" align="center"/>
 
 ### 选项一：PDF2zh：翻译PDF
 
@@ -229,8 +229,9 @@ docker compose up -d
 # 如何支持我
 
 💐Donation
-<img src="https://github.com/user-attachments/assets/4e2d7991-3795-4cac-9198-ab3a3e34a65e" width="80px">
-<img src="https://github.com/user-attachments/assets/fcc2d22c-fbfa-4464-919c-981ba94516f2" width="80px">
+
+<img src="https://github.com/user-attachments/assets/4e2d7991-3795-4cac-9198-ab3a3e34a65e" width="120px">
+<img src="https://github.com/user-attachments/assets/fcc2d22c-fbfa-4464-919c-981ba94516f2" width="120px">
 
 # TODO LIST
 
