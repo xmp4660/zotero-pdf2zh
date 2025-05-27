@@ -245,7 +245,3 @@ docker compose up -d
 - [x] 完善Docker部署文档
 - [x] 加入插件市场
 - [x] 支持在zotero perference中设置pdf2zh参数
-
-# 友链
-
-- [immersive-translate/zotero-immersivetranslate](https://github.com/immersive-translate/zotero-immersivetranslate) Immersive Translate Pro members can use the immersive-translate/zotero-immersivetranslate plugin
