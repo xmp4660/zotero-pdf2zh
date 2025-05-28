@@ -7,87 +7,150 @@
 ![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=yellow)
 [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/main/LICENSE)
 
-<!-- ![Downloads latest release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/latest/total?color=yellow) -->
-
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 
 # 如何使用本插件
 
+本指南将引导您完成 Zotero PDF2zh 插件的安装和配置。
+
+Tips: 如果本地`python`环境配置出现问题，建议使用`docker`方式安装。
+
 ## 第零步 安装PDF2zh
 
-**docker或docker compose方式启动此步骤跳过。**
+**如果您是使用 Docker 方式安装，请跳过此步骤**
 
-1. 利用conda创建虚拟环境并安装pdf2zh
+### 1. 利用conda或uv创建虚拟环境并安装pdf2zh
 
-```shell
-conda create -n zotero-pdf2zh python=3.12   # 如果不使用conda则省略此步骤
-conda activate zotero-pdf2zh                # 如果不使用conda则省略此步骤
-python -m pip install pdf2zh==1.9.6 flask pypdf       # 安装需要的包
-python -m pip install pdfminer.six==20250416          # 修正pdfminer安装版本
-```
+安装方式请在 `conda` 或 `uv` 中选择一种即可。
 
-3.  测试PDF2zh的安装
+**第0步：创建目录，存放本插件需要的所有文件**
 
 ```shell
-pdf2zh document.pdf # document.pdf是待翻译的文件
+mkdir zotero-pdf2zh	# 创建文件夹
+cd zotero-pdf2zh	# 进入文件夹
 ```
+
+**conda安装**
+
+```shell
+conda create -n zotero-pdf2zh python=3.12			# 创建conda虚拟环境
+conda activate zotero-pdf2zh						# 启动conda虚拟环境
+python -m pip install pdf2zh==1.9.6 flask pypdf     # 安装需要的包
+python -m pip install pdfminer.six==20250416        # 修正pdfminer安装版本
+```
+
+**uv安装**
+
+1.  第一步: 安装uv环境和Python 3.12
+
+    ```shell
+    pip install uv          # 使用pip安装uv
+    uv python install 3.12  # 安装3.12版本python
+    uv venv --python 3.12   # 创建3.12版本python虚拟环境
+    ```
+
+2.  第二步: 启动虚拟环境
+
+- Linux/macOS执行
+
+    ```shell
+    source .venv/bin/activate
+    ```
+
+- windows执行
+
+    ```shell
+    .\.venv\Scripts\activate
+    ```
+
+3.  第三步: 安装需要的包
+
+    ```shell
+    uv pip install pdf2zh==1.9.6 flask pypdf # 安装需要的包
+    uv pip install pdfminer.six==20250416    # 修正pdfminer安装版本
+    ```
+
+### 2. 测试PDF2zh的安装
+
+**请不要忽略测试步骤**
+
+在终端直接输入命令:
+
+```shell
+pdf2zh document.pdf --sevice bing # document.pdf是待翻译的文件
+```
+
+等待翻译结束，如果失败了，说明上一步的安装出现问题。这一步会使用bing免费服务翻译文件。
 
 本插件当前开发使用的 `pdf2zh`版本: `v1.9.6`
 
-## 第一步 执行脚本
+## 第一步 启动后端程序（为插件提供翻译能力）
 
 ### 方法一：命令行方式启动
 
 打开命令行工具，输入以下命令：
 
-```shell
-# 1. 自动或手动下载脚本文件
-wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
-# 2. 执行脚本文件, 命令行参数8888为端口号，可以自行修改 (需要确保端口是开放的)
-python server.py 8888
-```
+1.  自动或手动下载Python脚本文件
 
-> ### 💡Tips
->
-> - 请注意，如果在本步骤中修改了端口号，那么在第二步的Zotero配置中，也需要相应地修改Python Server IP端口号。
+    ```shell
+    wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
+    ```
 
-### 方法二：docker方式启动
+2.  执行脚本文件
 
-checkout代码或者下载Dockerfile文件
+    - Conda版本
 
-```shell
-docker build --build-arg ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6 --build-arg ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://github.com/guaguastandup/zotero-pdf2zh/blob/main/server.py -t zotero-pdf2zh .
-docker run zotero-pdf2zh
-```
+        ```shell
+        python server.py 8888
+        ```
 
-### 方法三：docker-compose方式启动
+    - uv版本
 
-checkout代码或者下载Dockerfile、docker-compose.yaml文件
+        ```shell
+        uv server.py 8888
+        ```
 
-```shell
-docker compose build
-docker compose up -d
-```
+    - 💡Tips:
+
+        - 命令行参数 `8888` 是端口号，您可以自行修改，但请确保该端口是开放的。
+        - **提示：** 如果在此步骤中修改了端口号，那么在 Zotero 配置中（第三步），也需要相应地修改 **Python 服务器 IP 端口号**。
+
+### 方法二：Docker Compose方式启动
+
+1.  自动或手动下载`Dockerfile`文件和``docker-compose.yaml`文件
+
+    ```shell
+    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/Dockerfile
+    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/docker-compose.yaml
+    ```
+
+2.  构建 Docker 镜像
+
+    ```shell
+    docker compose build
+    ```
+
+3.  后台启动 Docker 程序
+
+    - 首次运行（推荐）：在当前终端启动，以便观察 Docker 容器的输出和翻译是否正常
+
+        ```shell
+        docker compose up
+        ```
+
+    - 后台启动： 在当前终端启动 Docker 程序（首次执行建议在终端运行，以便观察 PDF 是否正确翻译）：
+
+        ```shell
+        docker compose up -d
+        ```
 
 ## 第二步：添加PDF2zh配置文件 & 修改翻译中文字体
 
-1.  在server.py同目录下，新建`config.json`文件。
-2.  `NOTO_FONT_PATH`为您的自定义字体路径。推荐下载使用[霞鹜文楷字体](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf)或微信读书AI楷（贴吧搜索下载），具有更强的可读性。
+**第一步：创建`config.json`文件**
 
-- 如果使用docker方法启动，则需要挂载字体文件: `- ./zotero-pdf2zh/LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf`
+在您的`server.py` 文件的**同一目录下**，新建一个名为 `config.json` 的文件。
 
-3.  `translators`中配置翻译引擎。
-
-    > 关于翻译引擎的选择：
-    >
-    > - 使用默认的bing或者google，速度快，效果适中，不需要在config文件中配置
-    > - 推荐1：在[火山引擎](https://www.volcengine.com/product/doubao/)中选择`deepseek-v3`模型服务（参与协作奖励计划，每天有50w免费额度，需要将自己的推理内容共享给豆包）
-    > - 推荐2：[智谱AI](https://www.bigmodel.cn/)的`glm-4-flash`模型（免费）
-    > - 推荐3：[deepseek](https://platform.deepseek.com/)的`deepseek-v3`，夜间00:30以后有50%优惠，可以按住shift选择多个条目-右键翻译，并且把线程数调高（20以上）
-
-4.  其他的配置设置，请参考PDF2zh原文档： [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
-
-`config.json`文件示例如下:
+- `config.json`文件示例如下：
 
 ```json
 {
@@ -122,6 +185,37 @@ docker compose up -d
 }
 ```
 
+- 如果使用docker方法启动，并需要自定义字体，则需要在`docker-compose.yaml`文件中挂载字体文件：
+
+    - 示例如下：
+
+        ```shell
+        volumes:
+            - ./zotero-pdf2zh/translated:/app/translated
+            - ./zotero-pdf2zh/config.json:/app/config.json
+            - ./zotero-pdf2zh/LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf # 这一行是新添加的字体挂载
+        ```
+
+- 如果使用docker后台启动方法，编辑`config.json`后，需要执行`docker compose up -d`
+
+**第二步：字体配置**
+
+- `config.json`文件里的`"NOTO_FONT_PATH"` 字段用于指定您自定义的字体文件路径。推荐下载并使用 [霞鹜文楷字体 (LXGWWenKai-Regular.ttf)](https://github.com/lxgw/LxgwWenKai/releases/download/v1.510/LXGWWenKai-Regular.ttf) 或 "微信读书AI楷"（可以在贴吧等社区搜索下载）。
+    - 可以把字体文件放在server.py同目录下, 如果翻译后无法正确显示字体，请先在电脑中安装本字体
+
+**第三步：翻译引擎配置**
+
+在`config.json`文件中，将您的LLM API和LLM Model配置输入 `translators`中。
+
+> 关于翻译引擎的选择：
+>
+> - 使用默认的bing或者google，速度快，效果适中，不需要在config文件中配置
+> - 推荐1：在[火山引擎](https://www.volcengine.com/product/doubao/)中选择`deepseek-v3`模型服务（参与协作奖励计划，每天有50w免费额度，需要将自己的推理内容共享给火山引擎)，线程数可设置为200以上, 此服务对应下方实例文件中的`openailiked`.
+> - 推荐2：[智谱AI](https://www.bigmodel.cn/)的`glm-4-flash`模型（免费），此服务对应下方实例文件中的`zhipu`.
+> - 推荐3：[deepseek](https://platform.deepseek.com/)的`deepseek-v3`，夜间00:30以后有50%优惠，可以按住shift选择多个条目-右键翻译，并且把线程数调高（20以上），，此服务对应下方实例文件中的`deepseek`.
+
+- 更多配置方法，请参考PDF2zh原文档： [PDF2zh Config File](https://github.com/Byaidu/PDFMathTranslate/blob/main/docs/ADVANCED.md#cofig)
+
 ## 第四步 在Zotero中配置插件参数
 
 <img src="./images/image1.png" alt="image1" style="width: 600px" align="center"/>
@@ -130,25 +224,25 @@ docker compose up -d
 
 | 选项             | 值                            | 备注                                                                                                                                                                                          |
 | ---------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Python Server IP | 默认为`http://localhost:8888` | 其中8888为翻译端口号, 端口号与脚本执行的端口号对应                                                                                                                                            |
-| 源语言           | 默认为`en`                    | 翻译源语言，默认为英文                                                                                                                                                                        |
-| 目标语言         | 默认为`zh`                    | 翻译目标语言，默认为中文                                                                                                                                                                      |
-| 翻译引擎         | `pdf2zh`                      | 目前仅支持PDF2zh                                                                                                                                                                              |
-| 翻译服务         | 默认为`bing`                  | 翻译服务，可以从下拉菜单选择或自行输入。与配置文件中的`translators`对应。                                                                                                                     |
-| 线程数           | 默认为`4`                     | PDF2zh在翻译时的执行线程数                                                                                                                                                                    |
-| 翻译文件输出路径 | 默认为`./translated/`         | 用于临时存储翻译得到的PDF文件，可以在翻译完成后删除文件。                                                                                                                                     |
-| 配置文件路径     | 默认为`./config.json`         | 用于配置翻译引擎和字体                                                                                                                                                                        |
+| Python Server IP | 默认为`http://localhost:8888` | 其中 `8888` 为翻译端口号，需与启动脚本时设置的端口号一致。                                                                                                                                    |
+| 源语言           | 默认为`en`                    | 翻译源语言，默认为英文。                                                                                                                                                                      |
+| 目标语言         | 默认为`zh`                    | 翻译目标语言，默认为中文。                                                                                                                                                                    |
+| 翻译引擎         | `pdf2zh`                      | 目前仅支持 PDF2zh，无需改动。                                                                                                                                                                 |
+| 翻译服务         | 默认为`bing`                  | 翻译服务，可以从下拉菜单选择或自行输入。与配置文件 `config.json` 中的 `translators` 对应。                                                                                                    |
+| 线程数           | 默认为`4`                     | PDF2zh在翻译时的执行线程数。                                                                                                                                                                  |
+| 翻译文件输出路径 | 默认为`./translated/`         | 用于临时存储翻译得到的 PDF 文件，翻译完成后可以删除。                                                                                                                                         |
+| 配置文件路径     | 默认为`./config.json`         | 用于配置翻译引擎和字体。                                                                                                                                                                      |
 | 重命名为短标题   | 默认勾选                      | 将新增文件的条目标题命名为**短标题**，但是不会改变原文件的命名；<br />**命名规则**：`短标题-翻译类型-翻译服务名`，如果短标题不存在，则命名为`翻译类型-翻译服务名`。例如`vLLM-dual-deepseek`。 |
 | 启用babeldoc     | 默认不勾选                    | 是否在PDF2zh中启用`babeldoc`                                                                                                                                                                  |
-| 默认生成翻译     | 默认生成mono和dual文件        | 通过勾选默认生成的文件来控制添加到Zotero中的文件。同时可以进一步勾选是否在生成该文件后自动打开。临时文件夹中默认生成`mono`和`dual`两种文件。                                                  |
-| 跳过子集化       | 默认不勾选                    | 在翻译正常进行但是最后渲染PDF失败的情况下可以考虑勾选                                                                                                                                         |
-| 跳过最后几页     | 默认值为0                     | 为了节约LLM的token用量,可以跳过最后几页引用文献不翻译                                                                                                                                         |
+| 默认生成翻译     | 默认生成mono和dual文件        | 通过勾选来控制添加到 Zotero 中的文件类型。同时，您可以进一步勾选是否在生成该文件后自动打开。临时文件夹中默认生成 `mono`（仅目标语言）和 `dual`（源语言和目标语言）两种文件。                  |
+| 跳过子集化       | 默认不勾选                    | 在翻译正常进行但最终渲染 PDF 失败的情况下，可以考虑勾选此项。                                                                                                                                 |
+| 跳过最后几页     | 默认值为0                     | 为了节约 LLM 的 token 用量，可以跳过最后几页引用文献不翻译（不支持 `babeldoc` 模式，如果使用 `babeldoc` 服务，请将此选项设置为 `0`）。                                                        |
 
 > ### 💡Tips
 >
 > 1.  `dual`文件中包含源语言和目标语言，`mono`文件中仅包含目标语言
 > 2.  以上Zotero设置面板的配置会覆盖Python脚本中的配置。如果不想在Zotero插件中进行配置，只想在Python脚本中配置，请将Zotero插件中的配置留空。
-> 3.  以上路径建议设置为绝对路径。如果设置为相对路径，则根路径与接下来Python脚本执行的路径一致。
+> 3.  以上路径支持绝对路径和相对路径。如果设置为相对路径，则根路径与接下来Python脚本执行的路径一致。
 >     - 举例：如果python脚本在`/home/xxx/server/`下执行，翻译输出路径设置为临时路径`./translated/`，则实际的输出路径为`/home/xxx/server/translated/`
 
 ## 第四步 翻译文件
@@ -160,7 +254,7 @@ docker compose up -d
 
 ### 选项一：PDF2zh：翻译PDF
 
-本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成mono和dual两个文件。
+本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成`mono`和``dual`两个文件。
 
 ### 选项二：PDF2zh：裁剪PDF
 
@@ -171,6 +265,7 @@ docker compose up -d
 得到后缀中包含`cut`的单栏PDF文件，如`mono-cut`, `dual-cut`,`origin-cut`
 
 ### 选项三：PDF2zh：双语对照(双栏)
+
 本选项适用于不启动`babeldoc`选项的情况。
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
@@ -181,7 +276,8 @@ docker compose up -d
 
 得到后缀中包含`compare`的双语左右对照PDF文件。
 
-### 选项三：PDF2zh：双语对照(单栏)
+### 选项四：PDF2zh：双语对照(单栏)
+
 本选项适用于不启动`babeldoc`选项的情况。
 
 本选项仅将后缀包含`dual`的文件切割拼接为中英文对照文件。
@@ -232,10 +328,11 @@ docker compose up -d
 
 # TODO LIST
 
-- [ ] 基于babeldoc在Zotero端显示翻译进度
 - [ ] 提供共享远程翻译服务（基于SealOS）
 - [ ] 支持Obsidian式配置（不需要打开设置页面）
 - [ ] 支持Zotero插件页面配置API Key
+- [ ] 翻译进度显示
+- [ ] 将翻译后的PDF转换为markdown或html
 - [x] 支持单栏左右对照和双栏左右对照
 - [x] 增加Drop Last功能，跳过引用文献不翻译
 - [x] 兼容babeldoc
