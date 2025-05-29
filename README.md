@@ -16,6 +16,7 @@
 Tips: 如果本地`python`环境配置出现问题，建议使用`docker`方式安装。
 
 遇到问题：
+
 - 请先访问：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 - 尝试问一下AI
 - 提issue或到插件群发自己的终端报错截图（一定要有终端截图，谢谢）
