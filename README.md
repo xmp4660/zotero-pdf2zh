@@ -15,6 +15,11 @@
 
 Tips: 如果本地`python`环境配置出现问题，建议使用`docker`方式安装。
 
+遇到问题：
+- 请先访问：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
+- 尝试问一下AI
+- 提issue或到插件群发自己的终端报错截图（一定要有终端截图，谢谢）
+
 ## 第零步 安装PDF2zh
 
 **如果您是使用 Docker 方式安装，请跳过此步骤**
@@ -117,7 +122,7 @@ pdf2zh document.pdf --sevice bing # document.pdf是待翻译的文件
 
 ### 方法二：Docker Compose方式启动
 
-1.  自动或手动下载`Dockerfile`文件和``docker-compose.yaml`文件
+1.  自动或手动下载`Dockerfile`文件和`docker-compose.yaml`文件
 
     ```shell
     wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/Dockerfile
@@ -254,7 +259,7 @@ pdf2zh document.pdf --sevice bing # document.pdf是待翻译的文件
 
 ### 选项一：PDF2zh：翻译PDF
 
-本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成`mono`和``dual`两个文件。
+本选项生成的文件由Zotero插件设置中的“默认生成文件”勾选项决定，默认生成`mono`和`dual`两个文件。
 
 ### 选项二：PDF2zh：裁剪PDF
 
