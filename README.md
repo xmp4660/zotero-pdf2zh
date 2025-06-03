@@ -83,7 +83,7 @@ python -m pip install pdfminer.six==20250416        # 修正pdfminer安装版本
 在终端直接输入命令:
 
 ```shell
-pdf2zh document.pdf --sevice bing # document.pdf是待翻译的文件
+pdf2zh document.pdf --service bing # document.pdf是待翻译的文件
 ```
 
 等待翻译结束，如果失败了，说明上一步的安装出现问题。这一步会使用bing免费服务翻译文件。
