@@ -113,7 +113,7 @@ pdf2zh document.pdf --service bing # document.pdf是待翻译的文件
     - uv版本
 
         ```shell
-        uv server.py 8888
+        uv run server.py 8888
         ```
 
     - 💡Tips:
