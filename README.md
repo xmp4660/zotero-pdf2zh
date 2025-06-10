@@ -99,7 +99,7 @@ pdf2zh document.pdf --service bing # document.pdf是待翻译的文件
 1.  自动或手动下载Python脚本文件
 
     ```shell
-    wget https://github.com/guaguastandup/zotero-pdf2zh/raw/refs/heads/main/server.py
+    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.py
     ```
 
 2.  执行脚本文件
