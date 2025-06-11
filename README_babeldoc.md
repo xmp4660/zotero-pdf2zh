@@ -81,14 +81,6 @@ uv venv --python 3.13   # 创建3.13版本python虚拟环境
     uv pip install pdf2zh_next pypdf flask
     ```
 
-**conda安装**
-
-```shell
-conda create -n zotero-pdf2zh-next python=3.13			# 创建conda虚拟环境
-conda activate zotero-pdf2zh-next						# 启动conda虚拟环境
-python -m pip install pdf2zh_next pypdf flask
-```
-
 **第三步: 测试安装并启动gui**
 
 1. 在命令行输入`pdf2zh_next --gui`进入图形界面。
