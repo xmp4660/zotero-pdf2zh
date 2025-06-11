@@ -243,7 +243,7 @@ class PDFTranslator:
         print("\n########## single compare ##########")
         try:
             input_path, config = self.process_request()
-            if 'mono' in input_path:
+            if '-mono.pdf' in input_path:
                 raise Exception('Please provide dual PDF or origial PDF for dual-comparison')
             if not 'dual' in input_path:
                 _, dual = self.translate_pdf(input_path, config)
