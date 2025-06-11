@@ -36,7 +36,7 @@ mkdir zotero-pdf2zh && cd zotero-pdf2zh
 # 4. 创建translated文件夹，存放翻译输出文件
 mkdir translated
 # 5. 创建config.json文件(待配置)
-echo '{}' > /app/config.json
+echo '{}' > config.json
 # 6. 回到docker文件夹
 cd ..
 ```
@@ -84,7 +84,7 @@ wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/ma
 # 3. 创建translated文件夹，存放翻译输出文件
 mkdir translated
 # 4. 创建config.json文件(待配置)
-echo '{}' > /app/config.json
+echo '{}' > config.json
 ```
 
 文件夹结构如下：
