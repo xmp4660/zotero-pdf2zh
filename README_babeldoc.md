@@ -38,6 +38,57 @@ zotero-pdf2zh-next
 
 3. [**uv** (a Python package manager)](https://pdf2zh-next.com/getting-started/INSTALLATION_uv.html) <small>Recommand for macOS</small>
 
+**uv安装**
+
+进入`zotero-pdf2zh-next`文件夹：
+
+1.  安装uv环境
+
+```shell
+# 方法一: 使用pip安装uv
+pip install uv
+# 方法二: 下载脚本安装
+# macOS/Linux
+wget -qO- https://astral.sh/uv/install.sh | sh
+# windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+2.  uv安装Python 3.13
+
+```shell
+uv python install 3.13  # 安装3.13版本python
+uv venv --python 3.13   # 创建3.13版本python虚拟环境
+```
+
+3.  启动虚拟环境
+
+- Linux/macOS执行
+
+    ```shell
+    source .venv/bin/activate
+    ```
+
+- windows执行
+
+    ```shell
+    .\.venv\Scripts\activate
+    ```
+
+3.  第三步: 安装需要的包
+
+    ```shell
+    uv pip install pdf2zh_next pypdf flask
+    ```
+
+**conda安装**
+
+```shell
+conda create -n zotero-pdf2zh-next python=3.13			# 创建conda虚拟环境
+conda activate zotero-pdf2zh-next						# 启动conda虚拟环境
+python -m pip install pdf2zh_next pypdf flask
+```
+
 **第三步: 测试安装并启动gui**
 
 1. 在命令行输入`pdf2zh_next --gui`进入图形界面。
@@ -46,7 +97,7 @@ zotero-pdf2zh-next
 
 3. 翻译成功后，退出图形界面
 
-在第一步创建的`zotero-pdf`文件路径中, 在命令行执行：
+在第一步创建的`zotero-pdf2zh-next`文件路径中, 在命令行执行：
 
 ```shell
 cp ~/.config/pdf2zh/config.v3.toml ./config.toml

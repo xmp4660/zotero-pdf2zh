@@ -2,7 +2,6 @@
 
 <div align="center">
 
-
 ![Zotero PDF2zh](./addon/content/icons/favicon@0.5x.svg)
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
@@ -12,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-[使用pdf2zh教程](./README.md) | [使用pdf2zh_next教程](./README_babeldoc.md) 
+[使用pdf2zh教程](./README.md) | [使用pdf2zh_next教程](./README_babeldoc.md)
 
 </div>
 
@@ -116,6 +115,7 @@ conda create -n zotero-pdf2zh python=3.12			# 创建conda虚拟环境
 conda activate zotero-pdf2zh						# 启动conda虚拟环境
 python -m pip install pdf2zh==1.9.6 flask pypdf     # 安装需要的包
 python -m pip install pdfminer.six==20250416        # 修正pdfminer安装版本
+python -m pip install numpy==2.2.0
 ```
 
 **uv安装**
@@ -158,6 +158,7 @@ uv venv --python 3.12   # 创建3.12版本python虚拟环境
     ```shell
     uv pip install pdf2zh==1.9.6 flask pypdf # 安装需要的包
     uv pip install pdfminer.six==20250416    # 修正pdfminer安装版本
+    uv pip install numpy==2.2.0              # 修正numpy安装版本
     ```
 
 **第三步：测试pdf2zh安装**
