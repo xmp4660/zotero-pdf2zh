@@ -65,8 +65,6 @@ class PDFTranslator:
 
             os.makedirs(self.outputPath, exist_ok=True)
 
-            if self.engine == 'pdf2zh_next':
-                self.babeldoc = True
             if self.engine != 'pdf2zh' and self.engine in services:
                 print('Engine only support PDF2zh')
                 self.engine = 'pdf2zh'
@@ -98,59 +96,30 @@ class PDFTranslator:
             'mono': os.path.join(config.outputPath, f"{base_name}-mono.pdf"),
             'dual': os.path.join(config.outputPath, f"{base_name}-dual.pdf")
         }
-        if config.engine == 'pdf2zh':
-            cmd = [
-                config.engine,
-                input_path,
-                '--t', str(config.threads),
-                '--output', config.outputPath,
-                '--service', config.service,
-                '--lang-in', config.sourceLang,
-                '--lang-out', config.targetLang,
-                '--config', config.configPath,
-            ]
-            if config.skip_last_pages and config.skip_last_pages > 0: 
-                end = len(PdfReader(input_path).pages) - config.skip_last_pages # get pages num of the pdf
-                cmd.append('-p '+str(1)+'-'+str(end))
-            if config.skip_subset_fonts == True or config.skip_subset_fonts == 'true':
-                cmd.append('--skip-subset-fonts')
-            if config.babeldoc == True or config.babeldoc == 'true':
-                cmd.append('--babeldoc')
-            subprocess.run(cmd, check=True)
-            if config.babeldoc == True or config.babeldoc == 'true':
-                os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.mono.pdf"), output_files['mono'])
-                os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
-            return output_files['mono'], output_files['dual']
-        elif config.engine == 'pdf2zh_next':
-            service = config.service
-            if service == 'openailiked':
-                service = 'openaicompatible'
-            if service == 'tencent':
-                service = 'tencentmechinetranslation'
-            cmd = [
-                config.engine,
-                input_path,
-                '--output', config.outputPath,
-                '--'+service,
-                '--lang-in', config.sourceLang,
-                '--lang-out', config.targetLang,
-                '--qps', str(config.threads),
-            ]
-            if os.path.exists(config.configPath) and config.configPath != '' and len(config.configPath) > 4 and 'json' not in config.configPath:
-                cmd.append('--config')
-                cmd.append(config.configPath)
-            if config.skip_last_pages and config.skip_last_pages > 0:
-                end = len(PdfReader(input_path).pages) - config.skip_last_pages
-                cmd.append('--pages')
-                cmd.append(f'{1}-{end}')
-            print("pdf2zh_next command: ", cmd)
-            subprocess.run(cmd, check=True)
+        cmd = [
+            config.engine,
+            input_path,
+            '--t', str(config.threads),
+            '--output', config.outputPath,
+            '--service', config.service,
+            '--lang-in', config.sourceLang,
+            '--lang-out', config.targetLang,
+            '--config', config.configPath, 
+        ]
+        if config.skip_last_pages and config.skip_last_pages > 0:
+            # get pages num of the pdf
+            end = len(PdfReader(input_path).pages) - config.skip_last_pages
+            cmd.append('-p '+str(1)+'-'+str(end))
+        if config.skip_subset_fonts == True or config.skip_subset_fonts == 'true':
+            cmd.append('--skip-subset-fonts')
+        if config.babeldoc == True or config.babeldoc == 'true':
+            cmd.append('--babeldoc')
+        subprocess.run(cmd, check=True)
+        if config.babeldoc == True or config.babeldoc == 'true':
             os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.mono.pdf"), output_files['mono'])
             os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
-            return output_files['mono'], output_files['dual']
-        else:
-            raise ValueError(f"Unsupported engine: {config.engine}")
-        
+        return output_files['mono'], output_files['dual']
+
     # 工具函数, 用于将pdf左右拼接
     def merge_pages_side_by_side(self, input_pdf, output_pdf):
         reader = PdfReader(input_pdf)

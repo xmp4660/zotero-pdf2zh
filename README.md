@@ -7,7 +7,11 @@
 ![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=yellow)
 [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/main/LICENSE)
 
-在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
+在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
+
+<div align="center">
+[使用pdf2zh](./README.md) | [使用pdf2zh_next](./README_babeldoc.md) 
+</div>
 
 # 如何使用本插件
 
