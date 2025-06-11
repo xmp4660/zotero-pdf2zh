@@ -127,6 +127,12 @@ class PDFTranslator:
                 service = 'openaicompatible'
             if service == 'tencent':
                 service = 'tencentmechinetranslation'
+            if service == 'ModelScope':
+                service = 'modelscope'
+            if service == 'silicon':
+                service = 'siliconflow'
+            if service == 'qwen-mt':
+                service = 'qwenmt'
             cmd = [
                 config.engine,
                 input_path,
