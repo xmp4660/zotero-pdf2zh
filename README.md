@@ -1,5 +1,8 @@
 # Zotero PDF2zh
 
+<div align="center">
+
+
 ![Zotero PDF2zh](./addon/content/icons/favicon@0.5x.svg)
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
@@ -9,8 +12,8 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-<div align="center">
-[使用pdf2zh](./README.md) | [使用pdf2zh_next](./README_babeldoc.md) 
+[使用pdf2zh教程](./README.md) | [使用pdf2zh_next教程](./README_babeldoc.md) 
+
 </div>
 
 # 如何使用本插件
