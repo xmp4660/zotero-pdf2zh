@@ -120,6 +120,8 @@ python -m pip install numpy==2.2.0
 
 **uv安装**
 
+进入`zotero-pdf2zh`文件夹：
+
 1.  安装uv环境
 
 ```shell
