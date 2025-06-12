@@ -106,8 +106,19 @@ uv venv --python 3.13   # 创建3.13版本python虚拟环境
 
 在第一步创建的`zotero-pdf2zh-next`文件路径中, 在命令行执行：
 
+MacOS/Linux
 ```shell
 cp ~/.config/pdf2zh/config.v3.toml ./config.toml
+```
+
+Windows(cmd)
+```shell
+copy "%USERPROFILE%\.config\pdf2zh\config.v3.toml" config.toml
+```
+
+Windows (PowerShell)
+```shell
+Copy-Item "$env:USERPROFILE\.config\pdf2zh\config.v3.toml" -Destination "config.toml"
 ```
 
 - 本步骤创建的`config.toml`可用于未来配置其他LLM服务和翻译选项。
