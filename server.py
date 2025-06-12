@@ -151,8 +151,17 @@ class PDFTranslator:
                 cmd.append(f'{1}-{end}')
             print("pdf2zh_next command: ", cmd)
             subprocess.run(cmd, check=True)
-            os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.mono.pdf"), output_files['mono'])
-            os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
+
+            no_watermark_mono = os.path.join(config.outputPath, f"{base_name}.no_watermark.{config.targetLang}.mono.pdf")
+            no_watermark_dual = os.path.join(config.outputPath, f"{base_name}.no_watermark.{config.targetLang}.dual.pdf")
+            
+            if os.path.exists(no_watermark_mono) and os.path.exists(no_watermark_dual):
+                os.rename(no_watermark_mono, output_files['mono'])
+                os.rename(no_watermark_dual, output_files['dual'])
+            else:            
+                os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.mono.pdf"), output_files['mono'])
+                os.rename(os.path.join(config.outputPath, f"{base_name}.{config.targetLang}.dual.pdf"), output_files['dual'])
+
             return output_files['mono'], output_files['dual']
         else:
             raise ValueError(f"Unsupported engine: {config.engine}")
