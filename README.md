@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-[使用pdf2zh教程](./README.md) | [使用pdf2zh_next教程](./README_babeldoc.md)
+[使用pdf2zh教程(本页面, Stable)](./README.md) | [使用pdf2zh_next教程(Experimental)](./README_babeldoc.md)
 
 </div>
 
