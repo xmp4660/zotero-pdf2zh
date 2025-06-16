@@ -24,6 +24,9 @@
 - 请先访问：[常见问题](https://github.com/guaguastandup/zotero-pdf2zh/issues/64)
 - 尝试问一下AI
 - 提issue或到插件群发自己的终端报错截图（一定要有终端截图，谢谢！）
+- 访问网络上的视频教程，感谢大家的视频教程！
+    - 来自小红薯[@jiajia](https://www.xiaohongshu.com/user/profile/631310d8000000001200c3a1?channelType=web_engagement_notification_page&channelTabId=mentions&xsec_token=AB6wOtAu2rBNcN8WfzJS72pVX6rDZYfWMImRRCx98yX6w%3D&xsec_source=pc_notice)的视频教程: [【史上最强PDF文献翻译，zotero-pdf2zh部署 - jiajia | 小红书 - 你的生活指南】](https://www.xiaohongshu.com/discovery/item/684fcb7a0000000022029c73?source=webshare&xhsshare=pc_web&xsec_token=ABNsFW84A-oXoKOuW411myHQThE4BpC0sEJNogkFFSuzg=&xsec_source=pc_share)
+    - 来自bilibili[@她笑中藏泪花](https://space.bilibili.com/3493121191054300)的视频教程:[【Zotero-pdf2zh】轻松实现Zotero文献翻译！手把手教你配置pdf2zh插件---PDFMathTranslate](https://www.bilibili.com/video/BV13X9yY9EEH/?share_source=copy_web&vd_source=a492b2fdd5febb228a648d598595ea6e)
 
 ## 第一步 安装与启动
 
