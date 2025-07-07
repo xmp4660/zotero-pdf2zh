@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-[使用pdf2zh教程(本页面, Stable)](./README.md) | [使用pdf2zh_next教程(Experimental)](./README_babeldoc.md)
+[使用pdf2zh教程(本页面， Stable)](./README.md) | [使用pdf2zh_next教程(Experimental)](./README_babeldoc.md)
 
 </div>
 
@@ -207,30 +207,30 @@ uv run server.py 8888
 
 ```json
 {
-    "USE_MODELSCOPE": "0",
-    "PDF2ZH_LANG_FROM": "English",
-    "PDF2ZH_LANG_TO": "Simplified Chinese",
-    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf",
+    "USE_MODELSCOPE": "0"，
+    "PDF2ZH_LANG_FROM": "English"，
+    "PDF2ZH_LANG_TO": "Simplified Chinese"，
+    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"，
     "translators": [
         {
-            "name": "deepseek",
+            "name": "deepseek"，
             "envs": {
-                "DEEPSEEK_API_KEY": "sk-xxxxxxx",
+                "DEEPSEEK_API_KEY": "sk-xxxxxxx"，
                 "DEEPSEEK_MODEL": "deepseek-chat"
             }
-        },
+        }，
         {
-            "name": "zhipu",
+            "name": "zhipu"，
             "envs": {
-                "ZHIPU_API_KEY": "xxxxxx",
+                "ZHIPU_API_KEY": "xxxxxx"，
                 "ZHIPU_MODEL": "glm-4-flash"
             }
-        },
+        }，
         {
-            "name": "openailiked",
+            "name": "openailiked"，
             "envs": {
-                "OPENAILIKED_BASE_URL": "https://ark.cn-beijing.volces.com/api/v3",
-                "OPENAILIKED_API_KEY": "xxxxx",
+                "OPENAILIKED_BASE_URL": "https://ark.cn-beijing.volces.com/api/v3"，
+                "OPENAILIKED_API_KEY": "xxxxx"，
                 "OPENAILIKED_MODEL": "ep-xxxx-xxxxx"
             }
         }
@@ -240,7 +240,7 @@ uv run server.py 8888
 
 **第二步：字体配置**
 
-- 将字体文件放在`zotero-pdf2zh`, 然后在`config.json`中，修改自定义字体文件路径`"NOTO_FONT_PATH": "./xxxxxx.xxx"(您的字体文件名)`.
+- 将字体文件放在`zotero-pdf2zh`， 然后在`config.json`中，修改自定义字体文件路径`"NOTO_FONT_PATH": "./xxxxxx.xxx"(您的字体文件名)`.
 
 - 如果翻译后无法正确显示字体，请先在电脑中安装本字体.
 
@@ -266,7 +266,7 @@ uv run server.py 8888
 > 关于翻译引擎的选择：
 >
 > - 使用默认的bing或者google，速度快，效果适中，不需要在config.json文件中配置
-> - 推荐1：在[火山引擎](https://www.volcengine.com/product/doubao/)中选择`deepseek-v3`模型服务（参与协作奖励计划，每天有50w免费额度，需要将自己的推理内容共享给火山引擎)，线程数可设置为200以上, 此服务对应下方实例文件中的`openailiked`.
+> - 推荐1：在[火山引擎](https://www.volcengine.com/product/doubao/)中选择`deepseek-v3`模型服务（参与协作奖励计划，每天有50w免费额度，需要将自己的推理内容共享给火山引擎)，线程数可设置为200以上， 此服务对应下方实例文件中的`openailiked`.
 > - 推荐2：[智谱AI](https://www.bigmodel.cn/)的`glm-4-flash`模型（免费），此服务对应下方实例文件中的`zhipu`.
 > - 推荐3：[deepseek](https://platform.deepseek.com/)的`deepseek-v3`，夜间00:30以后有50%优惠，可以按住shift选择多个条目-右键翻译，并且把线程数调高（20以上），此服务对应下方实例文件中的`deepseek`.
 
@@ -318,7 +318,7 @@ uv run server.py 8888
 
 将双栏论文剪切拼接为单栏显示，适配手机阅读
 
-得到后缀中包含`cut`的单栏PDF文件，如`mono-cut`, `dual-cut`,`origin-cut`
+得到后缀中包含`cut`的单栏PDF文件，如`mono-cut`， `dual-cut`，`origin-cut`
 
 **选项三：PDF2zh：双语对照(双栏)**
 
@@ -379,12 +379,7 @@ uv run server.py 8888
 
 💐免费开源插件，您的支持是我继续开发的动力～
 
-Alipay/Wechat
-
-<img src="https://github.com/user-attachments/assets/4e2d7991-3795-4cac-9198-ab3a3e34a65e" width="120px">
-<img src="https://github.com/user-attachments/assets/fcc2d22c-fbfa-4464-919c-981ba94516f2" width="120px">
-
-SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
+- SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
 
 # TODO LIST
 
