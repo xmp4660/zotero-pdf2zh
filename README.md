@@ -207,30 +207,30 @@ uv run server.py 8888
 
 ```json
 {
-    "USE_MODELSCOPE": "0"，
-    "PDF2ZH_LANG_FROM": "English"，
-    "PDF2ZH_LANG_TO": "Simplified Chinese"，
-    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf"，
+    "USE_MODELSCOPE": "0",
+    "PDF2ZH_LANG_FROM": "English",
+    "PDF2ZH_LANG_TO": "Simplified Chinese",
+    "NOTO_FONT_PATH": "./LXGWWenKai-Regular.ttf",
     "translators": [
         {
-            "name": "deepseek"，
+            "name": "deepseek",
             "envs": {
-                "DEEPSEEK_API_KEY": "sk-xxxxxxx"，
+                "DEEPSEEK_API_KEY": "sk-xxxxxxx",
                 "DEEPSEEK_MODEL": "deepseek-chat"
             }
-        }，
+        },
         {
-            "name": "zhipu"，
+            "name": "zhipu",
             "envs": {
-                "ZHIPU_API_KEY": "xxxxxx"，
+                "ZHIPU_API_KEY": "xxxxxx",
                 "ZHIPU_MODEL": "glm-4-flash"
             }
-        }，
+        },
         {
-            "name": "openailiked"，
+            "name": "openailiked",
             "envs": {
-                "OPENAILIKED_BASE_URL": "https://ark.cn-beijing.volces.com/api/v3"，
-                "OPENAILIKED_API_KEY": "xxxxx"，
+                "OPENAILIKED_BASE_URL": "https://ark.cn-beijing.volces.com/api/v3",
+                "OPENAILIKED_API_KEY": "xxxxx",
                 "OPENAILIKED_MODEL": "ep-xxxx-xxxxx"
             }
         }
