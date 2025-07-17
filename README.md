@@ -348,6 +348,17 @@ uv run server.py 8888
 >
 > 如果启用babeldoc，则生成的dual文件等效于双语对照（单栏）
 
+## ✨新功能：macOS中的自动化流程
+详见[macOS自动化流程](https://github.com/guaguastandup/zotero-pdf2zh/blob/main/automation/macos/%E6%95%99%E7%A8%8B.md)
+
+- 自动启停：当您打开 Zotero 应用程序时，后台会自动启动 server.py 翻译服务；关闭 Zotero 时，服务也会被自动终止，释放系统资源。
+
+- 稳定守护：在 Zotero 运行期间，如果 server.py 服务因任何原因意外崩溃，后台服务会检测到并在 10 秒内自动重启，确保服务的可用性。
+
+- 静默通知：服务在启动、停止或翻译PDF时，都会通过macOS通知中心发送静默通知，让您能实时了解服务状态和翻译进度，而不会打扰您的工作流程。
+
+贡献者[@LinHuanli](https://github.com/LinHuanli)
+
 ## 翻译效果展示
 
 <img src="./images/image3.png" alt="image3" style="width: 500px" align="center"/>
