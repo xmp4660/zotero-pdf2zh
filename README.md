@@ -357,6 +357,8 @@ uv run server.py 8888
 
 - 静默通知：服务在启动、停止或翻译PDF时，都会通过macOS通知中心发送静默通知，让您能实时了解服务状态和翻译进度，而不会打扰您的工作流程。
 
+- 右键翻译：在MacOS文件目录中右键文件翻译
+
 贡献者[@LinHuanli](https://github.com/LinHuanli)
 
 ## 翻译效果展示
