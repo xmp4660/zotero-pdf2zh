@@ -43,12 +43,12 @@ class PDFTranslator:
 
         在 macOS 上优先尝试使用 `terminal-notifier`，如果不存在则退回到
         AppleScript 的 `osascript` 命令。在 Windows 上尝试调用
-        `win10toast` 库发送 toast 通知。如果找不到该库，则退回到
+        `win10toast-click` 库发送 toast 通知。如果找不到该库，则退回到
         控制台打印，以保证脚本在缺少第三方依赖时仍能正常运行。
         """
         import platform
         try:
-            # Windows: 使用 win10toast 发送通知
+            # Windows: 使用 win10toast-click 发送通知
             if platform.system() == 'Windows':
                 try:
                     from win10toast import ToastNotifier
