@@ -23,7 +23,7 @@
 - 尝试问一下AI
 - 提issue或到插件群发自己的终端报错截图（一定要有终端截图，谢谢！）
 
-## 第一步 安装与启动
+## 方法一：uv安装
 
 **第一步：创建目录，存放本插件需要的所有文件**
 
@@ -127,6 +127,128 @@ Copy-Item "$env:USERPROFILE\.config\pdf2zh\config.v3.toml" -Destination "config.
 - 本步骤创建的`config.toml`可用于未来配置其他LLM服务和翻译选项。
 
 **第四步: zotero插件设置**
+
+打开zotero-pdf2zh插件设置
+
+- 将翻译引擎选择为: `pdf2zh_next`
+- 将配置文件路径改为: `./config.toml`
+
+可配置字段:
+
+- 翻译服务
+- 线程数 (对应pdf2zh_next里的qps)
+- 翻译文件输出路径
+- 配置文件路径(格式为toml)
+- 跳过最后几页不翻译
+- 重命名条目为短标题
+- 默认生成文件(不支持生成双语对照文件-单栏PDF)
+
+各字段功能请参考[PDF2zh教程](./README.md)
+
+## 方法二：docker安装
+
+### 第一步：创建目录，存放本插件需要的所有文件
+
+```shell
+# 1. 创建并进入zotero-pdf2zh文件夹
+mkdir zotero-pdf2zh-next && cd zotero-pdf2zh-next
+# 2. 从 zotero-pdf2zh 官方 GitHub 仓库下载配置文件
+#    - Dockerfile: 定义了如何构建我们服务的镜像
+#    - docker-compose.yaml: 定义了如何运行和编排我们的服务
+curl -o Dockerfile https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/Dockerfile
+curl -o docker-compose.yaml https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker-compose.yaml
+
+# 3. 创建一个子目录，专门用于存放需要持久化的数据
+#    这包括你的个人配置和翻译后的文件
+mkdir zotero-pdf2zh && cd zotero-pdf2zh
+
+# 4. 在数据目录内，预先创建用于存放翻译结果的文件夹
+mkdir translated
+
+# 5. 操作完成后，返回到项目根目录，为下一步做准备
+cd ..
+```
+
+### 第二步：修改docker-compose.yaml
+
+原仓库默认使用 `byaidu/pdf2zh:1.9.6`，版本老、依赖旧。**直接换成社区更活跃的 `awwaawwa/pdfmathtranslate-next:latest`**，就能原地升级到 2.x 新引擎，并内置 `pdf2zh_next`（不再需要自己 `pip install`）。
+
+请用以下内容**完全覆盖**你下载的 `docker-compose.yaml` 文件：
+
+```yaml
+services:
+    zotero-pdf2zh:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                # 我们在这里指定了构建时使用的基础镜像。
+                # 相比原始的 byaidu/pdf2zh，awwaawwa/pdfmathtranslate-next 更新更频繁，功能更强。
+                - ZOTERO_PDF2ZH_FROM_IMAGE=awwaawwa/pdfmathtranslate-next:latest
+                - ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.py
+        container_name: zotero-pdf2zh
+        # restart: unless-stopped 是一条黄金法则，
+        # 它能确保 Docker 服务在宿主机重启后自动恢复，实现“开机自启”。
+        restart: unless-stopped
+        ports:
+            - "8888:8888" # 将容器的 8888 端口映射到你电脑的 8888 端口
+        environment:
+            - TZ=Asia/Shanghai # 设置时区，确保日志时间正确
+            - HF_ENDPOINT=https://hf-mirror.com # 使用 HuggingFace 镜像，加速模型下载
+        volumes:
+            # 将我们创建的本地目录映射到容器内部
+            - ./zotero-pdf2zh/translated:/app/translated # 挂载翻译结果目录
+            - ./zotero-pdf2zh/config.toml:/app/config.toml # 核心！Zotero 读取的新版 TOML 配置文件 2.x 配置文件
+```
+
+---
+
+### 第三步：生成 config.toml
+
+1. **先跑一次** PDFMathTranslate-next 桌面版或 Web UI，把 OpenAI／DeepL Key、目标语言、并发数等都配好。
+2. 系统会生成 `config.v3.toml` （路径见下表）。复制并改名成 `config.toml` 放到 `zotero-pdf2zh/` 目录下即可。
+
+```bash
+# Windows (cmd)
+copy "%USERPROFILE%\.config\pdf2zh\config.v3.toml" zotero-pdf2zh\config.toml
+# PowerShell
+Copy-Item "$env:USERPROFILE\.config\pdf2zh\config.v3.toml" zotero-pdf2zh\config.toml
+# macOS / Linux
+cp ~/.config/pdf2zh/config.v3.toml zotero-pdf2zh/config.toml
+```
+
+操作完毕后，你的最终目录结构应如下所示：
+
+```Plaintext
+zotero-pdf2zh-docker/
+├── Dockerfile
+├── docker-compose.yaml
+└── zotero-pdf2zh/
+    ├── config.toml      <-- 你的 API Key 和配置在这里
+    └── translated/      <-- 翻译后的文件将出现在这里
+```
+
+### 第四步： 一键启动与日常管理
+
+现在，万事俱备。让我们启动服务。
+
+#### **首次部署**
+
+在项目根目录下（即 `docker-compose.yaml` 所在的位置）执行：
+
+```bash
+# 推荐：先清理可能存在的同名旧容器，避免冲突 (|| true 会忽略容器不存在的错误)
+docker rm -f zotero-pdf2zh || true
+
+# 一键构建镜像并在后台启动服务
+# --build: 强制根据 Dockerfile 重新构建镜像，以应用我们的修改
+# -d:      detached 模式，让服务在后台安静运行
+docker-compose up -d --build
+```
+
+> 重启电脑后，因设置了 `restart: unless-stopped`，容器会自动拉起；若未生效，手动 `docker start zotero-pdf2zh` 即可。
+
+### 第五步：zotero插件设置
 
 打开zotero-pdf2zh插件设置
 
