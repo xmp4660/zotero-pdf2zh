@@ -23,7 +23,7 @@
 - 尝试问一下AI
 - 提issue或到插件群发自己的终端报错截图（一定要有终端截图，谢谢！）
 
-##  方法一：uv安装
+## 方法一：uv安装
 
 **第一步：创建目录，存放本插件需要的所有文件**
 
@@ -145,9 +145,7 @@ Copy-Item "$env:USERPROFILE\.config\pdf2zh\config.v3.toml" -Destination "config.
 
 各字段功能请参考[PDF2zh教程](./README.md)
 
-
-
-##  方法二：docker安装
+## 方法二：docker安装
 
 ### 第一步：创建目录，存放本插件需要的所有文件
 
@@ -179,45 +177,45 @@ cd ..
 
 ```yaml
 services:
-  zotero-pdf2zh:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        # 我们在这里指定了构建时使用的基础镜像。
-        # 相比原始的 byaidu/pdf2zh，awwaawwa/pdfmathtranslate-next 更新更频繁，功能更强。
-        - ZOTERO_PDF2ZH_FROM_IMAGE=awwaawwa/pdfmathtranslate-next:latest
-        - ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.py
-    container_name: zotero-pdf2zh
-    # restart: unless-stopped 是一条黄金法则，
-    # 它能确保 Docker 服务在宿主机重启后自动恢复，实现“开机自启”。
-    restart: unless-stopped
-    ports:
-      - "8888:8888" # 将容器的 8888 端口映射到你电脑的 8888 端口
-    environment:
-      - TZ=Asia/Shanghai # 设置时区，确保日志时间正确
-      - HF_ENDPOINT=https://hf-mirror.com # 使用 HuggingFace 镜像，加速模型下载
-    volumes:
-      # 将我们创建的本地目录映射到容器内部
-      - ./zotero-pdf2zh/translated:/app/translated     # 挂载翻译结果目录
-      - ./zotero-pdf2zh/config.toml:/app/config.toml     # 核心！Zotero 读取的新版 TOML 配置文件 2.x 配置文件
+    zotero-pdf2zh:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                # 我们在这里指定了构建时使用的基础镜像。
+                # 相比原始的 byaidu/pdf2zh，awwaawwa/pdfmathtranslate-next 更新更频繁，功能更强。
+                - ZOTERO_PDF2ZH_FROM_IMAGE=awwaawwa/pdfmathtranslate-next:latest
+                - ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.py
+        container_name: zotero-pdf2zh
+        # restart: unless-stopped 是一条黄金法则，
+        # 它能确保 Docker 服务在宿主机重启后自动恢复，实现“开机自启”。
+        restart: unless-stopped
+        ports:
+            - "8888:8888" # 将容器的 8888 端口映射到你电脑的 8888 端口
+        environment:
+            - TZ=Asia/Shanghai # 设置时区，确保日志时间正确
+            - HF_ENDPOINT=https://hf-mirror.com # 使用 HuggingFace 镜像，加速模型下载
+        volumes:
+            # 将我们创建的本地目录映射到容器内部
+            - ./zotero-pdf2zh/translated:/app/translated # 挂载翻译结果目录
+            - ./zotero-pdf2zh/config.toml:/app/config.toml # 核心！Zotero 读取的新版 TOML 配置文件 2.x 配置文件
 ```
 
 ---
 
 ### 第三步：生成 config.toml
 
-1. **先跑一次** PDFMathTranslate-next 桌面版或 Web UI，把 OpenAI／DeepL Key、目标语言、并发数等都配好。  
+1. **先跑一次** PDFMathTranslate-next 桌面版或 Web UI，把 OpenAI／DeepL Key、目标语言、并发数等都配好。
 2. 系统会生成 `config.v3.toml` （路径见下表）。复制并改名成 `config.toml` 放到 `zotero-pdf2zh/` 目录下即可。
 
- ```bash
+```bash
 # Windows (cmd)
 copy "%USERPROFILE%\.config\pdf2zh\config.v3.toml" zotero-pdf2zh\config.toml
 # PowerShell
 Copy-Item "$env:USERPROFILE\.config\pdf2zh\config.v3.toml" zotero-pdf2zh\config.toml
 # macOS / Linux
 cp ~/.config/pdf2zh/config.v3.toml zotero-pdf2zh/config.toml
- ```
+```
 
 操作完毕后，你的最终目录结构应如下所示：
 
@@ -250,7 +248,7 @@ docker-compose up -d --build
 
 > 重启电脑后，因设置了 `restart: unless-stopped`，容器会自动拉起；若未生效，手动 `docker start zotero-pdf2zh` 即可。
 
-### 第五步：第四步: zotero插件设置
+### 第五步：zotero插件设置
 
 打开zotero-pdf2zh插件设置
 
