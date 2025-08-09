@@ -69,11 +69,11 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-2.  uv安装Python 3.13
+2.  uv安装Python 3.12
 
 ```shell
-uv python install 3.13  # 安装3.13版本python
-uv venv --python 3.13   # 创建3.13版本python虚拟环境
+uv python install 3.12  # 安装3.12版本python
+uv venv --python 3.12   # 创建3.12版本python虚拟环境
 ```
 
 3.  启动虚拟环境
