@@ -27,9 +27,14 @@
 
 🔮 v3.0.0更新日志
 
-- 更新zotero配置端, 兼容pdf2zh和pdf2zh_next的多种翻译配置
-- 更新zotero配置端, 用户可以在本界面添加、编辑、激活、删除LLM API配置
-- 更新server.py脚本，自动切换pdf2zh/pdf2zh_next虚拟环境，用户可以选择conda/uv进行环境配置
+1. zotero端添加LLM API配置列表
+2. zotero端兼容pdf2zh_next/pdf2zh大部分翻译配置
+3. zotero端翻译服务/语言选择字段更新，增加siliconflowfree服务选项
+4. zotero端对pdf2zh增加本地翻译字体添加，对pdf2zh_next增加翻译选择
+5. zotero/server优化dual文件生成格式，在pdf2zh_next翻译配置中：dualMode可选（LR/TB）分别表示双语页面左右显示/交替页面显示
+6. server端脚本添加自动虚拟环境更新操作，用户可以直接切换pdf2zh/pdf2zh_next进行翻译，不需要手动调整虚拟环境
+7. server端提供配置文件模版，不需要手动复制默认模版，不再支持用户自定义配置文件路径
+8. server端优化页面裁剪，选择PDF页面文字不再会选中隐藏文字（处理速度比以前慢）
 
 ## 第一步: 安装uv/conda
 
