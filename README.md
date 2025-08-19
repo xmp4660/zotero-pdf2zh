@@ -94,14 +94,16 @@ python server.py --port={Your Port Num}
 
 ## 第五步: Zotero端插件设置
 
-<img src="./images/preference.png" alt="preference" style="width: 600px" align="center"/><img src="./images/preference2.png" alt="preference2" style="width: 600px" align="center"/>
+<img src="./images/preference.png" alt="preference" style="width: 600px" align="center"/>
+
+<img src="./images/preference2.png" alt="preference2" style="width: 600px" align="center"/>
 
 **💡 注意事项**
 
 - 切换翻译引擎, 界面将显示不同引擎的翻译配置
 - 对于翻译引擎pdf2zh: 目前zotero端和server端并不传输字体文件, 字体文件路径为本地路径, 如果采用远端部署, 则需要手动修改`config.json`文件中的`NOTO_FONT_PATH`字段。
 
-<img src="./images/editor.png" alt="editor" style="width: 600px" align="center"/>
+<img src="./images/editor.png" alt="editor" style="width: 400px" align="center"/>
 
 **💡 注意事项**
 
@@ -126,7 +128,7 @@ python server.py --port={Your Port Num}
 
 示例:
 
-<img src="./images/dualmode.png" alt="dualmode" style="width: 600px" align="center"/>
+<img src="./images/dualmode.png" alt="dualmode" style="width: 800px" align="center"/>
 
 # 致谢
 
