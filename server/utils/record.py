@@ -1,4 +1,4 @@
-## server.py v3.0.0
+## server.py v3.0.1
 # guaguastandup
 # zotero-pdf2zh
 from threading import Lock

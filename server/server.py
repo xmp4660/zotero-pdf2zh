@@ -1,4 +1,4 @@
-## server.py v3.0.0
+## server.py v3.0.1
 # guaguastandup
 # zotero-pdf2zh
 import os, sys
@@ -367,6 +367,10 @@ class PDFTranslator:
     def translate_pdf(self, input_path, config):
         # TODO: 如果翻译失败了, 自动执行跳过字体子集化, 并且显示生成的文件的大小
         config.update_config_file(config_path[pdf2zh])
+        if config.targetLang == 'zh-CN': # TOFIX, pdf2zh 1.x converter没有通过
+            config.targetLang = 'zh'
+        if config.sourceLang == 'zh-CN': # TOFIX, pdf2zh 1.x converter没有通过
+            config.sourceLang = 'zh'
         cmd = [
             pdf2zh, 
             input_path, 

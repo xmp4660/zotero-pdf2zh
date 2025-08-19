@@ -11,5 +11,6 @@ yarn.lock
 server/config/config.json
 server/config/config.toml
 server/config/venv.json
-
+server/zotero-pdf2zh-next-venv
+server/zotero-pdf2zh-venv
 __pycache__

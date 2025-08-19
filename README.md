@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.0 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.1 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -25,7 +25,7 @@
 - 在github issue区提问
 - 发送问题到本插件用户QQ群: 971960014 入群验证回答: github
 
-🔮 v3.0.0更新日志
+🔮 v3.0.1更新日志
 
 1. zotero端添加LLM API配置列表
 2. zotero端兼容pdf2zh_next/pdf2zh大部分翻译配置
@@ -35,6 +35,7 @@
 6. server端脚本添加自动虚拟环境更新操作，用户可以直接切换pdf2zh/pdf2zh_next进行翻译，不需要手动调整虚拟环境
 7. server端提供配置文件模版，不需要手动复制默认模版，不再支持用户自定义配置文件路径
 8. server端优化页面裁剪，选择PDF页面文字不再会选中隐藏文字（处理速度比以前慢）
+9. 修复少量bug
 
 ## 第一步: 安装uv/conda
 
@@ -90,7 +91,7 @@ python server.py --port={Your Port Num}
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.0[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.0.xpi)
+新版本v3.0.1[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.1.xpi)
 
 ## 第五步: Zotero端插件设置
 

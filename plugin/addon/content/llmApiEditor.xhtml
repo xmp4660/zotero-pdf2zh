@@ -262,7 +262,7 @@ href="chrome://zotero/skin/zotero.css" type="text/css"?>
                 models: ["gpt-4", "gpt-4", "gpt-4o", "gpt-4o-mini"],
                 urls: ["https://api.openai.com/v1"],
             },
-            siliconflow: {
+            silicon: {
                 name: "SiliconFlow",
                 models: [
                     "deepseek-ai/DeepSeek-V3",
@@ -302,7 +302,7 @@ href="chrome://zotero/skin/zotero.css" type="text/css"?>
                 models: ["deepseek-chat", "deepseek-coder"],
                 urls: ["https://api.deepseek.com/v1"],
             },
-            qwen: {
+            "qwen-mt": {
                 name: "Qwen",
                 models: ["qwen-mt-turbo"],
             },
@@ -327,6 +327,14 @@ href="chrome://zotero/skin/zotero.css" type="text/css"?>
             grok: {
                 name: "Grok",
                 models: ["grok-4-0709", "grok-3", "grok-3-mini"],
+            },
+            xinference: {
+                name: "XInference",
+                models: ["gemma-2-it"],
+                urls: ["http://127.0.0.1:9997"],
+            },
+            deepl: {
+                name: "DeepL",
             },
         };
         let currentData = {};
