@@ -14,11 +14,16 @@ from utils.config import Config
 from utils.cropper import Cropper
 import traceback
 import argparse
+import io
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
 pdf2zh_next = 'pdf2zh_next'
 venv        = 'venv' 
+
+# 强制设置标准输出和标准错误的编码为 UTF-8
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+# sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 # 所有系统: 获取当前脚本server.py所在的路径
 root_path     = os.path.dirname(os.path.abspath(__file__))

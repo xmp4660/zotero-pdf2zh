@@ -4,6 +4,7 @@
 import json, toml
 import os
 from utils.config_map import pdf2zh_config_map, pdf2zh_next_config_map
+
 pdf2zh = 'pdf2zh'
 pdf2zh_next = 'pdf2zh_next'
 

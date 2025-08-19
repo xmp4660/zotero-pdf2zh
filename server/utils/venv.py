@@ -10,7 +10,6 @@ import shutil
 
 # TODO: 如果用户的conda/uv环境路径是自定义的, 需要支持自定义路径
 # 目前我们默认为当用户在命令行中执行uv / conda时, 是可以正常使用的, 而不是执行/usr/local/bin/uv等等才可以使用
-
 class VirtualEnvManager:
     def __init__(self, config_path, env_name, default_env_tool):
         self.is_windows = platform.system() == "Windows"
@@ -23,7 +22,7 @@ class VirtualEnvManager:
         self.curr_envtool = None
         self.curr_envname = None
         self.default_env_tool = default_env_tool
-        
+
     """环境初始化"""
     def initialize_env(self, engine, envtool): 
         envname = self.env_name[engine]
