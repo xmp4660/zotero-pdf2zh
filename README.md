@@ -67,7 +67,7 @@ conda --version
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 # 2. 下载并解压server文件夹
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
-upzip server.zip
+unzip server.zip
 # 3. 进入server文件夹
 cd server
 ```
