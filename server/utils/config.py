@@ -23,6 +23,7 @@ class Config:
         self.skip_last_pages = int(request_data.get('skipLastPages', 0))
         self.thread_num = int(request_data.get('threadNum', 8))
 
+        # 如果左右留白部分裁剪太多了, 可以调整pdf_w_offset和pdf_offset_ratio, 宽边裁剪值pdf_w_offset, 窄边裁剪值pdf_w_offset/pdf_offset_ratio
         self.pdf_w_offset = int(request_data.get('pdf_w_offset', 40))
         self.pdf_h_offset = int(request_data.get('pdf_h_offset', 20))
         self.pdf_offset_ratio = float(request_data.get('pdf_offset_ratio', 5))
@@ -173,6 +174,7 @@ class Config:
                         translator_keys.append(mapped_key)
                         print(f"✏️ 更新 {key}: {mapped_key} = {value}")
                     else:
+                        translator_keys.append(mapped_key)
                         print(f"✏️ 跳过 {key}: {mapped_key} = {value} (empty or null)")
             
             # 将用户设置的extraData也进行映射, 如果存在映射关系, 则更新
@@ -184,11 +186,13 @@ class Config:
                         translator_keys.append(key)
                         print(f"✏️ 更新 extraData: {key} = {value}")
                     else:
+                        # translator_keys.append(mapped_key)
                         print(f"✏️ 跳过 extraData: {key} = {value} (empty or null)")
 
             # print("translator_keys", translator_keys)
             # 将translator中, 所有不在translator_keys中的key删除
-            for key in translator:
+            print(translator.keys())
+            for key in list(translator.keys()):
                 if key not in translator_keys: 
                     del translator[key]
                     print(f"✏️ 删除旧 {key}")

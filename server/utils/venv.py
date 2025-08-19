@@ -42,7 +42,9 @@ class VirtualEnvManager:
                     check=True, timeout=600)
                 if packages:
                     print("🔧 开始使用 uv 安装 packages: ", packages)
-                    python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', 'python')
+                    # python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', 'python')
+                    python_executable = 'python.exe' if self.is_windows else 'python'
+                    python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                     subprocess.run(
                         ['uv', 'pip', 'install', *packages, '--python', python_path], 
                         check=True, timeout=600, env=env)
@@ -71,10 +73,14 @@ class VirtualEnvManager:
     def check_env(self, engine, envtool): # 检查 env 环境是否在uv / conda中存在
         envname = self.env_name.get(engine)
         if envtool == 'uv':
-            uv_env_path = os.path.join('.', envname)
-            # print("🔍 检查 uv 环境: ", uv_env_path)
-            # TOCHECK: 对于windows, macOS, linux, 检查路径的区别
-            return ( os.path.exists(uv_env_path) and os.path.exists(os.path.join(uv_env_path, 'pyvenv.cfg')))
+            try:
+                uv_env_path = os.path.join('.', envname)
+                # print("🔍 检查 uv 环境: ", uv_env_path)
+                # TOCHECK: 对于windows, macOS, linux, 检查路径的区别
+                return ( os.path.exists(uv_env_path) and os.path.exists(os.path.join(uv_env_path, 'pyvenv.cfg')))
+            except Exception as e:
+                print(f"❌ 检查 {envtool} 虚拟环境 {envname} 失败: {e}")
+                return False
         elif envtool == 'conda':
             try: 
                 result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=600)
@@ -123,24 +129,48 @@ class VirtualEnvManager:
             if self.curr_envtool == 'uv':
                 bin_dir = os.path.join(self.curr_envname, 'Scripts' if self.is_windows else 'bin')
             elif self.curr_envtool == 'conda':
-                conda_base = os.path.dirname(os.path.dirname(shutil.which('conda') or ''))
+                # conda_base = os.path.dirname(os.path.dirname(shutil.which('conda') or ''))
+                # bin_dir = os.path.join(conda_base, 'envs', self.curr_envname, 'Scripts' if self.is_windows else 'bin')
+                conda_base_path = shutil.which('conda')
+                if not conda_base_path:
+                    raise FileNotFoundError("Conda executable not found in PATH.")
+                conda_base = os.path.dirname(os.path.dirname(conda_base_path))
                 bin_dir = os.path.join(conda_base, 'envs', self.curr_envname, 'Scripts' if self.is_windows else 'bin')
             else:
                 raise ValueError(f"⚠️ 未知的环境工具: {self.curr_envtool}")
 
             # --- 命令组装 (保留优点：优先可执行文件，并用-u强制无缓冲) ---
+            python_executable = 'python.exe' if self.is_windows else 'python'
+            python_path = os.path.join(bin_dir, python_executable)
+
+            # if command[0].lower() in ['pdf2zh', 'pdf2zh_next']:
+            #     executable_path = os.path.join(bin_dir, command[0])
+            #     if os.path.exists(executable_path):
+            #         cmd = [executable_path] + command[1:]
+            #         print(f"🔍 已找到可执行文件: {executable_path}")
+            #     else:
+            #         python_path = os.path.join(bin_dir, 'python')
+            #         # 使用 -u 参数，请求 Python 不要缓冲 stdout/stderr
+            #         cmd = [python_path, '-u', '-m', command[0]] + command[1:]
+            #         print(f"⚠️ 可执行文件不存在，使用 python -m -u 方式: {' '.join(cmd)}")
+            # else:
+            #     python_path = os.path.join(bin_dir, 'python')
+            #     cmd = [python_path, '-u'] + command
+
             if command[0].lower() in ['pdf2zh', 'pdf2zh_next']:
-                executable_path = os.path.join(bin_dir, command[0])
+                # 2. 检查可执行文件时，也考虑 .exe 后缀
+                executable_name = command[0] + ('.exe' if self.is_windows else '')
+                executable_path = os.path.join(bin_dir, executable_name)
+                
                 if os.path.exists(executable_path):
                     cmd = [executable_path] + command[1:]
                     print(f"🔍 已找到可执行文件: {executable_path}")
                 else:
-                    python_path = os.path.join(bin_dir, 'python')
-                    # 使用 -u 参数，请求 Python 不要缓冲 stdout/stderr
+                    # 使用预先构建好的、路径正确的 python_path
                     cmd = [python_path, '-u', '-m', command[0]] + command[1:]
                     print(f"⚠️ 可执行文件不存在，使用 python -m -u 方式: {' '.join(cmd)}")
             else:
-                python_path = os.path.join(bin_dir, 'python')
+                # 运行其他python命令时，同样使用正确的 python_path
                 cmd = [python_path, '-u'] + command
 
             print(f"🚀 在虚拟环境中执行命令: {' '.join(cmd)}\n")
