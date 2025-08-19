@@ -27,15 +27,15 @@ jobs:
                   node-version: 20
 
             - name: Install deps
-              run: npm install
+              run: cd plugin/ && npm install
 
             - name: Build
               run: |
-                  npm run build
+                  cd plugin/ && npm run build
 
             - name: Release to GitHub
               run: |
-                  npm run release
+                  cd plugin/ && npm run release
                   sleep 1s
 
             - name: Notify release
