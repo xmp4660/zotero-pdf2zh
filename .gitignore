@@ -6,3 +6,10 @@ yarn.lock
 .DS_Store
 .env
 .scaffold
+.vscode
+
+server/config/config.json
+server/config/config.toml
+server/config/venv.json
+
+__pycache__

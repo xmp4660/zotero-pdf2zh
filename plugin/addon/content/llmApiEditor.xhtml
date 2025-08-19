@@ -1,0 +1,418 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?> <?xml-stylesheet
+href="chrome://zotero/skin/zotero.css" type="text/css"?> <?xml-stylesheet
+href="chrome://__addonRef__/content/llmAPIEditor.css" type="text/css"?>
+<!DOCTYPE html>
+<html
+    id="zotero-prefpane-__addonRef__-llmApiEditor"
+    lang="zh-CN"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    windowtype="zotero-prefpane-__addonRef__-llmApiEditor"
+    sizemode="normal"
+    scrolling="true"
+>
+    <head>
+        <title>LLM API 配置编辑器</title>
+        <meta charset="utf-8" />
+        <xul:commandset id="mainCommandSet">
+            <xul:command id="cmd_close" oncommand="window.close();" />
+        </xul:commandset>
+        <xul:keyset id="mainKeyset">
+            <xul:key
+                id="key_close"
+                command="cmd_close"
+                modifiers="accel"
+                reserved="true"
+            />
+        </xul:keyset>
+        <script>
+            document.addEventListener("DOMContentLoaded", (ev) => {
+                Services.scriptloader.loadSubScript(
+                    "chrome://zotero/content/include.js",
+                    this,
+                );
+                Services.scriptloader.loadSubScript(
+                    "resource://zotero/require.js",
+                    this,
+                );
+                window.arguments[0]._initPromise.resolve();
+            });
+        </script>
+    </head>
+
+    <div class="form-container">
+        <h2 id="dialog-title"></h2>
+        <div class="form-group">
+            <label for="service"
+                >LLM服务名称<span class="required">*</span></label
+            >
+            <span style="display: flex">
+                <input
+                    id="service"
+                    preference="extensions.zotero.__addonRef__.dialog-service"
+                    style="width: 250px"
+                    type="text"
+                />
+                <select
+                    id="serviceselect"
+                    style="width: 250px"
+                    preference="extensions.zotero.__addonRef__.dialog-service"
+                />
+            </span>
+        </div>
+
+        <div class="form-group">
+            <label for="model">模型名称</label>
+            <span style="display: flex">
+                <input id="model" type="text" style="width: 250px" />
+                <select id="modelselect" style="width: 250px" />
+            </span>
+        </div>
+
+        <div class="form-group">
+            <label for="apiKey">LLM API KEY</label>
+            <input
+                type="text"
+                id="apiKey"
+                placeholder="请输入API密钥"
+                style="width: 500px"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="apiUrl">LLM BASE URL</label>
+            <input
+                type="text"
+                id="apiUrl"
+                placeholder="请输入API端点URL，如: https://api.openai.com/v1"
+                style="width: 500px"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="activate">激活状态</label>
+            <input type="checkbox" id="activate" />
+            <span style="margin-left: 8px; color: #666; font-size: 12px"
+                >激活此配置（相同服务类型的其他配置将被自动停用）</span
+            >
+        </div>
+        <div class="form-group">
+            <label>额外参数</label>
+            <div id="extra-fields-container"></div>
+            <button
+                type="button"
+                id="add-extra-field-btn"
+                class="btn btn-secondary"
+                style="margin-top: 5px"
+            >
+                + 添加参数
+            </button>
+        </div>
+
+        <div class="button-container">
+            <button class="btn btn-primary" id="save-btn">保存</button>
+            <button class="btn btn-secondary" id="cancel-btn">取消</button>
+        </div>
+    </div>
+
+    <script>
+        // <![CDATA[
+        const SERVICES = {
+            openailiked: {
+                name: "OpenAI-Liked",
+                models: [
+                    "deepseek-v3-250324",
+                    "deepseek-r1-250528",
+                    "kimi-k2-250711",
+                    "doubao-seed-1-6-250615",
+                    "doubao-seed-1-6-flash-250615",
+                    "doubao-seed-1-6-thinking-250715",
+                    "doubao-1-5-thinking-pro-250415",
+                ],
+                urls: ["https://ark.cn-beijing.volces.com/api/v3"],
+                extraData: [],
+            },
+            openai: {
+                name: "OpenAI",
+                models: ["gpt-4", "gpt-4", "gpt-4o", "gpt-4o-mini"],
+                urls: ["https://api.openai.com/v1"],
+            },
+            siliconflow: {
+                name: "SiliconFlow",
+                models: [
+                    "deepseek-ai/DeepSeek-V3",
+                    "deepseek-ai/DeepSeek-R1",
+                    "moonshotai/Kimi-K2-Instruct",
+                    "stepfun-ai/step3",
+                    "zai-org/GLM-4.5-Air",
+                ],
+            },
+            gemini: {
+                name: "Gemini",
+                models: [
+                    "gemini-2.5-flash",
+                    "gemini-2.5-pro",
+                    "gemini-2.5-flash-lite-preview-06-17",
+                    "gemini-2.0-flash",
+                    "gemini-2.0-flash-lite",
+                ],
+            },
+            "azure-openai": {
+                name: "Azure OpenAI",
+                models: ["gpt-4", "gpt-4", "gpt-4o", "gpt-4o-mini"],
+            },
+            zhipu: {
+                name: "Zhipu",
+                models: [
+                    "glm-4-flash",
+                    "glm-4.5",
+                    "glm-4.5-x",
+                    "glm-4.5-air",
+                    "glm-4.5-airx",
+                ],
+                urls: ["https://api.zhipu.com/v1"],
+            },
+            deepseek: {
+                name: "DeepSeek",
+                models: ["deepseek-chat", "deepseek-coder"],
+                urls: ["https://api.deepseek.com/v1"],
+            },
+            qwen: {
+                name: "Qwen",
+                models: ["qwen-mt-turbo"],
+            },
+            ollama: {
+                name: "Ollama",
+                models: ["gemma3:12B", "gemma"],
+                urls: ["http://localhost:11434"],
+            },
+            modelscope: {
+                name: "ModelScope",
+                models: [
+                    "Qwen/Qwen2.5-32B-Instruct",
+                    "openai-mirror/gpt-oss-120b",
+                    "openai-mirror/gpt-oss-20b",
+                ],
+                urls: ["https://api.modelscope.com/v1"],
+            },
+            tencent: {
+                name: "TencentMechineTranslation",
+                urls: ["https://tencent.com"],
+            },
+            grok: {
+                name: "Grok",
+                models: ["grok-4-0709", "grok-3", "grok-3-mini"],
+            },
+        };
+        let currentData = {};
+        let isEditMode = false;
+        document.addEventListener("DOMContentLoaded", function () {
+            initializeForm();
+            bindEvents();
+        });
+
+        function initializeForm() {
+            if (window.arguments && window.arguments[0]) {
+                const args = window.arguments[0];
+                currentData = args.data || {};
+                isEditMode = args.isEdit || false;
+
+                const title = document.getElementById("dialog-title");
+                title.textContent = isEditMode
+                    ? "编辑 LLM API 配置"
+                    : "添加新的 LLM API 配置";
+
+                populateServiceOptions(); // Populate service options dynamically
+                if (currentData.service) {
+                    bindInputSelectValue(currentData.service, "service");
+                    updateModelOptions(currentData.service);
+                }
+                if (currentData.model) {
+                    bindInputSelectValue(currentData.model, "model");
+                }
+                if (currentData.apiKey) {
+                    document.getElementById("apiKey").value =
+                        currentData.apiKey;
+                }
+                if (currentData.apiUrl)
+                    document.getElementById("apiUrl").value =
+                        currentData.apiUrl;
+                if (isEditMode) {
+                    document.getElementById("activate").checked =
+                        currentData.activate !== undefined
+                            ? currentData.activate
+                            : true;
+                } else {
+                    document.getElementById("activate").checked = true; // 默认激活新配置
+                }
+            }
+            if (currentData.extraData) {
+                let extraData = currentData.extraData;
+                if (typeof extraData === "object" && extraData) {
+                    for (const [key, value] of Object.entries(extraData)) {
+                        addExtraFieldRow(key, value);
+                    }
+                }
+            }
+        }
+        // 绑定事件
+        function bindEvents() {
+            document
+                .getElementById("save-btn")
+                .addEventListener("click", saveLLMApi);
+            document
+                .getElementById("cancel-btn")
+                .addEventListener("click", function () {
+                    window.close();
+                });
+            // service & serviceselect
+            document
+                .getElementById("service")
+                .addEventListener("input", function (e) {
+                    bindInputSelectValue(e.target.value, "service");
+                    updateModelOptions(e.target.value);
+                });
+            document
+                .getElementById("serviceselect")
+                .addEventListener("change", function (e) {
+                    bindInputSelectValue(e.target.value, "service");
+                    updateModelOptions(e.target.value);
+                    const apiUrlInput = document.getElementById("apiUrl");
+                    apiUrlInput.value =
+                        SERVICES[service] &&
+                        SERVICES[service].urls &&
+                        SERVICES[service].urls.length > 0
+                            ? SERVICES[service].urls[0]
+                            : "";
+                });
+            // model & modelselect
+            document
+                .getElementById("model")
+                .addEventListener("input", function (e) {
+                    bindInputSelectValue(e.target.value, "model");
+                });
+            document
+                .getElementById("modelselect")
+                .addEventListener("change", function (e) {
+                    bindInputSelectValue(e.target.value, "model");
+                });
+            // **** 下面这行就是为 "Add Parameter" 按钮绑定的动作 ****
+            document
+                .getElementById("add-extra-field-btn")
+                .addEventListener("click", () => {
+                    addExtraFieldRow(); // 当按钮被点击时，调用 addExtraFieldRow 函数
+                });
+        }
+
+        function bindInputSelectValue(value, type) {
+            if (type == "service") {
+                const serviceInput = document.getElementById("service");
+                const serviceSelect = document.getElementById("serviceselect");
+                serviceInput.value = value;
+                serviceSelect.value = value;
+                updateModelOptions(value);
+            } else if (type == "model") {
+                const modelInput = document.getElementById("model");
+                const modelSelect = document.getElementById("modelselect");
+                modelInput.value = value;
+                modelSelect.value = value;
+            }
+        }
+
+        // NEW: Helper function to add a key-value row for extra parameters
+        function addExtraFieldRow(key = "", value = "") {
+            const container = document.getElementById("extra-fields-container");
+            const fieldRow = document.createElement("div");
+            fieldRow.className = "extra-field-row";
+            const keyInput = document.createElement("input");
+            keyInput.type = "text";
+            keyInput.className = "extra-key";
+            keyInput.placeholder = "参数名 (例如 temperature)";
+            keyInput.value = key;
+            const valueInput = document.createElement("input");
+            valueInput.type = "text";
+            valueInput.className = "extra-value";
+            valueInput.placeholder = "参数值 (例如 0.7)";
+            valueInput.value = value;
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.textContent = "remove";
+            removeBtn.className = "btn btn-danger btn-sm"; // Using smaller button class
+            removeBtn.onclick = () => fieldRow.remove();
+            fieldRow.appendChild(keyInput);
+            fieldRow.appendChild(valueInput);
+            fieldRow.appendChild(removeBtn);
+            container.appendChild(fieldRow);
+        }
+        // service & serviceselect
+        // 根据服务类型动态填充模型选项
+        function populateServiceOptions() {
+            const serviceSelect = document.getElementById("serviceselect");
+            serviceSelect.innerHTML = `<option value="">Please select a service</option>`;
+            Object.keys(SERVICES).forEach((key) => {
+                const option = document.createElement("option");
+                const service = SERVICES[key];
+                option.value = key;
+                option.innerHTML = service.name;
+                serviceSelect.appendChild(option);
+            });
+        }
+        // model & modelselect
+        // 选择服务后更新模型选项
+        function updateModelOptions(service) {
+            const modelSelect = document.getElementById("modelselect");
+            modelSelect.innerHTML = `<option value="">Please select a model</option>`;
+            if (
+                service &&
+                SERVICES[service] &&
+                SERVICES[service].models &&
+                SERVICES[service].models.length > 0
+            ) {
+                SERVICES[service].models.forEach((model) => {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.innerHTML = model;
+                    modelSelect.appendChild(option);
+                });
+                const firstModel = SERVICES[service].models[0];
+                bindInputSelectValue(firstModel, "model");
+            } else {
+                bindInputSelectValue("", "model");
+            }
+        }
+        // 保存 LLM API 配置
+        function saveLLMApi() {
+            let extraDataObject = {};
+            const extraFieldRows = document.querySelectorAll(
+                "#extra-fields-container .extra-field-row",
+            );
+            extraFieldRows.forEach((row) => {
+                const key = row.querySelector(".extra-key").value;
+                const value = row.querySelector(".extra-value").value;
+                if (key) {
+                    extraDataObject[key] = value;
+                }
+            });
+            const formData = {
+                service: document.getElementById("service").value,
+                model: document.getElementById("model").value,
+                apiKey: document.getElementById("apiKey").value,
+                apiUrl: document.getElementById("apiUrl").value.trim(),
+                activate: document.getElementById("activate").checked,
+                extraData: extraDataObject,
+            };
+            if (window.arguments && window.arguments[0]) {
+                window.arguments[0].result = {
+                    success: true,
+                    data: formData,
+                    isEdit: isEditMode,
+                    originalKey: currentData.key,
+                };
+            }
+            window.close();
+        }
+        window.saveLLMApi = saveLLMApi;
+        // ]]>
+    </script>
+</html>
