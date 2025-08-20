@@ -1,4 +1,4 @@
-## server.py v3.0.1
+## server.py v3.0.2
 # guaguastandup
 # zotero-pdf2zh
 import json, toml
@@ -15,16 +15,35 @@ def stringToBoolean(value):
 
 class Config:
     def __init__(self, request_data):
-        self.service = request_data.get('service', 'openailiked')
+        self.service = request_data.get('service', 'bing')
+        if self.service in [None, ''] or len(self.service) < 3:
+            self.service = 'bing'
+        
         self.engine = request_data.get('engine', 'pdf2zh')
+        if self.engine not in [pdf2zh, pdf2zh_next]:
+            self.engine = pdf2zh
 
         self.sourceLang = request_data.get('sourceLang', 'en')
+        if self.sourceLang in [None, ''] or len(self.sourceLang) < 2:
+            self.sourceLang = 'en'
         self.targetLang = request_data.get('targetLang', 'zh-CN')
+        if self.targetLang in [None, ''] or len(self.targetLang) < 2:
+            self.targetLang = 'zh-CN'
 
-        self.skip_last_pages = int(request_data.get('skipLastPages', 0))
-        self.thread_num = int(request_data.get('threadNum', 8))
+        self.skip_last_pages = request_data.get('skipLastPages', 0)
+        if self.skip_last_pages not in [None, ''] and isinstance(self.skip_last_pages, int):
+            self.skip_last_pages = int(self.skip_last_pages)
+        else:
+            self.skip_last_pages = 0
+
+        self.thread_num = request_data.get('threadNum', 8)
+        if self.thread_num not in [None, ''] and isinstance(self.thread_num, int):
+            self.thread_num = int(self.thread_num)
+        else:
+            self.thread_num = 8
 
         # 如果左右留白部分裁剪太多了, 可以调整pdf_w_offset和pdf_offset_ratio, 宽边裁剪值pdf_w_offset, 窄边裁剪值pdf_w_offset/pdf_offset_ratio
+        # TODO: 将裁剪的逻辑添加到zotero配置页面
         self.pdf_w_offset = int(request_data.get('pdf_w_offset', 40))
         self.pdf_h_offset = int(request_data.get('pdf_h_offset', 20))
         self.pdf_offset_ratio = float(request_data.get('pdf_offset_ratio', 5))

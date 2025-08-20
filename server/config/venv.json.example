@@ -6,7 +6,6 @@
                 "pdf2zh==1.9.11",
                 "pypdf",
                 "flask",
-                "flask_cors",
                 "numpy==2.2.0",
                 "toml",
                 "pdfminer.six==20250416"
@@ -18,7 +17,6 @@
                 "pdf2zh==1.9.11",
                 "pypdf",
                 "flask",
-                "flask_cors",
                 "numpy==2.2.0",
                 "toml",
                 "pdfminer.six==20250416"
@@ -32,7 +30,6 @@
                 "pdf2zh_next",
                 "pypdf",
                 "flask",
-                "flask_cors",
                 "toml"
             ]
         },
@@ -42,7 +39,6 @@
                 "pdf2zh_next",
                 "pypdf",
                 "flask",
-                "flask_cors",
                 "toml"
             ]
         }

@@ -1,9 +1,8 @@
-## server.py v3.0.1
+## server.py v3.0.2
 # guaguastandup
 # zotero-pdf2zh
-import os, sys
+import os
 from flask import Flask, request, jsonify, send_file
-from flask_cors import CORS
 import base64
 import subprocess
 import json, toml
@@ -14,7 +13,12 @@ from utils.config import Config
 from utils.cropper import Cropper
 import traceback
 import argparse
-import io
+import sys  # NEW: 用于退出脚本
+import re   # NEW: 用于解析版本号
+import urllib.request # NEW: 用于下载文件
+import zipfile # NEW: 用于解压文件
+
+__version__ = "3.0.1" # NEW: 定义当前脚本版本  # Current version of the script
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -48,7 +52,6 @@ PORT = 8890 # 默认端口号
 class PDFTranslator:
     def __init__(self, args):
         self.app = Flask(__name__)
-        CORS(self.app, resources={r"/*": {"origins": "*"}}) # 添加CORS支持
         if args.enable_venv:
             self.env_manager = VirtualEnvManager(config_path[venv], venv_name, default_env_tool)
         self.cropper = Cropper()
@@ -499,6 +502,122 @@ class PDFTranslator:
     def run(self, port, debug=False):
         self.app.run(host='0.0.0.0', port=port, debug=debug)
 
+# ##################### NEW: 自动更新函数 #####################
+# NEW (v2): 更智能的自动更新函数，会保留用户自建的文件
+# NEW (v3): 基于用户思路的“备份-迁移”式更新，更安全、更清晰
+def perform_update():
+    """
+    采用“先备份，再迁移”的逻辑进行更新。
+    1. 将当前文件夹重命名为 backup。
+    2. 解压新版。
+    3. 将 backup 中的 config 和用户自建文件迁移到新版中。
+    4. 清理 backup。
+    """
+    print("🚀 开始更新 (安全模式)...请稍候。")
+    zip_url = "https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip"
+    zip_path = os.path.join(os.path.dirname(root_path), "server_latest.zip") # 把zip下载到server文件夹的外面
+    # root_path 指向当前的 server 文件夹
+    backup_path = os.path.join(os.path.dirname(root_path), "server_backup")
+    # --- 防御性检查 ---
+    if os.path.exists(backup_path):
+        print(f"⚠️ 检测到已存在的备份文件夹: {backup_path}，请先手动处理。")
+        sys.exit()
+
+    try:
+        # --- 第1步: 下载 ZIP 文件 ---
+        print("  - 正在下载最新版本...")
+        urllib.request.urlretrieve(zip_url, zip_path)
+        print("  - 下载完成。")
+
+        # --- 第2步: 备份当前整个 server 文件夹 ---
+        print(f"  - 正在备份当前目录 -> {backup_path}")
+        os.rename(root_path, backup_path)
+
+        # --- 第3步: 解压出新的 server 文件夹 ---
+        print(f"  - 正在解压新版本 -> {root_path}")
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            # server.zip 解压出来会包含一个 server/ 目录
+            zip_ref.extractall(os.path.dirname(root_path))
+        # --- 第4步: 迁移核心配置和用户自建文件 ---
+        print("  - 正在从备份中迁移您的文件...")
+        # 4a. 迁移 config 文件夹 (最重要)
+        backup_config_path = os.path.join(backup_path, 'config')
+        new_config_path = os.path.join(root_path, 'config')
+        if os.path.exists(backup_config_path):
+            if os.path.exists(new_config_path):
+                shutil.rmtree(new_config_path) # 删除新版的默认config
+            shutil.move(backup_config_path, new_config_path) # 移动备份的config
+            print("    - 核心配置 `config` 已迁移。")
+        # 4b. 迁移用户自己添加的文件或文件夹
+        migrated_count = 0
+        for item_name in os.listdir(backup_path):
+            # config 已经处理过了，跳过
+            if item_name == 'config':
+                continue
+            backup_item_path = os.path.join(backup_path, item_name)
+            new_item_path = os.path.join(root_path, item_name)
+            
+            # 如果备份中的文件在新版里不存在，说明是用户自建的，需要迁移
+            if not os.path.exists(new_item_path):
+                print(f"    - 发现并迁移用户自建文件: {item_name}")
+                if os.path.isdir(backup_item_path):
+                    shutil.copytree(backup_item_path, new_item_path)
+                else:
+                    shutil.copy2(backup_item_path, new_item_path)
+                migrated_count += 1
+        if migrated_count > 0:
+            print(f"  - {migrated_count} 个用户自建文件/文件夹已迁移。")
+        else:
+            print("  - 未发现其他用户自建文件。")
+        # --- 第5步: 清理 ---
+        print("  - 正在清理备份文件...")
+        shutil.rmtree(backup_path)
+        os.remove(zip_path)
+        print("\n✅ 更新成功！")
+        print("请重新启动 server.py 脚本以应用新版本。")
+    except Exception as e:
+        print(f"\n❌ 更新失败: {e}")
+        print("  - 正在尝试回滚...")
+        # 如果更新失败，尝试恢复备份
+        if os.path.exists(backup_path):
+            if os.path.exists(root_path):
+                shutil.rmtree(root_path) # 移除不完整的更新
+            os.rename(backup_path, root_path) # 恢复原始目录
+            print("  - 已成功回滚到更新前的状态。")
+        else:
+            print("  - 无法找到备份，可能需要手动恢复。")
+    finally:
+        # 确保下载的 zip 文件最终被删除
+        if os.path.exists(zip_path):
+            os.remove(zip_path)
+        sys.exit()
+
+def check_for_updates():
+    # 从 GitHub 检查是否有新版本, 并询问用户是否更新。
+    print("💡 [自动更新] 正在检查更新...")
+    remote_script_url = "https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/server/server.py"
+    try:
+        with urllib.request.urlopen(remote_script_url, timeout=5) as response:
+            remote_content = response.read().decode('utf-8')
+        # 使用正则表达式匹配版本号
+        match = re.search(r'__version__\s*=\s*["\'](.+?)["\']', remote_content)
+        if not match:
+            print("⚠️ [自动更新] 无法在远程文件中找到版本号。")
+            return
+        remote_version = match.group(1)
+        local_version = __version__
+        if tuple(map(int, remote_version.split('.'))) > tuple(map(int, local_version.split('.'))): # 比较版本号 (例如 '3.1.0' > '3.0.1')
+            print(f"🎉 发现新版本！当前版本: {local_version}, 最新版本: {remote_version}")
+            answer = input("是否要立即更新? (y/n): ").lower()
+            if answer in ['y', 'yes']:
+                perform_update()
+            else:
+                print("👌 已取消更新。")
+        else:
+            print("✅ 您的程序已是最新版本。请重启脚本体验最新版本。")
+    except Exception as e:
+        print(f"⚠️ [自动更新] 检查更新失败 (可能是网络问题)，已跳过。错误: {e}")
+
 def prepare_path():
     print("📖 [Zotero PDF2zh Server] 检查文件路径中...")
     # output folder
@@ -511,10 +630,10 @@ def prepare_path():
                 shutil.copyfile(example_file, path)
         try:
             if path.endswith('.json'):
-                with open(path, 'r') as f:
+                with open(path, 'r', encoding='utf-8') as f:  # Specify UTF-8 encoding
                     json.load(f)
             elif path.endswith('.toml'):
-                with open(path, 'r') as f:
+                with open(path, 'r', encoding='utf-8') as f:  # Specify UTF-8 encoding
                     toml.load(f)
         except Exception as e:
             traceback.print_exc()
@@ -528,7 +647,11 @@ if __name__ == '__main__':
     parser.add_argument('--env_tool', type=str, default=default_env_tool, help='虚拟环境管理工具, 默认使用 uv')
     parser.add_argument('--port', type=int, default=PORT, help='Port to run the server on')
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode')
+    parser.add_argument('--check_update', action='store_true', help='是否检查更新')
     args = parser.parse_args()
+
+    if args.check_update():
+        check_for_updates()
 
     prepare_path()
     translator = PDFTranslator(args)
