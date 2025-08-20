@@ -3,4 +3,3 @@ toml
 pypdf
 argparse
 PyMuPDF
-fitz

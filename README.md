@@ -78,7 +78,6 @@ cd server
 
 ```shell
 # 1. 安装依赖
-# python版本要求: 3.12
 pip install -r requirements.txt
 
 # 2. 执行脚本
@@ -95,6 +94,8 @@ python server.py --port={Your Port Num}
 # 是否检查更新
 python server.py --check_update=False
 ```
+
+> 💡 关于脚本自动更新的方法 1. 脚本自动检查更新(Experimental) 2. 通过git管理更新(最稳健|推荐)
 
 ## 第四步: 下载并安装插件
 

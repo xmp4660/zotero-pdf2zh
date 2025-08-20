@@ -3,7 +3,8 @@
 # zotero-pdf2zh
 from pypdf import PdfWriter, PdfReader
 from pypdf.generic import RectangleObject
-import fitz  # PyMuPDF
+# from PyMuPDF import fitz  # PyMuPDF
+import fitz
 import os
 import traceback
 import shutil
