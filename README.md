@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.3 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.4 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -25,7 +25,7 @@
 - 在github issue区提问
 - 发送问题到本插件用户QQ群: 971960014 入群验证回答: github
 
-🔮 v3.0.3更新日志
+🔮 v3.0.4更新日志
 
 1. zotero端添加LLM API配置列表
 2. zotero端兼容pdf2zh_next/pdf2zh大部分翻译配置
@@ -99,7 +99,7 @@ python server.py --check_update=False
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.3[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.3.xpi)
+新版本v3.0.4[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.4.xpi)
 
 ## 第五步: Zotero端插件设置
 
@@ -115,7 +115,7 @@ python server.py --check_update=False
 
 **💡 注意事项**
 
-- 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/翻译引擎服务额外字段.md)
+- 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
 
 # 关于翻译选项
 

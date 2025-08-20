@@ -1,4 +1,4 @@
-## server.py v3.0.3
+## server.py v3.0.4
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.3" 
+__version__ = "3.0.4" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -567,100 +567,178 @@ def get_xpi_info_from_repo(owner, repo, branch='main', expected_version=None):
         print(f"  - ⚠️ 扫描插件失败 (可能是网络问题): {e}")
         return None, None
 
-def perform_update_new_logic(expected_version=None):
+def smart_file_sync(source_dir, target_dir, stats):
     """
-    采用“合并更新”逻辑，确保用户文件和配置的绝对安全。
-    流程: 1. 备份 -> 2. 下载解压到临时目录 -> 3. 合并文件 -> 4. 清理
+    智能文件同步：比较文件内容，只更新真正改变的文件
+    
+    Args:
+        source_dir: 新版本的文件夹路径
+        target_dir: 目标文件夹路径  
+        stats: 统计信息字典 {'updated': 0, 'new': 0, 'preserved': 0, 'unchanged': 0}
     """
-    print("🚀 开始更新 (安全模式 v2)...请稍候。")
+    for root, dirs, files in os.walk(source_dir):
+        # 计算相对路径
+        rel_dir = os.path.relpath(root, source_dir)
+        target_root = os.path.join(target_dir, rel_dir) if rel_dir != '.' else target_dir
+        
+        # 确保目标目录存在
+        os.makedirs(target_root, exist_ok=True)
+        
+        # 同步文件
+        for file in files:
+            source_file = os.path.join(root, file)
+            target_file = os.path.join(target_root, file)
+            rel_file_path = os.path.join(rel_dir, file) if rel_dir != '.' else file
+            
+            if os.path.exists(target_file):
+                # 比较文件内容
+                try:
+                    with open(source_file, 'rb') as sf, open(target_file, 'rb') as tf:
+                        source_content = sf.read()
+                        target_content = tf.read()
+                    
+                    if source_content != target_content:
+                        # 文件内容不同，需要更新
+                        shutil.copy2(source_file, target_file)
+                        print(f"    ✓ 更新: {rel_file_path}")
+                        stats['updated'] += 1
+                    else:
+                        # 文件内容相同，无需更新
+                        print(f"    ≡ 跳过: {rel_file_path} (内容相同)")
+                        stats['unchanged'] += 1
+                except Exception as e:
+                    # 比较出错时，保守地更新文件
+                    print(f"    ⚠️ 比较失败，强制更新: {rel_file_path} ({e})")
+                    shutil.copy2(source_file, target_file)
+                    stats['updated'] += 1
+            else:
+                # 新文件
+                shutil.copy2(source_file, target_file)
+                print(f"    + 新增: {rel_file_path}")
+                stats['new'] += 1
+
+def count_preserved_files(source_dir, target_dir, stats):
+    """
+    统计保留的用户文件（在target中存在但source中不存在的文件）
+    """
+    for root, dirs, files in os.walk(target_dir):
+        rel_dir = os.path.relpath(root, target_dir)
+        source_root = os.path.join(source_dir, rel_dir) if rel_dir != '.' else source_dir
+        
+        for file in files:
+            source_file = os.path.join(source_root, file)
+            if not os.path.exists(source_file):
+                rel_file_path = os.path.join(rel_dir, file) if rel_dir != '.' else file
+                print(f"    ◆ 保留: {rel_file_path} (用户文件)")
+                stats['preserved'] += 1
+
+def perform_update_optimized(expected_version=None):
+    """
+    优化的更新逻辑：结合智能同步和临时目录的优点
+    """
+    print("🚀 开始更新 (智能同步模式)...请稍候。")
     owner, repo = 'guaguastandup', 'zotero-pdf2zh'
-    # 假设 root_path 是你当前的 server 文件夹路径
-    # 例如: root_path = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(root_path) 
+    project_root = os.path.dirname(root_path)
     print(f"   - 项目根目录: {project_root}")
     print(f"   - 当前服务目录: {root_path}")
-    # --- 步骤 0: 定义路径 ---
-    backup_path = os.path.join(project_root, f"server_backup_{expected_version or 'latest'}")
+    
+    # 使用时间戳生成备份路径，避免冲突
+    import datetime
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_path = os.path.join(project_root, f"server_backup_{timestamp}")
+    
     zip_filename = f"server_{expected_version or 'latest'}.zip"
     server_zip_path = os.path.join(project_root, zip_filename)
-    # 如果旧的备份存在，先清理，防止混淆
-    if os.path.exists(backup_path):
-        print(f"   - 发现旧的备份文件夹，正在清理: {backup_path}")
-        shutil.rmtree(backup_path)
+    
+    # 统计信息
+    stats = {'updated': 0, 'new': 0, 'preserved': 0, 'unchanged': 0}
+    
     try:
-        # --- 步骤 1: 备份当前server目录 ---
-        print(f"  - 正在备份当前目录 -> {backup_path}")
+        # --- 步骤 1: 创建备份 ---
+        print(f"  - 正在创建备份 -> {backup_path}")
         shutil.copytree(root_path, backup_path, dirs_exist_ok=True)
-        print("  - ✅ 备份完成。")
-        # --- 步骤 2: 下载并解压到临时目录 ---
-        # 下载 XPI 插件（此逻辑保持不变）
+        print("  - ✅ 备份完成")
+        
+        # --- 步骤 2: 下载文件 ---
+        # 下载插件
         xpi_url, xpi_filename = get_xpi_info_from_repo(owner, repo, 'main', expected_version)
         if xpi_url:
             xpi_save_path = os.path.join(project_root, xpi_filename)
             print(f"  - 正在下载插件文件 ({xpi_filename})...")
-            if os.path.exists(xpi_save_path): os.remove(xpi_save_path)
+            if os.path.exists(xpi_save_path): 
+                os.remove(xpi_save_path)
             urllib.request.urlretrieve(xpi_url, xpi_save_path)
-            print("  - 插件文件下载完成。")
-        # 下载服务端压缩包
-        server_zip_url = f"https://github.com/{owner}/{repo}/raw/main/server.zip" # 使用raw链接更稳定
+            print("  - ✅ 插件文件下载完成")
+        
+        # 下载服务端
+        server_zip_url = f"https://github.com/{owner}/{repo}/raw/main/server.zip"
         print(f"  - 正在下载服务端文件 ({zip_filename})...")
         urllib.request.urlretrieve(server_zip_url, server_zip_path)
-        print("  - 服务端文件下载完成。")
+        print("  - ✅ 服务端文件下载完成")
 
-        # 创建一个临时目录来解压新版本，这是关键！
+        # --- 步骤 3: 使用临时目录解压并智能同步 ---
+        print("  - 正在解压并同步新版本...")
         with tempfile.TemporaryDirectory() as temp_dir:
-            print(f"  - 正在解压新版本到临时目录: {temp_dir}")
+            # 解压到临时目录
             with zipfile.ZipFile(server_zip_path, 'r') as zip_ref:
                 zip_ref.extractall(temp_dir)
-            # 假设解压后，所有文件都在 temp_dir/server/ 目录下
+            
+            # 查找新版本的server目录
             new_server_path = os.path.join(temp_dir, 'server')
             if not os.path.exists(new_server_path):
-                # 有时候zip包里可能没有顶层'server'目录
-                new_server_path = temp_dir 
+                new_server_path = temp_dir
+            
+            print("    - 开始智能文件同步:")
+            # 智能同步文件
+            smart_file_sync(new_server_path, root_path, stats)
+            
+            # 统计保留的用户文件
+            count_preserved_files(new_server_path, root_path, stats)
 
-            # --- 步骤 3: 合并文件到现有目录 ---
-            print("  - 正在合并新文件...")
-            migrated_count = 0
-            # 遍历新版本目录下的所有文件和文件夹
-            for item_name in os.listdir(new_server_path):
-                source_item = os.path.join(new_server_path, item_name)
-                dest_item = os.path.join(root_path, item_name)
-                print(f"    - 正在同步: {item_name}")
-                if os.path.isdir(source_item): # 如果是目录，则递归地复制和覆盖
-                    shutil.copytree(source_item, dest_item, dirs_exist_ok=True)
-                else: # 如果是文件，则直接复制和覆盖
-                    shutil.copy2(source_item, dest_item)
-                migrated_count += 1
-            print(f"  - ✅ {migrated_count} 个项目文件/文件夹已同步更新。")
-            print("  - 您的 `config` 文件夹和自建文件均未受影响。")
-        # --- 步骤 4: 清理 ---
+        # --- 步骤 4: 显示统计信息 ---
+        print(f"\n📊 同步统计报告:")
+        print(f"    - 📝 更新的文件: {stats['updated']}")
+        print(f"    - ➕ 新增的文件: {stats['new']}")  
+        print(f"    - ◆ 保留的文件: {stats['preserved']}")
+        print(f"    - ≡ 跳过的文件: {stats['unchanged']} (内容相同)")
+        print(f"    - 📁 总处理文件: {sum(stats.values())}")
+
+        # --- 步骤 5: 清理 ---
         print("  - 正在清理临时文件...")
-        shutil.rmtree(backup_path)      # 成功后删除备份
-        os.remove(server_zip_path)      # 删除下载的zip包
-        print("  - ✅ 清理完成。")
-        print("\n✅ 更新成功！")
+        if os.path.exists(backup_path):
+            shutil.rmtree(backup_path)  # 成功后删除备份
+        os.remove(server_zip_path)
+        print("  - ✅ 清理完成")
+
+        print(f"\n✅ 更新成功！")
         if xpi_filename:
-            print(f"   - 最新的插件文件 '{xpi_filename}' 已下载到您的项目主目录, 请将插件文件重新安装到Zotero中。")
-        print("   - 请重新启动 server.py 脚本以应用新版本。")
+            print(f"   - 📦 最新的插件文件 '{xpi_filename}' 已下载到项目主目录")
+            print("   - 🔄 请将插件文件重新安装到Zotero中")
+        print("   - 🚀 请重新启动 server.py 脚本以应用新版本")
+        print("   - 🛡️ 您的配置文件和用户文件已安全保留")
 
     except Exception as e:
         print(f"\n❌ 更新失败: {e}")
         print("  - 正在尝试从备份回滚...")
-        # 回滚机制：如果备份存在，用备份覆盖当前目录
+        
+        # 回滚机制
         if os.path.exists(backup_path):
-            # 先删除可能被破坏的当前目录
-            if os.path.exists(root_path): 
-                shutil.rmtree(root_path)
-            # 将备份移动回来
-            shutil.move(backup_path, root_path)
-            print("  - ✅ 已成功回滚到更新前的状态。")
+            try:
+                if os.path.exists(root_path): 
+                    shutil.rmtree(root_path)
+                shutil.move(backup_path, root_path)
+                print("  - ✅ 已成功回滚到更新前的状态")
+            except Exception as rollback_error:
+                print(f"  - ❌ 回滚失败: {rollback_error}")
+                print(f"  - 💾 备份文件保留在: {backup_path}")
         else:
-            print("  - ⚠️ 无法找到备份，回滚失败。可能需要手动恢复。")
+            print("  - ⚠️ 无法找到备份，请检查文件完整性")
+    
     finally:
-        if os.path.exists(server_zip_path): # 无论成功失败，都确保删除下载的zip文件
+        # 清理下载的文件
+        if os.path.exists(server_zip_path):
             os.remove(server_zip_path)
         sys.exit()
-
 
 def check_for_updates():
     """
@@ -696,10 +774,10 @@ if __name__ == '__main__':
     parser.add_argument('--env_tool', type=str, default=default_env_tool, help='虚拟环境管理工具, 默认使用 uv')
     parser.add_argument('--port', type=int, default=PORT, help='Port to run the server on')
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode')
-    # 添加一个 --no-update 参数，方便用户在需要时跳过更新检查
     parser.add_argument('--check_update', type=bool, default=True, help='启动时检查更新')
     args = parser.parse_args()
-    # 启动时自动检查更新 (除非用户指定 --no-update)
+    
+    # 启动时自动检查更新
     if args.check_update:
         update_info = check_for_updates()
         if update_info:
@@ -708,13 +786,14 @@ if __name__ == '__main__':
             try:
                 answer = input("是否要立即更新? (y/n): ").lower()
             except (EOFError, KeyboardInterrupt):
-                # 修复在某些非交互式环境中 input() 可能报错的问题
                 answer = 'n'
                 print("\n无法获取用户输入，已自动取消更新。")
+            
             if answer in ['y', 'yes']:
-                perform_update_new_logic(expected_version=remote_v) 
+                perform_update_optimized(expected_version=remote_v)  # 使用优化版本
             else:
                 print("👌 已取消更新。")
+    
     # 正常的启动流程
     prepare_path()
     translator = PDFTranslator(args)
