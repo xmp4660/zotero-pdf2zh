@@ -95,7 +95,7 @@ python server.py --port={Your Port Num}
 python server.py --check_update=False
 ```
 
-> 💡 关于脚本自动更新的方法 1. 脚本自动检查更新(Experimental) 2. 通过git管理更新(最稳健|推荐)
+> 💡 关于脚本自动更新的方法 1. 脚本自动检查更新(Experimental) 2. 通过git管理更新
 
 ## 第四步: 下载并安装插件
 
