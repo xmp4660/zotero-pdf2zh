@@ -99,7 +99,7 @@ python server.py --check_update=False
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.4[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.4.xpi)
+新版本v3.0.4[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.4-beta/zotero-pdf-2-zh-v3.0.4.xpi)
 
 ## 第五步: Zotero端插件设置
 
