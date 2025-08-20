@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.2 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.3 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -25,7 +25,7 @@
 - 在github issue区提问
 - 发送问题到本插件用户QQ群: 971960014 入群验证回答: github
 
-🔮 v3.0.2更新日志
+🔮 v3.0.3更新日志
 
 1. zotero端添加LLM API配置列表
 2. zotero端兼容pdf2zh_next/pdf2zh大部分翻译配置
@@ -36,6 +36,7 @@
 7. server端提供配置文件模版，不需要手动复制默认模版，不再支持用户自定义配置文件路径
 8. server端优化页面裁剪，选择PDF页面文字不再会选中隐藏文字（处理速度比以前慢）
 9. server端增加依赖包
+10. 增加自动更新机制
 
 ## 第一步: 安装uv/conda
 
@@ -77,10 +78,11 @@ cd server
 
 ```shell
 # 1. 安装依赖
+# python版本要求: 3.12
 pip install -r requirements.txt
 
 # 2. 执行脚本
-# 其中, 默认开启虚拟环境管理, 默认使用uv进行虚拟环境管理
+# 其中, 默认开启虚拟环境管理, 默认使用uv进行虚拟环境管理, 自动检查更新
 python server.py
 
 # 可选: 命令行参数:
@@ -90,17 +92,18 @@ python server.py --enable_venv=False
 python server.py --env_tool=conda
 # 如果要切换端口号
 python server.py --port={Your Port Num}
+# 是否检查更新
+python server.py --check_update=False
 ```
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.2[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.1.xpi)
+新版本v3.0.3[下载链接](https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/zotero-pdf-2-zh-v3.0.3.xpi)
 
 ## 第五步: Zotero端插件设置
 
-<img src="./images/preference.png" alt="preference" style="width: 600px" align="center"/>
-
-<img src="./images/preference2.png" alt="preference2" style="width: 600px" align="center"/>
+<img src="./images/preference.png" alt="preference" style="width: 500px" align="center"/>
+<img src="./images/preference2.png" alt="preference2" style="width: 500px" align="center"/>
 
 **💡 注意事项**
 

@@ -2,5 +2,5 @@ flask
 toml
 pypdf
 argparse
-fitz
 PyMuPDF
+fitz
