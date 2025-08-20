@@ -1,4 +1,4 @@
-## server.py v3.0.4
+## server.py v3.0.5
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.4" 
+__version__ = "3.0.5" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -289,8 +289,8 @@ class PDFTranslator:
                     self.cropper.merge_pdf(input_path, new_path)
                 else:
                     config.dual_mode = 'LR' # 直接生成dualMode为LR的文件, 就是Compare模式
-                    config.no_dual = True
-                    config.no_mono = False
+                    config.no_dual = False
+                    config.no_mono = True
                     fileList = self.translate_pdf_next(input_path, config)
                     dual_path = fileList[0]
                     if not os.path.exists(dual_path):
