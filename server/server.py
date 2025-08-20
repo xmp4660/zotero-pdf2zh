@@ -296,6 +296,7 @@ class PDFTranslator:
                     if not os.path.exists(dual_path):
                         return jsonify({'status': 'error', 'message': f'Dual file not found: {dual_path}'}), 500
                     new_path = self.get_filename_after_process(input_path, 'compare', engine)
+                    os.rename(dual_path, new_path) # 直接将dual文件重命名为compare文件
             else:
                 new_type = self.get_filetype_after_compare(input_path)
                 if new_type == 'unknown':
