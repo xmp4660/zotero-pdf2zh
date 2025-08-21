@@ -564,7 +564,7 @@ def get_xpi_info_from_repo(owner, repo, branch='main', expected_version=None):
         print(f"  - ⚠️ 扫描插件失败 (可能是网络问题): {e}")
         return None, None
 
-def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, new_files):
+def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, new_files, exclude_dirs=None):
     """
     智能文件同步：比较文件内容，只更新真正改变的文件。同时备份受影响的文件，并跟踪更新和新增。
     
@@ -575,8 +575,16 @@ def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, ne
         backup_dir: 备份目录，用于存储将被更新的文件的备份
         updated_files: 列表，用于跟踪更新的文件相对路径
         new_files: 列表，用于跟踪新增的文件相对路径
+        exclude_dirs (list, optional): 需要完全跳过的目录名列表。 Defaults to None.
     """
+    if exclude_dirs is None:
+        exclude_dirs = []
+
     for root, dirs, files in os.walk(source_dir):
+        # <<< 优化点 1: 在遍历时，从 dirs 列表中移除需要排除的目录 >>>
+        # 这样 os.walk 就不会进入这些目录
+        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+
         # 计算相对路径
         rel_dir = os.path.relpath(root, source_dir)
         target_root = os.path.join(target_dir, rel_dir) if rel_dir != '.' else target_dir
@@ -627,11 +635,17 @@ def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, ne
                 stats['new'] += 1
                 new_files.append(rel_file_path)
 
-def count_preserved_files(source_dir, target_dir, stats):
+def count_preserved_files(source_dir, target_dir, stats, exclude_dirs=None):
     """
     统计保留的用户文件（在target中存在但source中不存在的文件）
     """
+    if exclude_dirs is None:
+        exclude_dirs = []
+
     for root, dirs, files in os.walk(target_dir):
+        # <<< 优化点 2: 同样地，在统计保留文件时也跳过排除目录 >>>
+        dirs[:] = [d for d in dirs if d not in exclude_dirs]
+
         rel_dir = os.path.relpath(root, target_dir)
         source_root = os.path.join(source_dir, rel_dir) if rel_dir != '.' else source_dir
         
@@ -652,7 +666,11 @@ def perform_update_optimized(expected_version=None):
     print(f"   - 项目根目录: {project_root}")
     print(f"   - 当前服务目录: {root_path}")
     
-    # 使用时间戳生成备份路径，避免冲突
+    # <<< 优化点 3: 定义一个排除列表，包含虚拟环境和常见的缓存目录 >>>
+    # 这是保护虚拟环境的关键
+    EXCLUDE_DIRECTORIES = ['zotero-pdf2zh-next-venv', '__pycache__']
+    print(f"   - 🛡️ 更新将自动忽略以下目录: {EXCLUDE_DIRECTORIES}")
+
     import datetime
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_path = os.path.join(project_root, f"server_backup_{timestamp}")
@@ -661,14 +679,13 @@ def perform_update_optimized(expected_version=None):
     zip_filename = f"server_{expected_version or 'latest'}.zip"
     server_zip_path = os.path.join(project_root, zip_filename)
     
-    # 统计信息
     stats = {'updated': 0, 'new': 0, 'preserved': 0, 'unchanged': 0}
     updated_files = []
     new_files = []
     
     try:
         # --- 步骤 1: 下载文件 ---
-        # 下载插件
+        # (这部分代码无需改动，保持原样)
         xpi_url, xpi_filename = get_xpi_info_from_repo(owner, repo, 'main', expected_version)
         if xpi_url and xpi_filename:
             xpi_save_path = os.path.join(project_root, xpi_filename)
@@ -680,7 +697,6 @@ def perform_update_optimized(expected_version=None):
         else:
             print("  - ⚠️ 未找到合适的插件文件，跳过插件下载。")
         
-        # 下载服务端
         server_zip_url = f"https://github.com/{owner}/{repo}/raw/main/server.zip"
         print(f"  - 正在下载服务端文件 ({zip_filename})...")
         urllib.request.urlretrieve(server_zip_url, server_zip_path)
@@ -689,23 +705,21 @@ def perform_update_optimized(expected_version=None):
         # --- 步骤 2: 使用临时目录解压并智能同步 ---
         print("  - 正在解压并同步新版本...")
         with tempfile.TemporaryDirectory() as temp_dir:
-            # 解压到临时目录
             with zipfile.ZipFile(server_zip_path, 'r') as zip_ref:
                 zip_ref.extractall(temp_dir)
             
-            # 查找新版本的server目录
             new_server_path = os.path.join(temp_dir, 'server')
             if not os.path.exists(new_server_path):
                 new_server_path = temp_dir
             
             print("    - 开始智能文件同步:")
-            # 智能同步文件，同时备份受影响的部分
-            smart_file_sync(new_server_path, root_path, stats, backup_path, updated_files, new_files)
+            # <<< 优化点 4: 将排除列表传递给同步函数 >>>
+            smart_file_sync(new_server_path, root_path, stats, backup_path, updated_files, new_files, exclude_dirs=EXCLUDE_DIRECTORIES)
             
-            # 统计保留的用户文件
-            count_preserved_files(new_server_path, root_path, stats)
+            # <<< 优化点 5: 将排除列表传递给统计函数 >>>
+            count_preserved_files(new_server_path, root_path, stats, exclude_dirs=EXCLUDE_DIRECTORIES)
 
-        # --- 步骤 3: 显示统计信息 ---
+        # --- 步骤 3 & 4 & 回滚逻辑: (这部分代码无需改动，保持原样) ---
         print(f"\n📊 同步统计报告:")
         print(f"    - 📝 更新的文件: {stats['updated']}")
         print(f"    - ➕ 新增的文件: {stats['new']}")  
@@ -713,10 +727,9 @@ def perform_update_optimized(expected_version=None):
         print(f"    - ≡ 跳过的文件: {stats['unchanged']} (内容相同)")
         print(f"    - 📁 总处理文件: {sum(stats.values())}")
 
-        # --- 步骤 4: 清理 ---
         print("  - 正在清理临时文件...")
         if os.path.exists(backup_path):
-            shutil.rmtree(backup_path)  # 成功后删除备份
+            shutil.rmtree(backup_path)
         os.remove(server_zip_path)
         print("  - ✅ 清理完成")
 
@@ -725,15 +738,13 @@ def perform_update_optimized(expected_version=None):
             print(f"   - 📦 最新的插件文件 '{xpi_filename}' 已下载到项目主目录")
             print("   - 🔄 请将插件文件重新安装到Zotero中")
         print("   - 🚀 请重新启动 server.py 脚本以应用新版本")
-        print("   - 🛡️ 您的配置文件和用户文件已安全保留")
+        print("   - 🛡️ 您的配置文件和虚拟环境已安全保留")
 
     except Exception as e:
         print(f"\n❌ 更新失败: {e}")
         print("  - 正在尝试从备份回滚...")
         
-        # 回滚机制：只恢复受影响的文件
         try:
-            # 恢复更新的文件
             for rel_path in updated_files:
                 backup_file = os.path.join(backup_path, rel_path)
                 target_file = os.path.join(root_path, rel_path)
@@ -741,7 +752,6 @@ def perform_update_optimized(expected_version=None):
                     shutil.copy2(backup_file, target_file)
                     print(f"    - 回滚更新: {rel_path}")
             
-            # 删除新增的文件
             for rel_path in new_files:
                 target_file = os.path.join(root_path, rel_path)
                 if os.path.exists(target_file):
@@ -754,7 +764,6 @@ def perform_update_optimized(expected_version=None):
             print(f"  - 💾 备份文件保留在: {backup_path}")
     
     finally:
-        # 清理下载的文件
         if os.path.exists(server_zip_path):
             os.remove(server_zip_path)
         sys.exit()
