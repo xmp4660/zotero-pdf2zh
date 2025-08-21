@@ -23,6 +23,48 @@ class VirtualEnvManager:
         self.curr_envname = None
         self.default_env_tool = default_env_tool
 
+    """检查虚拟环境中是否安装了指定包"""
+    def check_packages(self, engine, envtool, envname):
+        cfg = self.env_configs[engine][envtool]
+        required_packages = cfg.get('packages', [])
+        if not required_packages:
+            print(f"⚠️ 无需检查 packages for {engine} in {envtool}")
+            return True
+
+        print(f"🔍 检查 {envtool} 环境 {envname} 中的 packages: {required_packages}")
+        try:
+            if envtool == 'uv':
+                python_executable = 'python.exe' if self.is_windows else 'python'
+                python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
+                result = subprocess.run(
+                    ['uv', 'pip', 'list', '--format=json', '--python', python_path],
+                    capture_output=True, text=True, timeout=60
+                )
+            elif envtool == 'conda':
+                result = subprocess.run(
+                    ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json'],
+                    capture_output=True, text=True, timeout=60
+                )
+
+            if result.returncode != 0:
+                print(f"❌ 检查 packages 失败: pip list 返回非零退出码")
+                return False
+
+            installed_packages = {pkg['name'].lower() for pkg in json.loads(result.stdout)}
+            missing_packages = [pkg for pkg in required_packages if pkg.lower() not in installed_packages]
+            if missing_packages:
+                print(f"❌ 缺少 packages: {missing_packages}")
+                return False
+            print(f"✅ 所有 packages 已安装: {required_packages}")
+            return True
+        except subprocess.TimeoutExpired:
+            print(f"⏰ 检查 packages 超时 in {envname}")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ 检查 packages 失败 in {envname}: {e}")
+        except Exception as e:
+            print(f"❌ 检查 packages 出错 in {envname}: {e}")
+        return False
+    
     """安装包的独立方法，便于复用"""
     def install_packages(self, engine, envtool, envname):
         cfg = self.env_configs[engine][envtool]
@@ -120,14 +162,21 @@ class VirtualEnvManager:
             if self.check_envtool(envtool):
                 envname = self.env_name[engine]
                 env_exists = self.check_env(engine, envtool)
+
                 if not env_exists:
                     # 环境不存在：创建环境，然后安装包
                     if not self.create_env(engine, envtool):
                         print(f"❌ 创建 {envtool} 环境 {envname} 失败，继续下一个工具")
                         continue
-                # 无论环境是否存在，都(重新)安装包，以修复可能的缺失
-                if not self.install_packages(engine, envtool, envname):
-                    print(f"⚠️ packages 安装失败，但将继续使用 {envtool} 环境 {envname}（可能部分可用）")
+                    if not self.install_packages(engine, envtool, envname):
+                        print(f"⚠️ packages 安装失败，但将继续使用 {envtool} 环境 {envname}")
+                else:
+                    # 环境存在：检查包是否完整，缺失则安装
+                    if not self.check_packages(engine, envtool, envname):
+                        print(f"⚠️ 检测到缺少 packages，尝试重新安装")
+                        if not self.install_packages(engine, envtool, envname):
+                            print(f"⚠️ packages 安装失败，但将继续使用 {envtool} 环境 {envname}")
+
                 self.curr_envtool = envtool
                 self.curr_envname = envname
                 print(f"✅ 使用 {envtool} 环境: {self.curr_envname}")
