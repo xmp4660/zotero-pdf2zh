@@ -1,4 +1,4 @@
-## server.py v3.0.9
+## server.py v3.0.10
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.9" 
+__version__ = "3.0.10" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -500,7 +500,7 @@ class PDFTranslator:
                 print(f"⚠️ 使用 Windows 可执行文件: {cmd}")
             else:
                 cmd = ["./pdf2zh_next.exe"] + cmd[1:]
-        if args.enable_venv:
+        elif args.enable_venv:
             self.env_manager.execute_in_env(cmd)
         else:
             subprocess.run(cmd, check=True)
