@@ -559,7 +559,7 @@ def get_xpi_info_from_repo(owner, repo, branch='main', expected_version=None):
                     return download_url, target_filename
                 
         print(f"  - ⚠️ 未找到与服务端版本 {expected_version} 匹配的插件")
-        return None
+        return None, None
     except Exception as e:
         print(f"  - ⚠️ 扫描插件失败 (可能是网络问题): {e}")
         return None, None
