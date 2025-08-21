@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-pref("__prefsPrefix__.serverip", "http://localhost:8888");
+pref("__prefsPrefix__.serverip", "http://localhost:8890");
 
 pref("__prefsPrefix__.sourceLang", "en");
 pref("__prefsPrefix__.targetLang", "zh-CN");

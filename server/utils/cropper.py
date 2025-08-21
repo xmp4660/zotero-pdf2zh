@@ -1,4 +1,4 @@
-## server.py v3.0.5
+## server.py v3.0.6
 # guaguastandup
 # zotero-pdf2zh
 from pypdf import PdfWriter, PdfReader

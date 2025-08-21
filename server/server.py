@@ -568,14 +568,17 @@ def get_xpi_info_from_repo(owner, repo, branch='main', expected_version=None):
         print(f"  - ⚠️ 扫描插件失败 (可能是网络问题): {e}")
         return None, None
 
-def smart_file_sync(source_dir, target_dir, stats):
+def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, new_files):
     """
-    智能文件同步：比较文件内容，只更新真正改变的文件
+    智能文件同步：比较文件内容，只更新真正改变的文件。同时备份受影响的文件，并跟踪更新和新增。
     
     Args:
         source_dir: 新版本的文件夹路径
         target_dir: 目标文件夹路径  
         stats: 统计信息字典 {'updated': 0, 'new': 0, 'preserved': 0, 'unchanged': 0}
+        backup_dir: 备份目录，用于存储将被更新的文件的备份
+        updated_files: 列表，用于跟踪更新的文件相对路径
+        new_files: 列表，用于跟踪新增的文件相对路径
     """
     for root, dirs, files in os.walk(source_dir):
         # 计算相对路径
@@ -599,24 +602,34 @@ def smart_file_sync(source_dir, target_dir, stats):
                         target_content = tf.read()
                     
                     if source_content != target_content:
-                        # 文件内容不同，需要更新
+                        # 文件内容不同，需要更新：先备份原文件
+                        backup_file = os.path.join(backup_dir, rel_file_path)
+                        os.makedirs(os.path.dirname(backup_file), exist_ok=True)
+                        shutil.copy2(target_file, backup_file)
+                        # 更新
                         shutil.copy2(source_file, target_file)
                         print(f"    ✓ 更新: {rel_file_path}")
                         stats['updated'] += 1
+                        updated_files.append(rel_file_path)
                     else:
                         # 文件内容相同，无需更新
                         print(f"    ≡ 跳过: {rel_file_path} (内容相同)")
                         stats['unchanged'] += 1
                 except Exception as e:
-                    # 比较出错时，保守地更新文件
-                    print(f"    ⚠️ 比较失败，强制更新: {rel_file_path} ({e})")
+                    # 比较出错时，保守地更新文件：先备份
+                    backup_file = os.path.join(backup_dir, rel_file_path)
+                    os.makedirs(os.path.dirname(backup_file), exist_ok=True)
+                    shutil.copy2(target_file, backup_file)
                     shutil.copy2(source_file, target_file)
+                    print(f"    ⚠️ 比较失败，强制更新: {rel_file_path} ({e})")
                     stats['updated'] += 1
+                    updated_files.append(rel_file_path)
             else:
                 # 新文件
                 shutil.copy2(source_file, target_file)
                 print(f"    + 新增: {rel_file_path}")
                 stats['new'] += 1
+                new_files.append(rel_file_path)
 
 def count_preserved_files(source_dir, target_dir, stats):
     """
@@ -635,7 +648,7 @@ def count_preserved_files(source_dir, target_dir, stats):
 
 def perform_update_optimized(expected_version=None):
     """
-    优化的更新逻辑：结合智能同步和临时目录的优点
+    优化的更新逻辑：结合智能同步和临时目录的优点，使用针对性备份避免操作无关目录（如虚拟环境）。
     """
     print("🚀 开始更新 (智能同步模式)...请稍候。")
     owner, repo = 'guaguastandup', 'zotero-pdf2zh'
@@ -647,20 +660,18 @@ def perform_update_optimized(expected_version=None):
     import datetime
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_path = os.path.join(project_root, f"server_backup_{timestamp}")
+    os.makedirs(backup_path, exist_ok=True)
     
     zip_filename = f"server_{expected_version or 'latest'}.zip"
     server_zip_path = os.path.join(project_root, zip_filename)
     
     # 统计信息
     stats = {'updated': 0, 'new': 0, 'preserved': 0, 'unchanged': 0}
+    updated_files = []
+    new_files = []
     
     try:
-        # --- 步骤 1: 创建备份 ---
-        print(f"  - 正在创建备份 -> {backup_path}")
-        shutil.copytree(root_path, backup_path, dirs_exist_ok=True)
-        print("  - ✅ 备份完成")
-        
-        # --- 步骤 2: 下载文件 ---
+        # --- 步骤 1: 下载文件 ---
         # 下载插件
         xpi_url, xpi_filename = get_xpi_info_from_repo(owner, repo, 'main', expected_version)
         if xpi_url:
@@ -677,7 +688,7 @@ def perform_update_optimized(expected_version=None):
         urllib.request.urlretrieve(server_zip_url, server_zip_path)
         print("  - ✅ 服务端文件下载完成")
 
-        # --- 步骤 3: 使用临时目录解压并智能同步 ---
+        # --- 步骤 2: 使用临时目录解压并智能同步 ---
         print("  - 正在解压并同步新版本...")
         with tempfile.TemporaryDirectory() as temp_dir:
             # 解压到临时目录
@@ -690,13 +701,13 @@ def perform_update_optimized(expected_version=None):
                 new_server_path = temp_dir
             
             print("    - 开始智能文件同步:")
-            # 智能同步文件
-            smart_file_sync(new_server_path, root_path, stats)
+            # 智能同步文件，同时备份受影响的部分
+            smart_file_sync(new_server_path, root_path, stats, backup_path, updated_files, new_files)
             
             # 统计保留的用户文件
             count_preserved_files(new_server_path, root_path, stats)
 
-        # --- 步骤 4: 显示统计信息 ---
+        # --- 步骤 3: 显示统计信息 ---
         print(f"\n📊 同步统计报告:")
         print(f"    - 📝 更新的文件: {stats['updated']}")
         print(f"    - ➕ 新增的文件: {stats['new']}")  
@@ -704,7 +715,7 @@ def perform_update_optimized(expected_version=None):
         print(f"    - ≡ 跳过的文件: {stats['unchanged']} (内容相同)")
         print(f"    - 📁 总处理文件: {sum(stats.values())}")
 
-        # --- 步骤 5: 清理 ---
+        # --- 步骤 4: 清理 ---
         print("  - 正在清理临时文件...")
         if os.path.exists(backup_path):
             shutil.rmtree(backup_path)  # 成功后删除备份
@@ -722,18 +733,27 @@ def perform_update_optimized(expected_version=None):
         print(f"\n❌ 更新失败: {e}")
         print("  - 正在尝试从备份回滚...")
         
-        # 回滚机制
-        if os.path.exists(backup_path):
-            try:
-                if os.path.exists(root_path): 
-                    shutil.rmtree(root_path)
-                shutil.move(backup_path, root_path)
-                print("  - ✅ 已成功回滚到更新前的状态")
-            except Exception as rollback_error:
-                print(f"  - ❌ 回滚失败: {rollback_error}")
-                print(f"  - 💾 备份文件保留在: {backup_path}")
-        else:
-            print("  - ⚠️ 无法找到备份，请检查文件完整性")
+        # 回滚机制：只恢复受影响的文件
+        try:
+            # 恢复更新的文件
+            for rel_path in updated_files:
+                backup_file = os.path.join(backup_path, rel_path)
+                target_file = os.path.join(root_path, rel_path)
+                if os.path.exists(backup_file):
+                    shutil.copy2(backup_file, target_file)
+                    print(f"    - 回滚更新: {rel_path}")
+            
+            # 删除新增的文件
+            for rel_path in new_files:
+                target_file = os.path.join(root_path, rel_path)
+                if os.path.exists(target_file):
+                    os.remove(target_file)
+                    print(f"    - 回滚新增: {rel_path}")
+            
+            print("  - ✅ 已成功回滚到更新前的状态")
+        except Exception as rollback_error:
+            print(f"  - ❌ 回滚失败: {rollback_error}")
+            print(f"  - 💾 备份文件保留在: {backup_path}")
     
     finally:
         # 清理下载的文件

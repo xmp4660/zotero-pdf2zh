@@ -1,4 +1,4 @@
-## server.py v3.0.5
+## server.py v3.0.6
 # guaguastandup
 # zotero-pdf2zh
 import platform
@@ -45,7 +45,7 @@ class VirtualEnvManager:
                     python_executable = 'python.exe' if self.is_windows else 'python'
                     python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                     subprocess.run(
-                        ['uv', 'pip', 'install', *packages, '--python', python_path], 
+                        ['uv', 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages, '--python', python_path], 
                         check=True, timeout=600, env=env)
             elif envtool == 'conda':
                 subprocess.run(['conda', 'create', '-n', envname, f'python={python_version}', '-y'], check=True, timeout=600)
