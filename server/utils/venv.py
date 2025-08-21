@@ -1,4 +1,4 @@
-## server.py v3.0.7
+## server.py v3.0.8
 # guaguastandup
 # zotero-pdf2zh
 import platform
@@ -22,7 +22,7 @@ class VirtualEnvManager:
         self.curr_envtool = None
         self.curr_envname = None
         self.default_env_tool = default_env_tool
-
+    
     """检查虚拟环境中是否安装了指定包"""
     def check_packages(self, engine, envtool, envname):
         cfg = self.env_configs[engine][envtool]
@@ -180,6 +180,60 @@ class VirtualEnvManager:
         print(f"❌ 无法找到可用的虚拟环境")
         return False
     
+    # Add this method inside the VirtualEnvManager class
+    def _get_conda_env_path(self, env_name):
+        try:
+            result = subprocess.run(
+                ['conda', 'info', '--json'],
+                capture_output=True, text=True, check=True, timeout=60, encoding='utf-8'
+            )
+            conda_info = json.loads(result.stdout)
+            # Conda lists full paths to all environments in 'envs'
+            for env_path in conda_info.get('envs', []):
+                if os.path.basename(env_path) == env_name:
+                    print(f"✅ Found conda env path: {env_path}")
+                    return env_path
+            # As a fallback, check all known environment directories
+            for envs_dir in conda_info.get('envs_dirs', []):
+                potential_path = os.path.join(envs_dir, env_name)
+                if os.path.isdir(potential_path):
+                    print(f"✅ Found conda env path in envs_dirs: {potential_path}")
+                    return potential_path
+            print(f"⚠️无法在 'conda info' 的输出中找到环境 '{env_name}' 的路径。")
+            return None
+        except (subprocess.CalledProcessError, json.JSONDecodeError, FileNotFoundError) as e:
+            print(f"❌ 获取 conda 环境路径时出错: {e}")
+            return None
+
+    def get_conda_bin_dir(self):
+        try:
+            try: # 优先通过 conda info 获取根目录
+                conda_info = subprocess.check_output(['conda', 'info', '--json'], shell=True).decode()
+                conda_info = json.loads(conda_info)
+                conda_base = conda_info.get('conda_prefix', '')
+                print(f"Conda base from conda info: {conda_base}")
+            except Exception as e:
+                print(f"Failed to get conda info: {e}")
+                conda_base_path = shutil.which('conda') # 回退到使用 shutil.which
+                if not conda_base_path:
+                    raise FileNotFoundError("Conda executable not found in PATH.")
+                print(f"Conda executable found at: {conda_base_path}")
+                conda_base = os.path.dirname(os.path.dirname(conda_base_path))
+                if os.path.basename(os.path.dirname(conda_base_path)).lower() not in ['scripts', 'condabin']:
+                    print(f"Warning: Unexpected conda executable location: {conda_base_path}")
+            bin_dir = os.path.join(conda_base, 'envs', self.curr_envname, 'Scripts' if self.is_windows else 'bin')
+            if not os.path.exists(bin_dir):
+                print(f"❌ 虚拟环境目录不存在: {bin_dir}")
+                envs_dir = os.path.join(conda_base, 'envs')
+                if os.path.exists(envs_dir):
+                    print(f"可用虚拟环境: {os.listdir(envs_dir)}")
+                return False
+            print(f"Virtual environment bin directory: {bin_dir}")
+            return bin_dir
+        except Exception as e:
+            print(f"Error locating Conda environment: {e}")
+            return False
+
     # gemini
     def execute_in_env(self, command):
         engine = 'pdf2zh_next' if 'pdf2zh_next' in ' '.join(command).lower() else 'pdf2zh'
@@ -202,16 +256,17 @@ class VirtualEnvManager:
             if self.curr_envtool == 'uv':
                 bin_dir = os.path.join(self.curr_envname, 'Scripts' if self.is_windows else 'bin')
             elif self.curr_envtool == 'conda':
-                # conda_base = os.path.dirname(os.path.dirname(shutil.which('conda') or ''))
-                # bin_dir = os.path.join(conda_base, 'envs', self.curr_envname, 'Scripts' if self.is_windows else 'bin')
-                conda_base_path = shutil.which('conda')
-                if not conda_base_path:
-                    raise FileNotFoundError("Conda executable not found in PATH.")
-                conda_base = os.path.dirname(os.path.dirname(conda_base_path))
-                bin_dir = os.path.join(conda_base, 'envs', self.curr_envname, 'Scripts' if self.is_windows else 'bin')
+                # bin_dir = self.get_conda_bin_dir()
+                # print(f"🔍 conda bin dir: {bin_dir}")
+                # ===== 核心修改：使用新的辅助函数来获取可靠的路径 =====
+                env_full_path = self._get_conda_env_path(self.curr_envname)
+                if not env_full_path:
+                    raise FileNotFoundError(f"无法自动定位 Conda 环境 '{self.curr_envname}' 的路径。")
+                bin_dir = os.path.join(env_full_path, 'Scripts' if self.is_windows else 'bin')
+                # =======================================================
                 if not os.path.exists(bin_dir):
                     print(f"❌ 虚拟环境目录不存在: {bin_dir}")
-                    return False
+                    return # Changed from return False to just return for consistency
             else:
                 raise ValueError(f"⚠️ 未知的环境工具: {self.curr_envtool}")
 
