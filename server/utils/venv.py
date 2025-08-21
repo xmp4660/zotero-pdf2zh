@@ -1,4 +1,4 @@
-## server.py v3.0.6
+## server.py v3.0.7
 # guaguastandup
 # zotero-pdf2zh
 import platform
@@ -30,7 +30,6 @@ class VirtualEnvManager:
         if not required_packages:
             print(f"⚠️ 无需检查 packages for {engine} in {envtool}")
             return True
-
         print(f"🔍 检查 {envtool} 环境 {envname} 中的 packages: {required_packages}")
         try:
             if envtool == 'uv':
@@ -45,11 +44,9 @@ class VirtualEnvManager:
                     ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json'],
                     capture_output=True, text=True, timeout=60
                 )
-
             if result.returncode != 0:
                 print(f"❌ 检查 packages 失败: pip list 返回非零退出码")
                 return False
-
             installed_packages = {pkg['name'].lower() for pkg in json.loads(result.stdout)}
             missing_packages = [pkg for pkg in required_packages if pkg.lower() not in installed_packages]
             if missing_packages:
@@ -103,9 +100,7 @@ class VirtualEnvManager:
         envname = self.env_name[engine]
         cfg = self.env_configs[engine][envtool]
         python_version = cfg.get('python_version', '3.12')
-
         print(f"🔧 开始创建 {envtool} 虚拟环境: {envname} (Python {python_version}) ...")
-
         try:
             if envtool == 'uv':
                 env = os.environ.copy()
@@ -138,7 +133,7 @@ class VirtualEnvManager:
         if envtool == 'uv':
             try:
                 uv_env_path = os.path.join('.', envname)
-                # print("🔍 检查 uv 环境: ", uv_env_path)
+                print("🔍 检查 uv 环境: ", uv_env_path)
                 # TOCHECK: 对于windows, macOS, linux, 检查路径的区别
                 return ( os.path.exists(uv_env_path) and os.path.exists(os.path.join(uv_env_path, 'pyvenv.cfg')))
             except Exception as e:
@@ -149,7 +144,7 @@ class VirtualEnvManager:
                 result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=600)
                 if result.returncode == 0:
                     envs = [line.split()[0] for line in result.stdout.splitlines() if line and not line.startswith("#")]
-                    # print("🔍 检查 conda 环境列表: ", envs)
+                    print("🔍 检查 conda 环境列表: ", envs)
                     return envname in envs
             except Exception as e:
                 print(f"❌ 检查 {envtool} 虚拟环境 {envname} 失败: {e}")
@@ -162,7 +157,6 @@ class VirtualEnvManager:
             if self.check_envtool(envtool):
                 envname = self.env_name[engine]
                 env_exists = self.check_env(engine, envtool)
-
                 if not env_exists:
                     # 环境不存在：创建环境，然后安装包
                     if not self.create_env(engine, envtool):
@@ -224,7 +218,6 @@ class VirtualEnvManager:
             # --- 命令组装 (保留优点：优先可执行文件，并用-u强制无缓冲) ---
             python_executable = 'python.exe' if self.is_windows else 'python'
             python_path = os.path.join(bin_dir, python_executable)
-
 
             # 直接执行
             if command[0].lower() in ['pdf2zh', 'pdf2zh_next']:

@@ -1,4 +1,4 @@
-## server.py v3.0.6
+## server.py v3.0.7
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,14 +20,15 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.6" 
+__version__ = "3.0.7" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
 pdf2zh_next = 'pdf2zh_next'
 venv        = 'venv' 
 
-# 强制设置标准输出和标准错误的编码为 UTF-8
+# TODO: 强制设置标准输出和标准错误的编码为 UTF-8
+# Check Powershell vs cmd
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 # sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
@@ -102,7 +103,7 @@ class PDFTranslator:
             if infile_type != 'origin':
                 return jsonify({'status': 'error', 'message': 'Input file must be an original PDF file.'}), 400
             if engine == pdf2zh:
-                print("🔍 [Zotero PDF2zh Server] PDF2zh_next 开始翻译文件...")
+                print("🔍 [Zotero PDF2zh Server] PDF2zh 开始翻译文件...")
                 fileList = self.translate_pdf(input_path, config)
                 mono_path, dual_path = fileList[0], fileList[1]
                 if config.mono_cut:
@@ -128,7 +129,6 @@ class PDFTranslator:
                 
             elif engine == pdf2zh_next:
                 print("🔍 [Zotero PDF2zh Server] PDF2zh_next 开始翻译文件...")
-
                 if config.mono_cut:
                     config.no_mono = False
                 if config.dual_cut or config.crop_compare or config.compare:
@@ -598,8 +598,7 @@ def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, ne
             target_file = os.path.join(target_root, file)
             rel_file_path = os.path.join(rel_dir, file) if rel_dir != '.' else file
             
-            if os.path.exists(target_file):
-                # 比较文件内容
+            if os.path.exists(target_file): # 比较文件内容
                 try:
                     with open(source_file, 'rb') as sf, open(target_file, 'rb') as tf:
                         source_content = sf.read()
@@ -636,9 +635,7 @@ def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, ne
                 new_files.append(rel_file_path)
 
 def count_preserved_files(source_dir, target_dir, stats, exclude_dirs=None):
-    """
-    统计保留的用户文件（在target中存在但source中不存在的文件）
-    """
+    # 统计保留的用户文件（在target中存在但source中不存在的文件）
     if exclude_dirs is None:
         exclude_dirs = []
 
@@ -657,9 +654,7 @@ def count_preserved_files(source_dir, target_dir, stats, exclude_dirs=None):
                 stats['preserved'] += 1
 
 def perform_update_optimized(expected_version=None):
-    """
-    优化的更新逻辑：结合智能同步和临时目录的优点，使用针对性备份避免操作无关目录（如虚拟环境）。
-    """
+    # 优化的更新逻辑：结合智能同步和临时目录的优点，使用针对性备份避免操作无关目录（如虚拟环境）。
     print("🚀 开始更新 (智能同步模式)...请稍候。")
     owner, repo = 'guaguastandup', 'zotero-pdf2zh'
     project_root = os.path.dirname(root_path)
@@ -668,7 +663,7 @@ def perform_update_optimized(expected_version=None):
     
     # <<< 优化点 3: 定义一个排除列表，包含虚拟环境和常见的缓存目录 >>>
     # 这是保护虚拟环境的关键
-    EXCLUDE_DIRECTORIES = ['zotero-pdf2zh-next-venv', '__pycache__']
+    EXCLUDE_DIRECTORIES = ['zotero-pdf2zh-next-venv', 'zotero-pdf2zh-venv']
     print(f"   - 🛡️ 更新将自动忽略以下目录: {EXCLUDE_DIRECTORIES}")
 
     import datetime
@@ -685,7 +680,6 @@ def perform_update_optimized(expected_version=None):
     
     try:
         # --- 步骤 1: 下载文件 ---
-        # (这部分代码无需改动，保持原样)
         xpi_url, xpi_filename = get_xpi_info_from_repo(owner, repo, 'main', expected_version)
         if xpi_url and xpi_filename:
             xpi_save_path = os.path.join(project_root, xpi_filename)
@@ -693,7 +687,7 @@ def perform_update_optimized(expected_version=None):
             if os.path.exists(xpi_save_path): 
                 os.remove(xpi_save_path)
             urllib.request.urlretrieve(xpi_url, xpi_save_path)
-            print("  - ✅ 插件文件下载完成")
+            print("  - ✅ 插件文件下载完成, 请将新版本插件安装到Zotero中")
         else:
             print("  - ⚠️ 未找到合适的插件文件，跳过插件下载。")
         
@@ -715,7 +709,6 @@ def perform_update_optimized(expected_version=None):
             print("    - 开始智能文件同步:")
             # <<< 优化点 4: 将排除列表传递给同步函数 >>>
             smart_file_sync(new_server_path, root_path, stats, backup_path, updated_files, new_files, exclude_dirs=EXCLUDE_DIRECTORIES)
-            
             # <<< 优化点 5: 将排除列表传递给统计函数 >>>
             count_preserved_files(new_server_path, root_path, stats, exclude_dirs=EXCLUDE_DIRECTORIES)
 
@@ -743,7 +736,6 @@ def perform_update_optimized(expected_version=None):
     except Exception as e:
         print(f"\n❌ 更新失败: {e}")
         print("  - 正在尝试从备份回滚...")
-        
         try:
             for rel_path in updated_files:
                 backup_file = os.path.join(backup_path, rel_path)
@@ -757,7 +749,7 @@ def perform_update_optimized(expected_version=None):
                 if os.path.exists(target_file):
                     os.remove(target_file)
                     print(f"    - 回滚新增: {rel_path}")
-            
+
             print("  - ✅ 已成功回滚到更新前的状态")
         except Exception as rollback_error:
             print(f"  - ❌ 回滚失败: {rollback_error}")
@@ -768,10 +760,7 @@ def perform_update_optimized(expected_version=None):
             os.remove(server_zip_path)
         sys.exit()
 
-def check_for_updates():
-    """
-    从 GitHub 检查是否有新版本。如果存在，则返回(本地版本, 远程版本)，否则返回None。
-    """
+def check_for_updates(): # 从 GitHub 检查是否有新版本。如果存在，则返回(本地版本, 远程版本)，否则返回None。
     print("💡 [自动更新] 正在检查更新...")
     remote_script_url = "https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/server/server.py"
     try:
