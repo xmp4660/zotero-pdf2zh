@@ -1,4 +1,4 @@
-## server.py v3.0.8
+## server.py v3.0.9
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.8" 
+__version__ = "3.0.9" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -493,6 +493,13 @@ class PDFTranslator:
                 output_path.append(watermark_mono)
             if not config.no_dual:
                 output_path.append(watermark_dual)
+
+        if args.enable_winexe:
+            if os.path.exists(args.winexe_path):
+                cmd = [f"{args.winexe_path}"] + cmd[1:]  # Windows可执行文件
+                print(f"⚠️ 使用 Windows 可执行文件: {cmd}")
+            else:
+                cmd = ["./pdf2zh_next.exe"] + cmd[1:]
         if args.enable_venv:
             self.env_manager.execute_in_env(cmd)
         else:
@@ -792,6 +799,8 @@ if __name__ == '__main__':
     parser.add_argument('--port', type=int, default=PORT, help='Port to run the server on')
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode')
     parser.add_argument('--check_update', type=bool, default=True, help='启动时检查更新')
+    parser.add_argument('--enable_winexe', type=bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
+    parser.add_argument('--winexe_path', type=str, default='', help='Windows可执行文件的路径')
     args = parser.parse_args()
     
     # 启动时自动检查更新
