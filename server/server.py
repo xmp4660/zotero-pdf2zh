@@ -557,13 +557,9 @@ def get_xpi_info_from_repo(owner, repo, branch='main', expected_version=None):
                     print(f"  - 成功找到匹配版本的插件: {target_filename}")
                     download_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{xpi_path}"
                     return download_url, target_filename
-            print(f"  - ⚠️ 未找到与服务端版本 {expected_version} 匹配的插件。将尝试查找任意版本...")
-        
-        fallback_path = all_xpis[0]
-        fallback_name = os.path.basename(fallback_path)
-        download_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{fallback_path}"
-        print(f"  - 查找到一个插件文件: {fallback_name} (作为备用选项)")
-        return download_url, fallback_name
+                
+        print(f"  - ⚠️ 未找到与服务端版本 {expected_version} 匹配的插件")
+        return None
     except Exception as e:
         print(f"  - ⚠️ 扫描插件失败 (可能是网络问题): {e}")
         return None, None
@@ -674,13 +670,15 @@ def perform_update_optimized(expected_version=None):
         # --- 步骤 1: 下载文件 ---
         # 下载插件
         xpi_url, xpi_filename = get_xpi_info_from_repo(owner, repo, 'main', expected_version)
-        if xpi_url:
+        if xpi_url and xpi_filename:
             xpi_save_path = os.path.join(project_root, xpi_filename)
             print(f"  - 正在下载插件文件 ({xpi_filename})...")
             if os.path.exists(xpi_save_path): 
                 os.remove(xpi_save_path)
             urllib.request.urlretrieve(xpi_url, xpi_save_path)
             print("  - ✅ 插件文件下载完成")
+        else:
+            print("  - ⚠️ 未找到合适的插件文件，跳过插件下载。")
         
         # 下载服务端
         server_zip_url = f"https://github.com/{owner}/{repo}/raw/main/server.zip"
