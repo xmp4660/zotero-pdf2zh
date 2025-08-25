@@ -186,8 +186,9 @@ class PDFTranslator:
             
             fileNameList = [os.path.basename(path) for path in fileList]
             for file_path in fileList:
-                size = os.path.getsize(file_path)
-                print(f"🐲 翻译成功, 生成文件: {file_path}, 大小为: {size/1024.0/1024.0:.2f} MB")
+                if os.path.exists(file_path):
+                    size = os.path.getsize(file_path)
+                    print(f"🐲 翻译成功, 生成文件: {file_path}, 大小为: {size/1024.0/1024.0:.2f} MB")
             return jsonify({'status': 'success', 'fileList': fileNameList}), 200
         except Exception as e:
             print(f"❌ [Zotero PDF2zh Server] /translate Error: {e}\n")
@@ -257,7 +258,6 @@ class PDFTranslator:
                 self.cropper.crop_pdf(config, input_path, infile_type, new_path, new_type)
             if os.path.exists(new_path):
                 fileName = os.path.basename(new_path)
-                # 打印生成文件的大小
                 size = os.path.getsize(new_path)
                 print(f"🐲 双语对照成功(裁剪后拼接), 生成文件: {fileName}, 大小为: {size/1024.0/1024.0:.2f} MB")
                 return jsonify({'status': 'success', 'fileList': [fileName]}), 200
@@ -414,6 +414,7 @@ class PDFTranslator:
         output_files = [output_path_mono, output_path_dual]
         for f in output_files: # 显示生成
             if not os.path.exists(f):
+                print(f"⚠️ 未找到期望生成的文件: {f}")
                 continue
             size = os.path.getsize(f)
             print(f"🐲 pdf2zh 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
