@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.4 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.11 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -24,19 +24,6 @@
 - 尝试向AI提问
 - 在github issue区提问
 - 发送问题到本插件用户QQ群: 971960014 入群验证回答: github
-
-🔮 v3.0.4更新日志
-
-1. zotero端添加LLM API配置列表
-2. zotero端兼容pdf2zh_next/pdf2zh大部分翻译配置
-3. zotero端翻译服务/语言选择字段更新，增加siliconflowfree服务选项
-4. zotero端对pdf2zh增加本地翻译字体添加，对pdf2zh_next增加翻译选择
-5. zotero/server优化dual文件生成格式，在pdf2zh_next翻译配置中：dualMode可选（LR/TB）分别表示双语页面左右显示/交替页面显示
-6. server端脚本添加自动虚拟环境更新操作，用户可以直接切换pdf2zh/pdf2zh_next进行翻译，不需要手动调整虚拟环境
-7. server端提供配置文件模版，不需要手动复制默认模版，不再支持用户自定义配置文件路径
-8. server端优化页面裁剪，选择PDF页面文字不再会选中隐藏文字（处理速度比以前慢）
-9. server端增加依赖包
-10. 增加自动更新机制
 
 ## 第一步: 安装uv/conda
 
@@ -67,9 +54,12 @@ conda --version
 ```shell
 # 1. 创建并进入zotero-pdf2zh文件夹
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
+
 # 2. 下载并解压server文件夹
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.11-beta/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
+
 # 3. 进入server文件夹
 cd server
 ```
@@ -102,7 +92,7 @@ python server.py --check_update=False
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.4[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.4-beta/zotero-pdf-2-zh-v3.0.4.xpi)
+新版本v3.0.11[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.11-beta/zotero-pdf-2-zh-v3.0.11.xpi)
 
 ## 第五步: Zotero端插件设置
 
