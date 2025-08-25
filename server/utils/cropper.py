@@ -1,4 +1,4 @@
-## server.py v3.0.10
+## server.py v3.0.11
 # guaguastandup
 # zotero-pdf2zh
 from pypdf import PdfWriter, PdfReader
@@ -207,4 +207,4 @@ class Cropper():
         except Exception as e:
             traceback.print_exc()
             print(f"❌ [Zotero PDF2zh Server] merge_pdf Error: {e}")
-            raise
+        return output_path

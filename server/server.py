@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.10" 
+__version__ = "3.0.11" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -412,7 +412,9 @@ class PDFTranslator:
         output_path_mono = os.path.join(output_folder, f"{fileName}-mono.pdf")
         output_path_dual = os.path.join(output_folder, f"{fileName}-dual.pdf")
         output_files = [output_path_mono, output_path_dual]
-        for f in output_files: # 显示生成的文件的大小
+        for f in output_files: # 显示生成
+            if not os.path.exists(f):
+                continue
             size = os.path.getsize(f)
             print(f"🐲 pdf2zh 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
         return output_files
@@ -437,19 +439,16 @@ class PDFTranslator:
             '--output', str(output_folder),
             '--lang-in', str(config.sourceLang),
             '--lang-out', str(config.targetLang),
-            '--config', str(config_path[pdf2zh_next]), # 使用默认的config path路径
+            '--config-file', str(config_path[pdf2zh_next]), # 使用默认的config path路径
         ]
         # TODO: 术语表的地址
         if config.no_watermark:
-            cmd.append('--watermark-output-mode')
-            cmd.append('no_watermark')
+            cmd.extend(['--watermark-output-mode', 'no_watermark'])
         else:
-            cmd.append('--watermark-output-mode')
-            cmd.append('watermarked')
+            cmd.extend(['--watermark-output-mode', 'watermarked'])
         if config.skip_last_pages and config.skip_last_pages > 0:
             end = len(PdfReader(input_path).pages) - config.skip_last_pages
-            cmd.append('--pages')
-            cmd.append(f'{1}-{end}')
+            cmd.extend(['--pages', f'{1}-{end}'])
         if config.no_dual:
             cmd.append('--no-dual')
             config.no_mono = False
@@ -475,7 +474,9 @@ class PDFTranslator:
             cmd.append('--ocr-workaround')
         if config.auto_ocr:
             cmd.append('--auto-enable-ocr-workaround')
-        
+        if config.font_family and config.font_family in ['auto', 'serif', 'sans-serif', 'script']:
+            cmd.extend(['--primary-font-family', config.font_family])
+
         fileName = os.path.basename(input_path).replace('.pdf', '')
         no_watermark_mono = os.path.join(output_folder, f"{fileName}.no_watermark.{config.targetLang}.mono.pdf")
         no_watermark_dual = os.path.join(output_folder, f"{fileName}.no_watermark.{config.targetLang}.dual.pdf")
@@ -494,17 +495,20 @@ class PDFTranslator:
             if not config.no_dual:
                 output_path.append(watermark_dual)
 
-        if args.enable_winexe:
-            if os.path.exists(args.winexe_path):
-                cmd = [f"{args.winexe_path}"] + cmd[1:]  # Windows可执行文件
-                print(f"⚠️ 使用 Windows 可执行文件: {cmd}")
-            else:
-                cmd = ["./pdf2zh_next.exe"] + cmd[1:]
+        if args.enable_winexe and os.path.exists(args.winexe_path):
+            cmd = [f"{args.winexe_path}"] + cmd[1:]  # Windows可执行文件
+            print(f"⚠️ 使用 Windows 可执行文件: {cmd}")
+            # 将所有是路径的字段, 改为os.path.normpath
+            cmd = [os.path.normpath(arg) if os.path.isfile(arg) or os.path.isdir(arg) else arg for arg in cmd]
+            subprocess.run(cmd, check=True)
+
         elif args.enable_venv:
             self.env_manager.execute_in_env(cmd)
         else:
             subprocess.run(cmd, check=True)
         for f in output_path:
+            if not os.path.exists(f):
+                continue
             size = os.path.getsize(f)
             print(f"🐲 pdf2zh_next 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
         return output_path
@@ -800,7 +804,7 @@ if __name__ == '__main__':
     parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode')
     parser.add_argument('--check_update', type=bool, default=True, help='启动时检查更新')
     parser.add_argument('--enable_winexe', type=bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
-    parser.add_argument('--winexe_path', type=str, default='', help='Windows可执行文件的路径')
+    parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
     args = parser.parse_args()
     
     # 启动时自动检查更新
