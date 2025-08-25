@@ -501,8 +501,14 @@ class PDFTranslator:
             print(f"⚠️ 使用 Windows 可执行文件: {cmd}")
             # 将所有是路径的字段, 改为os.path.normpath
             cmd = [os.path.normpath(arg) if os.path.isfile(arg) or os.path.isdir(arg) else arg for arg in cmd]
-            subprocess.run(cmd, check=True)
-
+            # Run with subprocess and capture output
+            r = subprocess.run(
+                cmd, shell=False,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                text=True, encoding="utf-8"
+            )
+            if r.returncode != 0:
+                raise RuntimeError(f"pdf2zh.exe 退出码 {r.returncode}\nstdout:\n{r.stdout}\nstderr:\n{r.stderr}")
         elif args.enable_venv:
             self.env_manager.execute_in_env(cmd)
         else:

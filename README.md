@@ -75,6 +75,7 @@ pip install -r requirements.txt
 # 默认使用uv进行虚拟环境管理
 # 默认自动检查更新
 # 默认端口号为8890
+# 默认不开启winexe模式
 python server.py
 
 # 可选: 命令行参数:
@@ -86,6 +87,9 @@ python server.py --env_tool=conda
 python server.py --port={Your Port Num}
 # 是否检查更新
 python server.py --check_update=False
+
+# new feature: 开启windows exe安装模式
+python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 ```
 
 > 💡 关于脚本自动更新的方法 1. 脚本自动检查更新(Experimental) 2. 通过git管理更新
