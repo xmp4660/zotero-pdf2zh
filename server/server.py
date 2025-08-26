@@ -1,4 +1,4 @@
-## server.py v3.0.10
+## server.py v3.0.12
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.11" 
+__version__ = "3.0.12" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -129,30 +129,38 @@ class PDFTranslator:
                 
             elif engine == pdf2zh_next:
                 print("🔍 [Zotero PDF2zh Server] PDF2zh_next 开始翻译文件...")
-                if config.mono_cut:
+                if config.mono_cut or config.mono:
                     config.no_mono = False
-                if config.dual_cut or config.crop_compare or config.compare:
+                if config.dual or config.dual_cut or config.crop_compare or config.compare:
                     config.no_dual = False
+
+                if config.no_dual and config.no_mono:
+                    raise ValueError("⚠️ [Zotero PDF2zh Server] pdf2zh_next 引擎至少需要生成 mono 或 dual 文件, 请检查 no_dual 和 no_mono 配置项")
 
                 fileList = []
                 retList = self.translate_pdf_next(input_path, config)
+
                 if config.no_mono:
                     dual_path = retList[0]
+                elif config.no_dual:
+                    mono_path = retList[0]
+                    fileList.append(mono_path)
                 else:
                     mono_path, dual_path = retList[0], retList[1]
                     fileList.append(mono_path)
                 
-                LR_dual_path = dual_path.replace('.dual.pdf', '.LR_dual.pdf')
-                TB_dual_path = dual_path.replace('.dual.pdf', '.TB_dual.pdf')
-
                 if config.dual_cut or config.crop_compare or config.compare:
+                    LR_dual_path = dual_path.replace('.dual.pdf', '.LR_dual.pdf')
+                    TB_dual_path = dual_path.replace('.dual.pdf', '.TB_dual.pdf')
                     if config.dual_mode == 'LR':
                         self.cropper.pdf_dual_mode(dual_path, 'LR', 'TB')
-                        fileList.append(LR_dual_path)
-                    else:
+                        if config.dual:
+                            fileList.append(LR_dual_path)
+                    elif config.dual_mode == 'TB':
                         os.rename(dual_path, TB_dual_path)
-                        fileList.append(TB_dual_path)
-                else:
+                        if config.dual:
+                            fileList.append(TB_dual_path)
+                elif config.dual:
                     fileList.append(dual_path)
 
                 if config.mono_cut:
@@ -407,10 +415,13 @@ class PDFTranslator:
                 self.env_manager.execute_in_env(cmd)
             else:
                 subprocess.run(cmd, check=True)
-
         fileName = os.path.basename(input_path).replace('.pdf', '')
-        output_path_mono = os.path.join(output_folder, f"{fileName}-mono.pdf")
-        output_path_dual = os.path.join(output_folder, f"{fileName}-dual.pdf")
+        if config.babeldoc:
+            output_path_mono = os.path.join(output_folder, f"{fileName}.{config.targetLang}.mono.pdf")
+            output_path_dual = os.path.join(output_folder, f"{fileName}.{config.targetLang}.dual.pdf")
+        else:
+            output_path_mono = os.path.join(output_folder, f"{fileName}-mono.pdf")
+            output_path_dual = os.path.join(output_folder, f"{fileName}-dual.pdf")
         output_files = [output_path_mono, output_path_dual]
         for f in output_files: # 显示生成
             if not os.path.exists(f):
@@ -452,8 +463,7 @@ class PDFTranslator:
             cmd.extend(['--pages', f'{1}-{end}'])
         if config.no_dual:
             cmd.append('--no-dual')
-            config.no_mono = False
-        elif config.no_mono:
+        if config.no_mono:
             cmd.append('--no-mono')
         if config.trans_first:
             cmd.append('--dual-translate-first')

@@ -1,4 +1,4 @@
-## server.py v3.0.11
+## server.py v3.0.12
 # guaguastandup
 # zotero-pdf2zh
 import json, toml
@@ -37,10 +37,6 @@ class Config:
             self.skip_last_pages = 0
 
         self.thread_num = request_data.get('threadNum', 8)
-        if self.thread_num not in [None, ''] and isinstance(self.thread_num, int):
-            self.thread_num = int(self.thread_num)
-        else:
-            self.thread_num = 8
 
         # 如果左右留白部分裁剪太多了, 可以调整pdf_w_offset和pdf_offset_ratio, 宽边裁剪值pdf_w_offset, 窄边裁剪值pdf_w_offset/pdf_offset_ratio
         # TODO: 将裁剪的逻辑添加到zotero配置页面
