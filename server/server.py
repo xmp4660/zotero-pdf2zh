@@ -1,4 +1,4 @@
-## server.py v3.0.12
+## server.py v3.0.13
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -20,7 +20,7 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.12" 
+__version__ = "3.0.13" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -56,7 +56,7 @@ class PDFTranslator:
     def __init__(self, args):
         self.app = Flask(__name__)
         if args.enable_venv:
-            self.env_manager = VirtualEnvManager(config_path[venv], venv_name, default_env_tool)
+            self.env_manager = VirtualEnvManager(config_path[venv], venv_name, args.env_tool)
         self.cropper = Cropper()
         self.setup_routes()
 
