@@ -88,7 +88,7 @@ python server.py --port={Your Port Num}
 # 是否检查更新
 python server.py --check_update=False
 
-# new feature: 开启windows exe安装模式
+# new feature for Windows user: 开启windows exe安装模式, 安装pdf2zh_next exe版本，将可执行文件路径输入到命令行参数(例如./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe)
 python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 ```
 
