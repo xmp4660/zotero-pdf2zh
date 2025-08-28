@@ -1,4 +1,4 @@
-## server.py v3.0.13
+## server.py v3.0.14
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -18,9 +18,10 @@ import re   # NEW: 用于解析版本号
 import urllib.request # NEW: 用于下载文件
 import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
+import io
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.13" 
+__version__ = "3.0.14" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -28,7 +29,6 @@ pdf2zh_next = 'pdf2zh_next'
 venv        = 'venv' 
 
 # TODO: 强制设置标准输出和标准错误的编码为 UTF-8
-# Check Powershell vs cmd
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 # sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 

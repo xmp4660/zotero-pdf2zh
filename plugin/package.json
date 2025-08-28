@@ -1,6 +1,6 @@
 {
     "name": "zotero-pdf2zh",
-    "version": "3.0.12",
+    "version": "3.0.14",
     "description": "Zotero Pdf2zh",
     "config": {
         "addonName": "Zotero Pdf2zh",
