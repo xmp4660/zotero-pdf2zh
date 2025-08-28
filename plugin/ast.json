@@ -2,7 +2,7 @@
   "type": "Module",
   "span": {
     "start": 31,
-    "end": 2474
+    "end": 2472
   },
   "body": [
     {
@@ -786,13 +786,13 @@
       "type": "ExpressionStatement",
       "span": {
         "start": 858,
-        "end": 912
+        "end": 910
       },
       "expression": {
         "type": "CallExpression",
         "span": {
           "start": 858,
-          "end": 911
+          "end": 909
         },
         "ctxt": 0,
         "callee": {
@@ -824,10 +824,10 @@
               "type": "StringLiteral",
               "span": {
                 "start": 902,
-                "end": 910
+                "end": 908
               },
-              "value": "script",
-              "raw": "\"script\""
+              "value": "auto",
+              "raw": "\"auto\""
             }
           }
         ],
@@ -837,21 +837,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 913,
-        "end": 961
+        "start": 911,
+        "end": 959
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 913,
-          "end": 960
+          "start": 911,
+          "end": 958
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 913,
-            "end": 917
+            "start": 911,
+            "end": 915
           },
           "ctxt": 1,
           "value": "pref",
@@ -863,8 +863,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 918,
-                "end": 953
+                "start": 916,
+                "end": 951
               },
               "value": "extensions.zotero.pdf2zh.dualMode",
               "raw": "\"extensions.zotero.pdf2zh.dualMode\""
@@ -875,8 +875,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 955,
-                "end": 959
+                "start": 953,
+                "end": 957
               },
               "value": "LR",
               "raw": "\"LR\""
@@ -889,21 +889,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 962,
-        "end": 1012
+        "start": 960,
+        "end": 1010
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 962,
-          "end": 1011
+          "start": 960,
+          "end": 1009
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 962,
-            "end": 966
+            "start": 960,
+            "end": 964
           },
           "ctxt": 1,
           "value": "pref",
@@ -915,8 +915,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 967,
-                "end": 1004
+                "start": 965,
+                "end": 1002
               },
               "value": "extensions.zotero.pdf2zh.transFirst",
               "raw": "\"extensions.zotero.pdf2zh.transFirst\""
@@ -927,8 +927,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1006,
-                "end": 1010
+                "start": 1004,
+                "end": 1008
               },
               "value": true
             }
@@ -940,21 +940,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1013,
-        "end": 1057
+        "start": 1011,
+        "end": 1055
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1013,
-          "end": 1056
+          "start": 1011,
+          "end": 1054
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1013,
-            "end": 1017
+            "start": 1011,
+            "end": 1015
           },
           "ctxt": 1,
           "value": "pref",
@@ -966,8 +966,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1018,
-                "end": 1048
+                "start": 1016,
+                "end": 1046
               },
               "value": "extensions.zotero.pdf2zh.ocr",
               "raw": "\"extensions.zotero.pdf2zh.ocr\""
@@ -978,8 +978,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1050,
-                "end": 1055
+                "start": 1048,
+                "end": 1053
               },
               "value": false
             }
@@ -991,21 +991,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1058,
-        "end": 1105
+        "start": 1056,
+        "end": 1103
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1058,
-          "end": 1104
+          "start": 1056,
+          "end": 1102
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1058,
-            "end": 1062
+            "start": 1056,
+            "end": 1060
           },
           "ctxt": 1,
           "value": "pref",
@@ -1017,8 +1017,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1063,
-                "end": 1097
+                "start": 1061,
+                "end": 1095
               },
               "value": "extensions.zotero.pdf2zh.autoOcr",
               "raw": "\"extensions.zotero.pdf2zh.autoOcr\""
@@ -1029,8 +1029,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1099,
-                "end": 1103
+                "start": 1097,
+                "end": 1101
               },
               "value": true
             }
@@ -1042,21 +1042,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1106,
-        "end": 1157
+        "start": 1104,
+        "end": 1155
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1106,
-          "end": 1156
+          "start": 1104,
+          "end": 1154
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1106,
-            "end": 1110
+            "start": 1104,
+            "end": 1108
           },
           "ctxt": 1,
           "value": "pref",
@@ -1068,8 +1068,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1111,
-                "end": 1149
+                "start": 1109,
+                "end": 1147
               },
               "value": "extensions.zotero.pdf2zh.noWatermark",
               "raw": "\"extensions.zotero.pdf2zh.noWatermark\""
@@ -1080,8 +1080,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1151,
-                "end": 1155
+                "start": 1149,
+                "end": 1153
               },
               "value": true
             }
@@ -1093,21 +1093,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1158,
-        "end": 1211
+        "start": 1156,
+        "end": 1209
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1158,
-          "end": 1210
+          "start": 1156,
+          "end": 1208
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1158,
-            "end": 1162
+            "start": 1156,
+            "end": 1160
           },
           "ctxt": 1,
           "value": "pref",
@@ -1119,8 +1119,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1163,
-                "end": 1202
+                "start": 1161,
+                "end": 1200
               },
               "value": "extensions.zotero.pdf2zh.saveGlossary",
               "raw": "\"extensions.zotero.pdf2zh.saveGlossary\""
@@ -1131,8 +1131,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1204,
-                "end": 1209
+                "start": 1202,
+                "end": 1207
               },
               "value": false
             }
@@ -1144,21 +1144,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1212,
-        "end": 1268
+        "start": 1210,
+        "end": 1266
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1212,
-          "end": 1267
+          "start": 1210,
+          "end": 1265
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1212,
-            "end": 1216
+            "start": 1210,
+            "end": 1214
           },
           "ctxt": 1,
           "value": "pref",
@@ -1170,8 +1170,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1217,
-                "end": 1259
+                "start": 1215,
+                "end": 1257
               },
               "value": "extensions.zotero.pdf2zh.disableGlossary",
               "raw": "\"extensions.zotero.pdf2zh.disableGlossary\""
@@ -1182,8 +1182,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1261,
-                "end": 1266
+                "start": 1259,
+                "end": 1264
               },
               "value": false
             }
@@ -1195,21 +1195,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1269,
-        "end": 1316
+        "start": 1267,
+        "end": 1314
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1269,
-          "end": 1315
+          "start": 1267,
+          "end": 1313
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1269,
-            "end": 1273
+            "start": 1267,
+            "end": 1271
           },
           "ctxt": 1,
           "value": "pref",
@@ -1221,8 +1221,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1274,
-                "end": 1307
+                "start": 1272,
+                "end": 1305
               },
               "value": "extensions.zotero.pdf2zh.noDual",
               "raw": "\"extensions.zotero.pdf2zh.noDual\""
@@ -1233,8 +1233,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1309,
-                "end": 1314
+                "start": 1307,
+                "end": 1312
               },
               "value": false
             }
@@ -1246,21 +1246,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1317,
-        "end": 1364
+        "start": 1315,
+        "end": 1362
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1317,
-          "end": 1363
+          "start": 1315,
+          "end": 1361
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1317,
-            "end": 1321
+            "start": 1315,
+            "end": 1319
           },
           "ctxt": 1,
           "value": "pref",
@@ -1272,8 +1272,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1322,
-                "end": 1355
+                "start": 1320,
+                "end": 1353
               },
               "value": "extensions.zotero.pdf2zh.noMono",
               "raw": "\"extensions.zotero.pdf2zh.noMono\""
@@ -1284,8 +1284,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1357,
-                "end": 1362
+                "start": 1355,
+                "end": 1360
               },
               "value": false
             }
@@ -1297,21 +1297,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1365,
-        "end": 1415
+        "start": 1363,
+        "end": 1413
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1365,
-          "end": 1414
+          "start": 1363,
+          "end": 1412
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1365,
-            "end": 1369
+            "start": 1363,
+            "end": 1367
           },
           "ctxt": 1,
           "value": "pref",
@@ -1323,8 +1323,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1370,
-                "end": 1406
+                "start": 1368,
+                "end": 1404
               },
               "value": "extensions.zotero.pdf2zh.skipClean",
               "raw": "\"extensions.zotero.pdf2zh.skipClean\""
@@ -1335,8 +1335,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1408,
-                "end": 1413
+                "start": 1406,
+                "end": 1411
               },
               "value": false
             }
@@ -1348,21 +1348,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1416,
-        "end": 1481
+        "start": 1414,
+        "end": 1479
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1416,
-          "end": 1480
+          "start": 1414,
+          "end": 1478
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1416,
-            "end": 1420
+            "start": 1414,
+            "end": 1418
           },
           "ctxt": 1,
           "value": "pref",
@@ -1374,8 +1374,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1421,
-                "end": 1472
+                "start": 1419,
+                "end": 1470
               },
               "value": "extensions.zotero.pdf2zh.disableRichTextTranslate",
               "raw": "\"extensions.zotero.pdf2zh.disableRichTextTranslate\""
@@ -1386,8 +1386,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1474,
-                "end": 1479
+                "start": 1472,
+                "end": 1477
               },
               "value": false
             }
@@ -1399,21 +1399,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1482,
-        "end": 1543
+        "start": 1480,
+        "end": 1541
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1482,
-          "end": 1542
+          "start": 1480,
+          "end": 1540
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1482,
-            "end": 1486
+            "start": 1480,
+            "end": 1484
           },
           "ctxt": 1,
           "value": "pref",
@@ -1425,8 +1425,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1487,
-                "end": 1534
+                "start": 1485,
+                "end": 1532
               },
               "value": "extensions.zotero.pdf2zh.enhanceCompatibility",
               "raw": "\"extensions.zotero.pdf2zh.enhanceCompatibility\""
@@ -1437,8 +1437,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1536,
-                "end": 1541
+                "start": 1534,
+                "end": 1539
               },
               "value": false
             }
@@ -1450,21 +1450,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1544,
-        "end": 1603
+        "start": 1542,
+        "end": 1601
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1544,
-          "end": 1602
+          "start": 1542,
+          "end": 1600
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1544,
-            "end": 1548
+            "start": 1542,
+            "end": 1546
           },
           "ctxt": 1,
           "value": "pref",
@@ -1476,8 +1476,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1549,
-                "end": 1594
+                "start": 1547,
+                "end": 1592
               },
               "value": "extensions.zotero.pdf2zh.translateTableText",
               "raw": "\"extensions.zotero.pdf2zh.translateTableText\""
@@ -1488,8 +1488,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1596,
-                "end": 1601
+                "start": 1594,
+                "end": 1599
               },
               "value": false
             }
@@ -1501,21 +1501,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1604,
-        "end": 1670
+        "start": 1602,
+        "end": 1668
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1604,
-          "end": 1669
+          "start": 1602,
+          "end": 1667
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1604,
-            "end": 1608
+            "start": 1602,
+            "end": 1606
           },
           "ctxt": 1,
           "value": "pref",
@@ -1527,8 +1527,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1609,
-                "end": 1661
+                "start": 1607,
+                "end": 1659
               },
               "value": "extensions.zotero.pdf2zh.onlyIncludeTranslatedPage",
               "raw": "\"extensions.zotero.pdf2zh.onlyIncludeTranslatedPage\""
@@ -1539,8 +1539,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1663,
-                "end": 1668
+                "start": 1661,
+                "end": 1666
               },
               "value": false
             }
@@ -1552,21 +1552,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1696,
-        "end": 1740
+        "start": 1694,
+        "end": 1738
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1696,
-          "end": 1739
+          "start": 1694,
+          "end": 1737
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1696,
-            "end": 1700
+            "start": 1694,
+            "end": 1698
           },
           "ctxt": 1,
           "value": "pref",
@@ -1578,8 +1578,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1701,
-                "end": 1732
+                "start": 1699,
+                "end": 1730
               },
               "value": "extensions.zotero.pdf2zh.mono",
               "raw": "\"extensions.zotero.pdf2zh.mono\""
@@ -1590,8 +1590,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1734,
-                "end": 1738
+                "start": 1732,
+                "end": 1736
               },
               "value": true
             }
@@ -1603,21 +1603,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1741,
-        "end": 1785
+        "start": 1739,
+        "end": 1783
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1741,
-          "end": 1784
+          "start": 1739,
+          "end": 1782
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1741,
-            "end": 1745
+            "start": 1739,
+            "end": 1743
           },
           "ctxt": 1,
           "value": "pref",
@@ -1629,8 +1629,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1746,
-                "end": 1777
+                "start": 1744,
+                "end": 1775
               },
               "value": "extensions.zotero.pdf2zh.dual",
               "raw": "\"extensions.zotero.pdf2zh.dual\""
@@ -1641,8 +1641,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1779,
-                "end": 1783
+                "start": 1777,
+                "end": 1781
               },
               "value": true
             }
@@ -1654,21 +1654,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1786,
-        "end": 1835
+        "start": 1784,
+        "end": 1833
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1786,
-          "end": 1834
+          "start": 1784,
+          "end": 1832
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1786,
-            "end": 1790
+            "start": 1784,
+            "end": 1788
           },
           "ctxt": 1,
           "value": "pref",
@@ -1680,8 +1680,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1791,
-                "end": 1826
+                "start": 1789,
+                "end": 1824
               },
               "value": "extensions.zotero.pdf2zh.mono-cut",
               "raw": "\"extensions.zotero.pdf2zh.mono-cut\""
@@ -1692,8 +1692,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1828,
-                "end": 1833
+                "start": 1826,
+                "end": 1831
               },
               "value": false
             }
@@ -1705,21 +1705,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1836,
-        "end": 1885
+        "start": 1834,
+        "end": 1883
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1836,
-          "end": 1884
+          "start": 1834,
+          "end": 1882
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1836,
-            "end": 1840
+            "start": 1834,
+            "end": 1838
           },
           "ctxt": 1,
           "value": "pref",
@@ -1731,8 +1731,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1841,
-                "end": 1876
+                "start": 1839,
+                "end": 1874
               },
               "value": "extensions.zotero.pdf2zh.dual-cut",
               "raw": "\"extensions.zotero.pdf2zh.dual-cut\""
@@ -1743,8 +1743,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1878,
-                "end": 1883
+                "start": 1876,
+                "end": 1881
               },
               "value": false
             }
@@ -1756,21 +1756,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1886,
-        "end": 1939
+        "start": 1884,
+        "end": 1937
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1886,
-          "end": 1938
+          "start": 1884,
+          "end": 1936
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1886,
-            "end": 1890
+            "start": 1884,
+            "end": 1888
           },
           "ctxt": 1,
           "value": "pref",
@@ -1782,8 +1782,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1891,
-                "end": 1930
+                "start": 1889,
+                "end": 1928
               },
               "value": "extensions.zotero.pdf2zh.crop-compare",
               "raw": "\"extensions.zotero.pdf2zh.crop-compare\""
@@ -1794,8 +1794,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1932,
-                "end": 1937
+                "start": 1930,
+                "end": 1935
               },
               "value": false
             }
@@ -1807,21 +1807,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 1940,
-        "end": 1988
+        "start": 1938,
+        "end": 1986
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 1940,
-          "end": 1987
+          "start": 1938,
+          "end": 1985
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 1940,
-            "end": 1944
+            "start": 1938,
+            "end": 1942
           },
           "ctxt": 1,
           "value": "pref",
@@ -1833,8 +1833,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 1945,
-                "end": 1979
+                "start": 1943,
+                "end": 1977
               },
               "value": "extensions.zotero.pdf2zh.compare",
               "raw": "\"extensions.zotero.pdf2zh.compare\""
@@ -1845,8 +1845,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 1981,
-                "end": 1986
+                "start": 1979,
+                "end": 1984
               },
               "value": false
             }
@@ -1858,21 +1858,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2007,
-        "end": 2057
+        "start": 2005,
+        "end": 2055
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2007,
-          "end": 2056
+          "start": 2005,
+          "end": 2054
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2007,
-            "end": 2011
+            "start": 2005,
+            "end": 2009
           },
           "ctxt": 1,
           "value": "pref",
@@ -1884,8 +1884,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2012,
-                "end": 2048
+                "start": 2010,
+                "end": 2046
               },
               "value": "extensions.zotero.pdf2zh.mono-open",
               "raw": "\"extensions.zotero.pdf2zh.mono-open\""
@@ -1896,8 +1896,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 2050,
-                "end": 2055
+                "start": 2048,
+                "end": 2053
               },
               "value": false
             }
@@ -1909,21 +1909,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2058,
-        "end": 2108
+        "start": 2056,
+        "end": 2106
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2058,
-          "end": 2107
+          "start": 2056,
+          "end": 2105
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2058,
-            "end": 2062
+            "start": 2056,
+            "end": 2060
           },
           "ctxt": 1,
           "value": "pref",
@@ -1935,8 +1935,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2063,
-                "end": 2099
+                "start": 2061,
+                "end": 2097
               },
               "value": "extensions.zotero.pdf2zh.dual-open",
               "raw": "\"extensions.zotero.pdf2zh.dual-open\""
@@ -1947,8 +1947,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 2101,
-                "end": 2106
+                "start": 2099,
+                "end": 2104
               },
               "value": false
             }
@@ -1960,21 +1960,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2109,
-        "end": 2163
+        "start": 2107,
+        "end": 2161
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2109,
-          "end": 2162
+          "start": 2107,
+          "end": 2160
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2109,
-            "end": 2113
+            "start": 2107,
+            "end": 2111
           },
           "ctxt": 1,
           "value": "pref",
@@ -1986,8 +1986,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2114,
-                "end": 2154
+                "start": 2112,
+                "end": 2152
               },
               "value": "extensions.zotero.pdf2zh.mono-cut-open",
               "raw": "\"extensions.zotero.pdf2zh.mono-cut-open\""
@@ -1998,8 +1998,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 2156,
-                "end": 2161
+                "start": 2154,
+                "end": 2159
               },
               "value": false
             }
@@ -2011,21 +2011,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2164,
-        "end": 2218
+        "start": 2162,
+        "end": 2216
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2164,
-          "end": 2217
+          "start": 2162,
+          "end": 2215
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2164,
-            "end": 2168
+            "start": 2162,
+            "end": 2166
           },
           "ctxt": 1,
           "value": "pref",
@@ -2037,8 +2037,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2169,
-                "end": 2209
+                "start": 2167,
+                "end": 2207
               },
               "value": "extensions.zotero.pdf2zh.dual-cut-open",
               "raw": "\"extensions.zotero.pdf2zh.dual-cut-open\""
@@ -2049,8 +2049,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 2211,
-                "end": 2216
+                "start": 2209,
+                "end": 2214
               },
               "value": false
             }
@@ -2062,21 +2062,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2219,
-        "end": 2277
+        "start": 2217,
+        "end": 2275
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2219,
-          "end": 2276
+          "start": 2217,
+          "end": 2274
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2219,
-            "end": 2223
+            "start": 2217,
+            "end": 2221
           },
           "ctxt": 1,
           "value": "pref",
@@ -2088,8 +2088,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2224,
-                "end": 2268
+                "start": 2222,
+                "end": 2266
               },
               "value": "extensions.zotero.pdf2zh.crop-compare-open",
               "raw": "\"extensions.zotero.pdf2zh.crop-compare-open\""
@@ -2100,8 +2100,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 2270,
-                "end": 2275
+                "start": 2268,
+                "end": 2273
               },
               "value": false
             }
@@ -2113,21 +2113,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2278,
-        "end": 2331
+        "start": 2276,
+        "end": 2329
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2278,
-          "end": 2330
+          "start": 2276,
+          "end": 2328
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2278,
-            "end": 2282
+            "start": 2276,
+            "end": 2280
           },
           "ctxt": 1,
           "value": "pref",
@@ -2139,8 +2139,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2283,
-                "end": 2322
+                "start": 2281,
+                "end": 2320
               },
               "value": "extensions.zotero.pdf2zh.compare-open",
               "raw": "\"extensions.zotero.pdf2zh.compare-open\""
@@ -2151,8 +2151,8 @@
             "expression": {
               "type": "BooleanLiteral",
               "span": {
-                "start": 2324,
-                "end": 2329
+                "start": 2322,
+                "end": 2327
               },
               "value": false
             }
@@ -2164,21 +2164,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2343,
-        "end": 2405
+        "start": 2341,
+        "end": 2403
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2343,
-          "end": 2404
+          "start": 2341,
+          "end": 2402
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2343,
-            "end": 2347
+            "start": 2341,
+            "end": 2345
           },
           "ctxt": 1,
           "value": "pref",
@@ -2190,8 +2190,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2348,
-                "end": 2389
+                "start": 2346,
+                "end": 2387
               },
               "value": "extensions.zotero.pdf2zh.dialog-service",
               "raw": "\"extensions.zotero.pdf2zh.dialog-service\""
@@ -2202,8 +2202,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2391,
-                "end": 2403
+                "start": 2389,
+                "end": 2401
               },
               "value": "openaliked",
               "raw": "\"openaliked\""
@@ -2216,21 +2216,21 @@
     {
       "type": "ExpressionStatement",
       "span": {
-        "start": 2406,
-        "end": 2474
+        "start": 2404,
+        "end": 2472
       },
       "expression": {
         "type": "CallExpression",
         "span": {
-          "start": 2406,
-          "end": 2473
+          "start": 2404,
+          "end": 2471
         },
         "ctxt": 0,
         "callee": {
           "type": "Identifier",
           "span": {
-            "start": 2406,
-            "end": 2410
+            "start": 2404,
+            "end": 2408
           },
           "ctxt": 1,
           "value": "pref",
@@ -2242,8 +2242,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2411,
-                "end": 2458
+                "start": 2409,
+                "end": 2456
               },
               "value": "extensions.zotero.pdf2zh.dialog-serviceSelect",
               "raw": "\"extensions.zotero.pdf2zh.dialog-serviceSelect\""
@@ -2254,8 +2254,8 @@
             "expression": {
               "type": "StringLiteral",
               "span": {
-                "start": 2460,
-                "end": 2472
+                "start": 2458,
+                "end": 2470
               },
               "value": "openaliked",
               "raw": "\"openaliked\""

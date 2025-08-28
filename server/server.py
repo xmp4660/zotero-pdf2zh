@@ -1,4 +1,4 @@
-## server.py v3.0.14
+## server.py v3.0.15
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -21,7 +21,7 @@ import tempfile # 引入tempfile来处理临时目录
 import io
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.14" 
+__version__ = "3.0.15" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -485,7 +485,7 @@ class PDFTranslator:
             cmd.append('--ocr-workaround')
         if config.auto_ocr:
             cmd.append('--auto-enable-ocr-workaround')
-        if config.font_family and config.font_family in ['auto', 'serif', 'sans-serif', 'script']:
+        if config.font_family and config.font_family in ['serif', 'sans-serif', 'script']:
             cmd.extend(['--primary-font-family', config.font_family])
 
         fileName = os.path.basename(input_path).replace('.pdf', '')

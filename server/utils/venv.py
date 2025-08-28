@@ -1,4 +1,4 @@
-## server.py v3.0.14
+## server.py v3.0.15
 # guaguastandup
 # zotero-pdf2zh
 import platform

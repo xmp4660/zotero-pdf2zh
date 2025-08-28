@@ -22,7 +22,7 @@ pref("__prefsPrefix__.babeldoc", false);
 pref("__prefsPrefix__.fontFile", "");
 
 // pdf2x
-pref("__prefsPrefix__.fontFamily", "script");
+pref("__prefsPrefix__.fontFamily", "auto");
 pref("__prefsPrefix__.dualMode", "LR");
 pref("__prefsPrefix__.transFirst", true);
 pref("__prefsPrefix__.ocr", false);
