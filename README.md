@@ -25,6 +25,11 @@
 - 在github issue区提问
 - 发送问题到本插件用户QQ群: 971960014 入群验证回答: github
 
+## 第零步：安装Python和Zotero
+- [Python下载链接](https://www.python.org/downloads/)
+
+- 插件目前支持[Zotero 7](https://www.zotero.org/download/)
+
 ## 第一步: 安装uv/conda
 
 **uv安装(推荐)**
