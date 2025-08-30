@@ -37,7 +37,7 @@ class Cropper():
         pass
     
     # very prefect!
-    def crop_pdf(self, config, input_pdf, infile_type, output_pdf, outfile_type):
+    def crop_pdf(self, config, input_pdf, infile_type, output_pdf, outfile_type, dualFirst=True, engine="pdf2zh"):
         w_offset = config.pdf_w_offset   # 左右边距
         h_offset = config.pdf_h_offset   # 上下边距
         r = config.pdf_offset_ratio      # 偏移比例
@@ -81,6 +81,9 @@ class Cropper():
             for i in range(0, len(temp_src_doc), 2):
                 odd_page_num = i
                 even_page_num = i + 1
+                if engine == "pdf2zh" and dualFirst == True:
+                    odd_page_num = i + 1
+                    even_page_num = i
                 # 为奇数页和偶数页各创建一个base拷贝
                 odd_base_doc = fitz.open()
                 odd_base_doc.insert_pdf(temp_src_doc, from_page=odd_page_num, to_page=odd_page_num)
@@ -184,7 +187,7 @@ class Cropper():
         src_doc.close()
         print(f"✅ 处理完成，新PDF保存为 {output_path}. 已移除隐藏文本，并优化文件大小。")
 
-    def merge_pdf(self, input_path, output_path):
+    def merge_pdf(self, input_path, output_path, dualFirst=True, engine="pdf2zh"):
         print(f"🐲 开始合并PDF: {input_path} 和 {output_path}")
         try:
             dual_pdf = fitz.open(input_path)
@@ -192,14 +195,21 @@ class Cropper():
             for page_num in range(0, dual_pdf.page_count, 2):
                 left_page = dual_pdf[page_num]
                 right_page = dual_pdf[page_num+1]
+                if engine=="pdf2zh" and dualFirst==True:
+                    left_page = dual_pdf[page_num+1]
+                    right_page = dual_pdf[page_num]
                 # 获取页面尺寸
                 left_rect = left_page.rect
                 right_rect = right_page.rect
                 # 创建新页面，宽度是双语页面的两倍（并排显示）
                 new_page = output_pdf.new_page(width=(left_rect.width + right_rect.width), height=left_rect.height)
                 # 将双语页面绘制在左侧
-                new_page.show_pdf_page(fitz.Rect(0, 0, left_rect.width, left_rect.height), dual_pdf, page_num)
-                new_page.show_pdf_page(fitz.Rect(left_rect.width, 0, left_rect.width + right_rect.width, right_rect.height), dual_pdf, page_num + 1)
+                if engine=="pdf2zh" and dualFirst==True:
+                    new_page.show_pdf_page(fitz.Rect(0, 0, left_rect.width, left_rect.height), dual_pdf, page_num + 1)
+                    new_page.show_pdf_page(fitz.Rect(left_rect.width, 0, left_rect.width + right_rect.width, right_rect.height), dual_pdf, page_num)
+                else:
+                    new_page.show_pdf_page(fitz.Rect(0, 0, left_rect.width, left_rect.height), dual_pdf, page_num)
+                    new_page.show_pdf_page(fitz.Rect(left_rect.width, 0, left_rect.width + right_rect.width, right_rect.height), dual_pdf, page_num + 1)
             output_pdf.save(output_path, garbage=4, deflate=True)
             output_pdf.close()
             dual_pdf.close()
