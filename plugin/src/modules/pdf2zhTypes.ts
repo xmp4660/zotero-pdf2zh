@@ -15,6 +15,7 @@ export interface ServerConfig {
     threadNum: string;
     engine: string;
     service: string;
+    next_service: string;
 
     skipLastPages: string;
     sourceLang: string;

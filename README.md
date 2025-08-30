@@ -1,6 +1,6 @@
 <div align="center">
 
-![Zotero PDF2zh](./plugin/addon/content/icons/favicon@0.5x.svg)
+![Zotero PDF2zh](./favicon@0.5x.svg)
 
 <h2 id="title">Zotero PDF2zh</h2>
 
@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.15 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.16 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -56,7 +56,7 @@ conda --version
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.15-beta/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.16-beta/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -96,12 +96,29 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.15[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.15-beta/zotero-pdf-2-zh-v3.0.15.xpi)
+新版本v3.0.16[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.16-beta/zotero-pdf-2-zh-v3.0.16.xpi)
 
 ## 第五步: Zotero端插件设置
 
 <img src="./images/preference.png" alt="preference" style="width: 500px" align="center"/>
 <img src="./images/preference2.png" alt="preference2" style="width: 500px" align="center"/>
+
+**💡 插件设置介绍**
+
+- 免费&免配置的翻译服务:
+    - siliconflowfree 
+        - 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由硅基流动与@Babeldoc联合提供服务
+    - bing
+    - google
+- 免费的翻译服务:
+    - zhipu(GLM-4.5-Flash模型免费, 需配置API Key)
+- 具有优惠/赠送的翻译服务:
+    - 加入火山引擎共享计划, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
+        - 火山引擎的Token赠送量取决于前一天的Token使用量，请注意在火山引擎管理台观察服务赠送Token用量，避免支付超额费用
+        - 本服务支持高线程数, 可将线程数设置为500~2000
+
+- openailiked可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
+
 
 **💡 注意事项**
 

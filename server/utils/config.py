@@ -1,4 +1,4 @@
-## server.py v3.0.15
+## server.py v3.0.16
 # guaguastandup
 # zotero-pdf2zh
 import json, toml
@@ -15,13 +15,18 @@ def stringToBoolean(value):
 
 class Config:
     def __init__(self, request_data):
-        self.service = request_data.get('service', 'bing')
-        if self.service in [None, ''] or len(self.service) < 3:
-            self.service = 'bing'
-        
         self.engine = request_data.get('engine', 'pdf2zh')
         if self.engine not in [pdf2zh, pdf2zh_next]:
             self.engine = pdf2zh
+
+        if self.engine == pdf2zh:
+            self.service = request_data.get('service', 'bing')
+            if self.service in [None, ''] or len(self.service) < 3:
+                self.service = 'bing'
+        else:
+            self.service = request_data.get('next_service', 'siliconflowfree')
+            if self.service in [None, ''] or len(self.service) < 3:
+                self.service = 'siliconflowfree'
 
         self.sourceLang = request_data.get('sourceLang', 'en')
         if self.sourceLang in [None, ''] or len(self.sourceLang) < 2:

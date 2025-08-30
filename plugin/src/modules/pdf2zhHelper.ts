@@ -361,9 +361,10 @@ export class PDF2zhHelperFactory {
     // ************* Config *************
     static getServerConfig(): ServerConfig {
         return {
-            serverUrl: getPref("serverip")?.toString() || "",
+            serverUrl: getPref("new_serverip")?.toString() || "",
 
             service: getPref("service")?.toString() || "",
+            next_service: getPref("next_service")?.toString() || "",
             engine: getPref("engine")?.toString() || "",
 
             sourceLang: getPref("sourceLang")?.toString() || "",

@@ -21,7 +21,7 @@ pref-fontFile        = 上传字体文件
 # pdf2x
 pref-ocr             = 开启OCR (Experimental, 后端会自动开启跳过扫描检测)
 pref-autoOcr         = 开启自动OCR (为重度扫描文档启用自动OCR解决方案)
-pref-transFirst      = Dual文件翻译页在前
+pref-transFirst      = 双语(Dual)文件翻译页在前
 pref-noWatermark     = 无水印模式
 pref-fontFamily      = 选择字体
 pref-dualMode        = 双语(Dual)文件显示模式

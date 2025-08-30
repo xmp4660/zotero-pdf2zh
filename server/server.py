@@ -1,4 +1,4 @@
-## server.py v3.0.15
+## server.py v3.0.16
 # guaguastandup
 # zotero-pdf2zh
 import os
@@ -21,7 +21,7 @@ import tempfile # 引入tempfile来处理临时目录
 import io
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.15" 
+__version__ = "3.0.16" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'

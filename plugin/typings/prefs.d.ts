@@ -7,7 +7,7 @@
 declare namespace _ZoteroTypes {
   interface Prefs {
     PluginPrefsMap: {
-      "serverip": string;
+      "new_serverip": string;
       "sourceLang": string;
       "targetLang": string;
       "sourceLangSelect": string;
@@ -16,6 +16,8 @@ declare namespace _ZoteroTypes {
       "engineSelect": string;
       "service": string;
       "serviceSelect": string;
+      "next_service": string;
+      "next_serviceSelect": string;
       "skipLastPages": number;
       "threadNum": number;
       "rename": boolean;

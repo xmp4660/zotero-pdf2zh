@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Zotero PDF2zh](./addon/content/icons/favicon@0.5x.svg)
+![Zotero PDF2zh](../favicon@0.5x.svg)
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
@@ -40,8 +40,8 @@
 # 1. 创建并进入docker文件夹
 mkdir docker && cd docker
 # 2. 下载docker文件
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/Dockerfile
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/docker-compose.yaml
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/2.4.3%20version/Dockerfile
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/2.4.3%20version/docker-compose.yaml
 # 3. 创建并进入zotero-pdf2zh文件夹
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 # 4. 创建translated文件夹，存放翻译输出文件
@@ -91,7 +91,7 @@ docker compose build
 # 1. 创建并进入zotero-pdf2zh文件夹
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 # 2. 下载server.py文件
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.py
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/2.4.3%20version/server.py
 # 3. 创建translated文件夹，存放翻译输出文件
 mkdir translated
 # 4. 创建config.json文件(待配置)
@@ -178,7 +178,7 @@ pdf2zh document.pdf --service bing # document.pdf是待翻译的文件
 
 等待翻译结束，如果失败了，说明上一步的安装出现问题。这一步会使用bing免费服务翻译文件。
 
-本插件当前开发使用的 `pdf2zh`版本: `v1.9.6`.
+本插件当前开发使用的 `pdf2zh`版本: `v1.9.11`.
 
 **第四步：执行Python脚本**
 

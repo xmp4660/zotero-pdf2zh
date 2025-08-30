@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-pref("__prefsPrefix__.serverip", "http://localhost:8890");
+pref("__prefsPrefix__.new_serverip", "http://localhost:8890");
 
 pref("__prefsPrefix__.sourceLang", "en");
 pref("__prefsPrefix__.targetLang", "zh-CN");
@@ -11,6 +11,8 @@ pref("__prefsPrefix__.engineSelect", "pdf2zh");
 
 pref("__prefsPrefix__.service", "bing");
 pref("__prefsPrefix__.serviceSelect", "bing");
+pref("__prefsPrefix__.next_service", "siliconflowfree");
+pref("__prefsPrefix__.next_serviceSelect", "siliconflowfree");
 
 pref("__prefsPrefix__.skipLastPages", 0);
 pref("__prefsPrefix__.threadNum", 4);

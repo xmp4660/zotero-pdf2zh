@@ -18,12 +18,12 @@
         <!-- 设置服务器的IP地址 -->
         <hbox align="center" flex="1">
             <html:label
-                for="zotero-prefpane-__addonRef__-serverip"
+                for="zotero-prefpane-__addonRef__-new_serverip"
                 data-l10n-id="pref-serverip"
             />
             <html:input
-                id="zotero-prefpane-__addonRef__-serverip"
-                preference="extensions.zotero.__addonRef__.serverip"
+                id="zotero-prefpane-__addonRef__-new_serverip"
+                preference="extensions.zotero.__addonRef__.new_serverip"
                 type="text"
                 style="width: 200px"
             />
@@ -90,7 +90,7 @@
             </hbox>
         </hbox>
         <!-- 设置翻译服务 -->
-        <hbox align="center" flex="1">
+        <hbox id="pdf1x-config" style="display: none" align="center" flex="1">
             <hbox align="center" flex="1">
                 <html:label
                     for="zotero-prefpane-__addonRef__-service"
@@ -116,9 +116,6 @@
                     <html:option value="openai">OpenAI</html:option>
                     <html:option value="gemini">Gemini</html:option>
                     <html:option value="silicon">SiliconFlow</html:option>
-                    <html:option value="siliconflowfree"
-                        >SiliconFlow Free(pdf2zh_next)</html:option
-                    >
                     <html:option value="zhipu">Zhipu</html:option>
                     <html:option value="modelscope">ModelScope</html:option>
                     <html:option value="qwen-mt">Qwen-MT</html:option>
@@ -140,6 +137,58 @@
                 </html:select>
             </hbox>
         </hbox>
+
+        <hbox id="pdf2x-config" style="display: none" align="center" flex="1">
+            <hbox align="center" flex="1">
+                <html:label
+                    for="zotero-prefpane-__addonRef__-next_service"
+                    data-l10n-id="pref-service"
+                />
+                <html:input
+                    id="zotero-prefpane-__addonRef__-next_service"
+                    preference="extensions.zotero.__addonRef__.next_service"
+                    type="text"
+                    flex="1"
+                    style="width: 105px; text-align: center"
+                />
+                <html:select
+                    id="zotero-prefpane-__addonRef__-next_serviceSelect"
+                    preference="extensions.zotero.__addonRef__.next_serviceSelect"
+                    style="width: 130px; text-align: center"
+                >
+                    <html:option value="siliconflowfree"
+                        >SiliconFlow Free</html:option
+                    >
+                    <html:option value="bing">Bing</html:option>
+                    <html:option value="google">Google</html:option>
+
+                    <html:option value="openailiked">OpenAILiked</html:option>
+                    <html:option value="deepseek">DeepSeek</html:option>
+                    <html:option value="openai">OpenAI</html:option>
+                    <html:option value="gemini">Gemini</html:option>
+                    <html:option value="silicon">SiliconFlow</html:option>
+                    <html:option value="zhipu">Zhipu</html:option>
+                    <html:option value="modelscope">ModelScope</html:option>
+                    <html:option value="qwen-mt">Qwen-MT</html:option>
+
+                    <html:option value="deepl">DeepL</html:option>
+                    <html:option value="tencent">Tencent</html:option>
+                    <html:option value="grok">Grok</html:option>
+
+                    <html:option value="dify">Dify</html:option>
+                    <html:option value="argos">Argos</html:option>
+                    <html:option value="ollama">Ollama</html:option>
+                    <html:option value="xinference">XInference</html:option>
+                    <html:option value="anythingllm">AnythingLLM</html:option>
+
+                    <html:option value="azure-openai">Azure OpenAI</html:option>
+                    <html:option value="azure">Azure</html:option>
+
+                    <html:option value="groq">Groq</html:option>
+                </html:select>
+            </hbox>
+        </hbox>
+
         <!-- 设置翻译线程数、跳过最后几页、重命名 -->
         <vbox align="left" flex="1">
             <hbox align="center" flex="1">
@@ -174,6 +223,16 @@
                 <html:label
                     for="zotero-prefpane-__addonRef__-rename"
                     data-l10n-id="pref-rename"
+                />
+            </hbox>
+            <hbox align="center" flex="1">
+                <checkbox
+                    id="zotero-prefpane-__addonRef__-transFirst"
+                    preference="extensions.zotero.__addonRef__.transFirst"
+                />
+                <html:label
+                    data-l10n-id="pref-transFirst"
+                    for="zotero-prefpane-__addonRef__-transFirst"
                 />
             </hbox>
         </vbox>
@@ -250,16 +309,6 @@
                 <html:option value="LR">Left &amp; Right</html:option>
                 <html:option value="TB">Top &amp; Bottom</html:option>
             </html:select>
-        </hbox>
-        <hbox align="center" flex="1">
-            <checkbox
-                id="zotero-prefpane-__addonRef__-transFirst"
-                preference="extensions.zotero.__addonRef__.transFirst"
-            />
-            <html:label
-                data-l10n-id="pref-transFirst"
-                for="zotero-prefpane-__addonRef__-transFirst"
-            />
         </hbox>
         <hbox align="center" flex="1">
             <hbox align="center" flex="1">
@@ -573,11 +622,11 @@
             🌷 本插件需要使用终端或docker执行Python脚本，才可以使用翻译功能。
         </p>
         <p align="center">
-            🌷 [2025年8月20日v3.0.4] 优化Zotero端UI界面与Python Server脚本,
+            🌷 [2025年8月30日v3.0.16] 优化Zotero端UI界面与Python Server脚本,
             修复Bug
         </p>
         <p align="center">
-            🌷 [2025年8月20日v3.0.4] 请访问本插件Github主页<label
+            🌷 [2025年8月30日v3.0.16] 请访问本插件Github主页<label
                 class="zotero-text-link keyboard-clickable"
                 role="link"
                 href="https://github.com/guaguastandup/zotero-pdf2zh"
