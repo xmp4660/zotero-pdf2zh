@@ -117,7 +117,12 @@ export class PDF2zhHelperFactory {
     ) {
         return this.retryOperation(async () => {
             // 获取激活的 LLM API 配置
-            const llmApiConfig = this.getActiveLLMApiConfig(config.service);
+            let llmApiConfig;
+            if (config.engine == "pdf2zh") {
+                llmApiConfig = this.getActiveLLMApiConfig(config.service);
+            } else {
+                llmApiConfig = this.getActiveLLMApiConfig(config.next_service);
+            }
 
             const requestBody: any = {
                 fileName: fileData.fileName,
