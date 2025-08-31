@@ -316,12 +316,18 @@ export class PDF2zhHelperFactory {
 
             const tempPath = PathUtils.join(PathUtils.tempDir, fileName);
             await IOUtils.write(tempPath, new Uint8Array(response.data));
+            let service;
+            if (config.engine == "pdf2zh") {
+                service = config.service;
+            } else {
+                service = config.next_service;
+            }
             await this.addAttachment({
                 item,
                 filePath: tempPath,
                 options: options,
                 type: type,
-                service: config.service,
+                service: service,
             });
             // 清理临时文件
             await IOUtils.remove(tempPath);
