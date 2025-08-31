@@ -24,7 +24,10 @@ class Config:
             if self.service in [None, ''] or len(self.service) < 3:
                 self.service = 'bing'
         else:
-            self.service = request_data.get('next_service', 'siliconflowfree')
+            if not request_data.get('next_service') or request_data.get('next_service') in [None, '']:
+                self.service = request_data.get('service', 'siliconflowfree')
+            else:
+                self.service = request_data.get('next_service', 'siliconflowfree')
             if self.service in [None, ''] or len(self.service) < 3:
                 self.service = 'siliconflowfree'
 
