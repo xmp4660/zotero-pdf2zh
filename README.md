@@ -112,7 +112,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 - 免费&免配置的翻译服务:
     - siliconflowfree 
-        - 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由硅基流动与@Babeldoc联合提供服务
+        - 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由硅基流动与[@Babeldoc](https://github.com/funstory-ai/BabelDOC)联合提供服务
     - bing
     - google
 - 免费的翻译服务:
