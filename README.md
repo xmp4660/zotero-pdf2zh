@@ -113,14 +113,14 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 **💡 插件设置介绍**
 
 - 免费&免配置的翻译服务:
-    - siliconflowfree 
+    - 👍siliconflowfree
         - 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由硅基流动与[@Babeldoc](https://github.com/funstory-ai/BabelDOC)联合提供服务
     - bing
     - google
 - 免费的翻译服务:
-    - zhipu(GLM-4.5-Flash模型免费, 需配置API Key)
+    - **zhipu**(GLM-4.5-Flash模型免费, 需配置API Key)
 - 具有优惠/赠送的翻译服务:
-    - 加入火山引擎共享计划, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
+    - 加入**火山引擎**共享计划, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
         - 火山引擎的Token赠送量取决于前一天的Token使用量，请注意在火山引擎管理台观察服务赠送Token用量，避免支付超额费用
         - 本服务支持高线程数, 可将线程数设置为500~2000
 
@@ -139,7 +139,11 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 - 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
 
-# 关于翻译选项
+## 第六步
+
+在Zotero中对条目/PDF右键，选择PDF2zh-翻译选项，进行翻译。
+
+### 关于翻译选项
 
 对条目/附件单击右键, 可以看到四个翻译选项:
 
