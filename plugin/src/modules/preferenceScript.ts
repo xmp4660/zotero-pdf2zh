@@ -517,18 +517,16 @@ function handleEngineChange(engine: string) {
         ztoolkit.log("窗口对象不存在");
         return;
     }
-    const pdf2xConfig = window.document.getElementById(
-        "pdf2x-config",
-    ) as HTMLElement;
-    const pdf1xConfig = window.document.getElementById(
-        "pdf1x-config",
-    ) as HTMLElement;
-    if (engine === "pdf2zh_next") {
-        pdf2xConfig.style.display = "block";
-        pdf1xConfig.style.display = "none";
-    } else {
-        pdf2xConfig.style.display = "none";
-        pdf1xConfig.style.display = "block";
+    // 获取所有class为pdf2x-config的元素
+    const pdf2xConfigs = window.document.getElementsByClassName("pdf2x-config");
+    for (const configElement of pdf2xConfigs as any as HTMLElement[]) {
+        configElement.style.display =
+            engine === "pdf2zh_next" ? "block" : "none";
+    }
+    const pdf1xConfigs = window.document.getElementsByClassName("pdf1x-config");
+    for (const configElement of pdf1xConfigs as any as HTMLElement[]) {
+        configElement.style.display =
+            engine === "pdf2zh_next" ? "none" : "block";
     }
 }
 
