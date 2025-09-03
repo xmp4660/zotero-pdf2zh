@@ -169,6 +169,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 - @Byaidu [PDF2zh](https://github.com/Byaidu/PDFMathTranslate)
 - @awwaawwa [PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 - @windingwind [zotero-plugin-template](https://github.com/windingwind/zotero-plugin-template)
+- [沉浸式翻译](https://immersivetranslate.com)为本项目的活跃贡献者赞助每月Pro会员兑换码，详情请见：[CONTRIBUTOR_REWARD.md](https://github.com/funstory-ai/BabelDOC/blob/main/docs/CONTRIBUTOR_REWARD.md)
 
 # 贡献者
 
