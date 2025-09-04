@@ -10,6 +10,10 @@ import shutil
 
 # TODO: 如果用户的conda/uv环境路径是自定义的, 需要支持自定义路径
 # 目前我们默认为当用户在命令行中执行uv / conda时, 是可以正常使用的, 而不是执行/usr/local/bin/uv等等才可以使用
+
+def normalize_pkg_name(name: str) -> str:
+    return name.lower().replace('_', '-').replace('.', '-')
+
 class VirtualEnvManager:
     def __init__(self, config_path, env_name, default_env_tool, enable_mirror=True):
         self.is_windows = platform.system() == "Windows"
@@ -38,18 +42,18 @@ class VirtualEnvManager:
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 result = subprocess.run(
                     ['uv', 'pip', 'list', '--format=json', '--python', python_path],
-                    capture_output=True, text=True, timeout=60
+                    capture_output=True, text=True, timeout=600
                 )
             elif envtool == 'conda':
                 result = subprocess.run(
                     ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json'],
-                    capture_output=True, text=True, timeout=60
+                    capture_output=True, text=True, timeout=600
                 )
             if result.returncode != 0:
                 print(f"❌ 检查 packages 失败: pip list 返回非零退出码")
                 return False
-            installed_packages = {pkg['name'].lower() for pkg in json.loads(result.stdout)}
-            missing_packages = [pkg for pkg in required_packages if pkg.lower() not in installed_packages]
+            installed_packages = {normalize_pkg_name(pkg['name']) for pkg in json.loads(result.stdout)}
+            missing_packages = [pkg for pkg in required_packages if normalize_pkg_name(pkg) not in installed_packages]
             if missing_packages:
                 print(f"❌ 缺少 packages: {missing_packages}")
                 return False
@@ -202,7 +206,7 @@ class VirtualEnvManager:
         try:
             result = subprocess.run(
                 ['conda', 'info', '--json'],
-                capture_output=True, text=True, check=True, timeout=60, encoding='utf-8'
+                capture_output=True, text=True, check=True, timeout=600, encoding='utf-8'
             )
             conda_info = json.loads(result.stdout)
             # Conda lists full paths to all environments in 'envs'

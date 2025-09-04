@@ -6,8 +6,8 @@ pref("__prefsPrefix__.targetLang", "zh-CN");
 pref("__prefsPrefix__.sourceLangSelect", "en");
 pref("__prefsPrefix__.targetLangSelect", "zh-CN");
 
-pref("__prefsPrefix__.engine", "pdf2zh");
-pref("__prefsPrefix__.engineSelect", "pdf2zh");
+pref("__prefsPrefix__.engine", "pdf2zh_next");
+pref("__prefsPrefix__.engineSelect", "pdf2zh_next");
 
 pref("__prefsPrefix__.service", "bing");
 pref("__prefsPrefix__.serviceSelect", "bing");

@@ -121,7 +121,7 @@ class PDFTranslator:
                     self.cropper.crop_pdf(config, dual_path, 'dual', crop_compare_path, 'crop-compare', dualFirst=config.trans_first, engine=engine)
                     if os.path.exists(crop_compare_path):
                         fileList.append(crop_compare_path)
-                if config.compare:
+                if config.compare and config.babeldoc == False: # babeldoc不支持compare
                     compare_path = self.get_filename_after_process(dual_path, 'compare', engine)
                     self.cropper.merge_pdf(dual_path, compare_path, dualFirst=config.trans_first, engine=engine)
                     if os.path.exists(compare_path):
@@ -403,6 +403,7 @@ class PDFTranslator:
         if config.skip_font_subsets:
             cmd.append('--skip-subset-fonts')
         if config.babeldoc:
+            print("🔍 [Zotero PDF2zh Server] 不推荐使用pdf2zh 1.x + babeldoc, 如有需要，请考虑直接使用pdf2zh_next")
             cmd.append('--babeldoc')
         try:
             if args.enable_venv:
@@ -532,10 +533,11 @@ class PDFTranslator:
         return output_path
 
     def run(self, port, debug=False):
+        # print(f"🔍 [温馨提示] 如果遇到Network Error错误，请检查Zotero插件设置中的Python Server IP端口号是否与此处端口号一致: {port}, 并检查端口是否开放.")
         self.app.run(host='0.0.0.0', port=port, debug=debug)
 
 def prepare_path():
-    print("📖 [Zotero PDF2zh Server] 检查文件路径中...")
+    print("🔍 [配置文件] 检查文件路径中...")
     # output folder
     os.makedirs(output_folder, exist_ok=True)
     # config file 路径和格式检查
@@ -553,8 +555,8 @@ def prepare_path():
                     toml.load(f)
         except Exception as e:
             traceback.print_exc()
-            print(f"⚠️ [Zotero PDF2zh Server] {path} 文件格式错误, 请检查文件格式! 错误信息: {e}\n")
-    print("📖 [Zotero PDF2zh Server] 文件路径检查完成\n")
+            print(f"⚠️ [配置文件] {path} 文件格式错误, 请检查文件格式并尝试删除非.example文件后重试! 错误信息: {e}\n")
+    print("✅ [配置文件] 文件路径检查完成\n")
 
 # ================================================================================
 # ######################### NEW: 自动更新模块 ############################
@@ -684,7 +686,7 @@ def count_preserved_files(source_dir, target_dir, stats, exclude_dirs=None):
 
 def perform_update_optimized(expected_version=None):
     # 优化的更新逻辑：结合智能同步和临时目录的优点，使用针对性备份避免操作无关目录（如虚拟环境）。
-    print("🚀 开始更新 (智能同步模式)...请稍候。")
+    print("🚀 [自动更新] 开始更新 (智能同步模式)...请稍候。")
     owner, repo = 'guaguastandup', 'zotero-pdf2zh'
     project_root = os.path.dirname(root_path)
     print(f"   - 项目根目录: {project_root}")
@@ -763,7 +765,7 @@ def perform_update_optimized(expected_version=None):
         print("   - 🛡️ 您的配置文件和虚拟环境已安全保留")
 
     except Exception as e:
-        print(f"\n❌ 更新失败: {e}")
+        print(f"\n❌ 更新失败: {e}")    
         print("  - 正在尝试从备份回滚...")
         try:
             for rel_path in updated_files:
@@ -779,35 +781,35 @@ def perform_update_optimized(expected_version=None):
                     os.remove(target_file)
                     print(f"    - 回滚新增: {rel_path}")
 
-            print("  - ✅ 已成功回滚到更新前的状态")
+            print("  - ✅ [自动更新] 已成功回滚到更新前的状态")
         except Exception as rollback_error:
-            print(f"  - ❌ 回滚失败: {rollback_error}")
-            print(f"  - 💾 备份文件保留在: {backup_path}")
-    
+            print(f"  - ❌ [自动更新] 回滚失败: {rollback_error}")
+            print(f"  - 💾 [自动更新] 备份文件保留在: {backup_path}")
+
     finally:
         if os.path.exists(server_zip_path):
             os.remove(server_zip_path)
         sys.exit()
 
 def check_for_updates(): # 从 GitHub 检查是否有新版本。如果存在，则返回(本地版本, 远程版本)，否则返回None。
-    print("💡 [自动更新] 正在检查更新...")
+    print("🔍 [自动更新] 正在检查更新...")
     remote_script_url = "https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/server/server.py"
     try:
         with urllib.request.urlopen(remote_script_url, timeout=10) as response:
             remote_content = response.read().decode('utf-8')
         match = re.search(r'__version__\s*=\s*["\'](.+?)["\']', remote_content)
         if not match:
-            print("⚠️ [自动更新] 无法在远程文件中找到版本号。")
+            print("⚠️ [自动更新] 无法在远程文件中找到版本信息, 已跳过.\n")
             return None
         remote_version = match.group(1)
         local_version = __version__
         if tuple(map(int, remote_version.split('.'))) > tuple(map(int, local_version.split('.'))):
             return local_version, remote_version
         else:
-            print("✅ 您的程序已是最新版本。")
+            print("✅ [自动更新] 您的程序已是最新版本.\n")
             return None
     except Exception as e:
-        print(f"⚠️ [自动更新] 检查更新失败 (可能是网络问题)，已跳过。错误: {e}")
+        print(f"⚠️ [自动更新] 检查更新失败 (可能是网络问题)，已跳过。错误: {e}\n")
         return None
 
 # ================================================================================
@@ -824,7 +826,6 @@ def str2bool(v):
     else:
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser() 
     parser.add_argument('--port', type=int, default=PORT, help='Port to run the server on')
@@ -837,8 +838,8 @@ if __name__ == '__main__':
     parser.add_argument('--enable_mirror', type=str2bool, default=True, help='启用下载镜像加速, 仅限中国大陆用户')
     parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
     args = parser.parse_args()
-    
-    print("args: ", args)
+    print(f"🚀 启动参数: {args}\n")
+
     # 启动时自动检查更新
     if args.check_update:
         update_info = check_for_updates()

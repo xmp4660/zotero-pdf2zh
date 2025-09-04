@@ -188,6 +188,9 @@ class Cropper():
         print(f"✅ 处理完成，新PDF保存为 {output_path}. 已移除隐藏文本，并优化文件大小。")
 
     def merge_pdf(self, input_path, output_path, dualFirst=True, engine="pdf2zh"):
+        if len(fitz.open(input_path)) % 2 != 0:
+            print(f"❌ [Zotero PDF2zh Server] merge_pdf Error: PDF page number is not even, merging skipped.")
+            return None
         print(f"🐲 开始合并PDF: {input_path} 和 {output_path}")
         try:
             dual_pdf = fitz.open(input_path)
