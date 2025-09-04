@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.19 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.20 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -36,9 +36,11 @@
 
 **uv安装(推荐)**
 
+1. 安装uv
 ```shell
 # 方法一: 使用pip安装uv
 pip install uv
+
 # 方法二: 下载脚本安装
 # macOS/Linux
 wget -qO- https://astral.sh/uv/install.sh | sh
@@ -46,14 +48,21 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
+2. 检查uv安装是否成功
+```shell
+# 显示uv版本号, 则uv安装完成
+uv --version
+```
+
 **conda安装**
 
+1. 安装conda
+参考本链接安装: https://www.anaconda.com/docs/getting-started/miniconda/install#windows-command-prompt
+
+2. 检查conda安装是否成功
 ```shell
-# 1. 安装conda
-# 参考本链接安装: https://www.anaconda.com/docs/getting-started/miniconda/install#windows-command-prompt
-# 2. 测试conda
+# 显示conda版本号, 则conda安装完成
 conda --version
-# 3. 显示conda版本, 则conda安装完成
 ```
 
 ## 第二步: 下载项目文件
@@ -63,7 +72,7 @@ conda --version
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.19-beta/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -83,7 +92,9 @@ pip install -r requirements.txt
 # 默认自动检查更新
 # 默认端口号为8890
 # 默认不开启winexe模式
+# 默认启用国内镜像进行必要包安装
 python server.py
+
 
 # 可选: 命令行参数:
 # 如果要关闭虚拟环境管理
@@ -92,18 +103,18 @@ python server.py --enable_venv=False
 python server.py --env_tool=conda
 # 如果要切换端口号
 python server.py --port={Your Port Num}
-# 是否检查更新
+# 如果要关闭自动检查更新:
 python server.py --check_update=False
+# 如果要关闭包安装时启用镜像:
+python server.py --enable_mirror=Flase
 
 # new feature for Windows user: 开启windows exe安装模式, 安装pdf2zh_next exe版本，将可执行文件路径输入到命令行参数(例如./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe)
 python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 ```
 
-> 💡 关于脚本自动更新的方法 1. 脚本自动检查更新(Experimental) 2. 通过git管理更新
-
 ## 第四步: 下载并安装插件
 
-新版本v3.0.19[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.19-beta/zotero-pdf-2-zh-v3.0.19.xpi)
+新版本v3.0.20[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/zotero-pdf-2-zh-v3.0.20.xpi)
 
 ## 第五步: Zotero端插件设置
 

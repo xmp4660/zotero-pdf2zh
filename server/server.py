@@ -21,7 +21,7 @@ import tempfile # 引入tempfile来处理临时目录
 import io
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.19" 
+__version__ = "3.0.20" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -56,7 +56,7 @@ class PDFTranslator:
     def __init__(self, args):
         self.app = Flask(__name__)
         if args.enable_venv:
-            self.env_manager = VirtualEnvManager(config_path[venv], venv_name, args.env_tool)
+            self.env_manager = VirtualEnvManager(config_path[venv], venv_name, args.env_tool, args.enable_mirror)
         self.cropper = Cropper()
         self.setup_routes()
 
@@ -814,17 +814,31 @@ def check_for_updates(): # 从 GitHub 检查是否有新版本。如果存在，
 # ######################### 主程序入口 ############################
 # ================================================================================
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', '1', 'y'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', '0', 'n'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser() 
-    parser.add_argument('--enable_venv', type=bool, default=enable_venv, help='脚本自动开启虚拟环境')
-    parser.add_argument('--env_tool', type=str, default=default_env_tool, help='虚拟环境管理工具, 默认使用 uv')
     parser.add_argument('--port', type=int, default=PORT, help='Port to run the server on')
-    parser.add_argument('--debug', type=bool, default=False, help='Enable debug mode')
-    parser.add_argument('--check_update', type=bool, default=True, help='启动时检查更新')
-    parser.add_argument('--enable_winexe', type=bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
+
+    parser.add_argument('--enable_venv', type=str2bool, default=enable_venv, help='脚本自动开启虚拟环境')
+    parser.add_argument('--env_tool', type=str, default=default_env_tool, help='虚拟环境管理工具, 默认使用 uv')
+    parser.add_argument('--check_update', type=str2bool, default=True, help='启动时检查更新')
+    parser.add_argument('--debug', type=str2bool, default=False, help='Enable debug mode')
+    parser.add_argument('--enable_winexe', type=str2bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
+    parser.add_argument('--enable_mirror', type=str2bool, default=True, help='启用下载镜像加速, 仅限中国大陆用户')
     parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
     args = parser.parse_args()
     
+    print("args: ", args)
     # 启动时自动检查更新
     if args.check_update:
         update_info = check_for_updates()

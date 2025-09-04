@@ -39,12 +39,18 @@ class Config:
             self.targetLang = 'zh-CN'
 
         self.skip_last_pages = request_data.get('skipLastPages', 0)
-        if self.skip_last_pages not in [None, ''] and isinstance(self.skip_last_pages, int):
+        try:
             self.skip_last_pages = int(self.skip_last_pages)
-        else:
+        except ValueError:
             self.skip_last_pages = 0
 
         self.thread_num = request_data.get('threadNum', 8)
+        try: 
+            self.thread_num = int(self.thread_num)
+            if self.thread_num < 1:
+                self.thread_num = 8
+        except ValueError:
+            self.thread_num = 8
 
         # 如果左右留白部分裁剪太多了, 可以调整pdf_w_offset和pdf_offset_ratio, 宽边裁剪值pdf_w_offset, 窄边裁剪值pdf_w_offset/pdf_offset_ratio
         # TODO: 将裁剪的逻辑添加到zotero配置页面
