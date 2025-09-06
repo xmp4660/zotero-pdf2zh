@@ -21,17 +21,17 @@
 
 ❓ 遇到问题
 
-- 阅读[常见问题文档](https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC)
+- 阅读[**常见问题文档**](https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC)
 - 尝试向AI提问
 - 在github issue区提问
-- 将终端报错复制到txt文件，并截图zotero插件设置端配置，将错误发送到本插件用户QQ群: 971960014 入群验证回答: github
+- **将终端报错复制到txt文件，并截图zotero插件设置端配置**，将错误发送到本插件用户QQ群: 971960014，入群验证回答: github
 - 访问网络上的视频教程，感谢大家的视频教程！
     - 来自小红薯[@jiajia](https://www.xiaohongshu.com/user/profile/631310d8000000001200c3a1?channelType=web_engagement_notification_page&channelTabId=mentions&xsec_token=AB6wOtAu2rBNcN8WfzJS72pVX6rDZYfWMImRRCx98yX6w%3D&xsec_source=pc_notice)的视频教程: [【zotero PDF文献翻译，免费无需会员，超简单 - jiajia | 小红书 - 你的生活兴趣社区】]( https://www.xiaohongshu.com/discovery/item/68b6cce7000000001c00a555?source=webshare&xhsshare=pc_web&xsec_token=ABI-0NjKTM_1mc2td-UyiWIG4RSUAyxmi2HC8oGmS852I=&xsec_source=pc_share)
 
 ## 第零步：安装Python和Zotero
 - [Python下载链接](https://www.python.org/downloads/) 建议下载3.12.0版本Python
 
-- 插件目前支持[Zotero 7](https://www.zotero.org/download/)
+- 插件目前支持[Zotero 7](https://www.zotero.org/download/)，Zotero 8待适配
 
 ## 第一步: 安装uv/conda（可选）
 
@@ -133,7 +133,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
     - 加入**火山引擎**共享计划, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
         - 火山引擎的Token赠送量取决于前一天的Token使用量，请注意在火山引擎管理台观察服务赠送Token用量，避免支付超额费用
         - 本服务支持高线程数, 可将线程数设置为500~2000
-    - siliconflow: 通过邀请好友可以获得14元赠送金额
+    - 硅基流动: 通过邀请好友可以获得14元赠送金额
         - 注意，此服务url需填写为: `https://api.siliconflow.cn/v1`
 
 - openailiked可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
@@ -210,8 +210,9 @@ python server.py --enable_venv=False
 
 <a href="https://github.com/guaguastandup/zotero-pdf2zh/graphs/contributors"> <img src="https://contrib.rocks/image?repo=guaguastandup/zotero-pdf2zh" /></a>
 
-# Support me
+# 如何支持我
 
 💐 免费开源插件，您的支持是我继续开发的动力～
-- ☕️ Buy me a coffee https://github.com/guaguastandup/guaguastandup
+- ☕️ [Buy me a coffee (Wechat/Alipay)](https://github.com/guaguastandup/guaguastandup) 请在备注中留下您希望出现在赞助者名单的姓名或昵称💗
 - 🤖 SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
+- [赞助者名单(待更新）](./docs/sponsors.md)
