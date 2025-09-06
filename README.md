@@ -21,9 +21,10 @@
 
 ❓ 遇到问题
 
+- 阅读[常见问题文档](https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC)
 - 尝试向AI提问
 - 在github issue区提问
-- 发送问题到本插件用户QQ群: 971960014 入群验证回答: github
+- 将终端报错复制到txt文件，并截图zotero插件设置端配置，将错误发送到本插件用户QQ群: 971960014 入群验证回答: github
 - 访问网络上的视频教程，感谢大家的视频教程！
     - 来自小红薯[@jiajia](https://www.xiaohongshu.com/user/profile/631310d8000000001200c3a1?channelType=web_engagement_notification_page&channelTabId=mentions&xsec_token=AB6wOtAu2rBNcN8WfzJS72pVX6rDZYfWMImRRCx98yX6w%3D&xsec_source=pc_notice)的视频教程: [【zotero PDF文献翻译，免费无需会员，超简单 - jiajia | 小红书 - 你的生活兴趣社区】]( https://www.xiaohongshu.com/discovery/item/68b6cce7000000001c00a555?source=webshare&xhsshare=pc_web&xsec_token=ABI-0NjKTM_1mc2td-UyiWIG4RSUAyxmi2HC8oGmS852I=&xsec_source=pc_share)
 
@@ -119,7 +120,6 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 ## 第五步: Zotero端插件设置
 
 <img src="./images/preference.png" alt="preference" style="width: 500px" align="center"/>
-<img src="./images/preference2.png" alt="preference2" style="width: 500px" align="center"/>
 
 **💡 插件设置介绍**
 
@@ -144,12 +144,9 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 - ⚠️⚠️（老用户必看！） 为了避免端口冲突，新版server脚本默认端口号为8890, 旧版本用户需要将Zotero配置页面的Python Server IP修改为: `http://localhost:8890`
 - 切换翻译引擎pdf2zh/pdf2zh_next, 界面将显示不同引擎的翻译配置
 - 翻译引擎pdf2zh的自定义字体：字体文件路径为本地路径。如果采用远端服务器部署, 暂时无法使用本配置，则需要手动修改`config.json`文件中的`NOTO_FONT_PATH`字段。
-
-<img src="./images/editor.png" alt="editor" style="width: 400px" align="center"/>
-
-**💡 注意事项**
-
 - 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
+
+<img src="./images/editor.png" alt="editor" style="width: 300px" align="center"/>
 
 ## 第六步
 
@@ -161,7 +158,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 <img src="./images/menu.png" alt="menu" style="width: 400px" align="center"/>
 
-💡 注意事项
+**💡 翻译选项解析**
 
 - **翻译PDF**: 点击原文PDF或论文条目, 将会生成在Zotero插件设置端所选择的默认生成文件
 - **裁剪PDF**: 选择dual/mono类型附件, 将会对选择的附件在宽度1/2处裁剪, 然后上下拼接, 此功能适合手机阅读
@@ -217,4 +214,4 @@ python server.py --enable_venv=False
 
 💐 免费开源插件，您的支持是我继续开发的动力～
 - ☕️ Buy me a coffee https://github.com/guaguastandup/guaguastandup
-  🤖 SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
+- 🤖 SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
