@@ -110,6 +110,10 @@ docker compose up -d
 | **重启服务** | `docker compose restart` |
 | **更新服务** | `docker compose pull && docker compose up -d --build` |
 
+## 第五步：插件安装和设置
+
+参见下方[手动部署指南的第四步到第六步](#第四步-下载并安装插件)，步骤完全一致。
+
 ---
 
 ## 💡 高级用法与常见问题
