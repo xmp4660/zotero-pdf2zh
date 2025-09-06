@@ -28,11 +28,11 @@
     - 来自小红薯[@jiajia](https://www.xiaohongshu.com/user/profile/631310d8000000001200c3a1?channelType=web_engagement_notification_page&channelTabId=mentions&xsec_token=AB6wOtAu2rBNcN8WfzJS72pVX6rDZYfWMImRRCx98yX6w%3D&xsec_source=pc_notice)的视频教程: [【zotero PDF文献翻译，免费无需会员，超简单 - jiajia | 小红书 - 你的生活兴趣社区】]( https://www.xiaohongshu.com/discovery/item/68b6cce7000000001c00a555?source=webshare&xhsshare=pc_web&xsec_token=ABI-0NjKTM_1mc2td-UyiWIG4RSUAyxmi2HC8oGmS852I=&xsec_source=pc_share)
 
 ## 第零步：安装Python和Zotero
-- [Python下载链接](https://www.python.org/downloads/)
+- [Python下载链接](https://www.python.org/downloads/) 建议下载3.12.0版本Python
 
 - 插件目前支持[Zotero 7](https://www.zotero.org/download/)
 
-## 第一步: 安装uv/conda
+## 第一步: 安装uv/conda（可选）
 
 **uv安装(推荐)**
 
@@ -126,17 +126,18 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 - 免费&免配置的翻译服务:
     - 👍**siliconflowfree**
         - 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由[@硅基流动](https://www.siliconflow.cn/)、[@pdf2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next) 和 [@BabelDOC](https://github.com/funstory-ai/BabelDOC)联合提供服务
-    - bing
-    - google
+    - bing/google
 - 免费的翻译服务:
     - **zhipu**(GLM-4.5-Flash模型免费, 需配置API Key)
 - 具有优惠/赠送的翻译服务:
     - 加入**火山引擎**共享计划, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
         - 火山引擎的Token赠送量取决于前一天的Token使用量，请注意在火山引擎管理台观察服务赠送Token用量，避免支付超额费用
         - 本服务支持高线程数, 可将线程数设置为500~2000
+    - siliconflow: 通过邀请好友可以获得14元赠送金额
+        - 注意，此服务url需填写为: `https://api.siliconflow.cn/v1`
 
 - openailiked可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
-
+    - 示例: 火山引擎url填写为`https://ark.cn-beijing.volces.com/api/v3`
 
 **💡 注意事项**
 
@@ -173,7 +174,33 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 示例:
 
-<img src="./images/dualmode.png" alt="dualmode" style="width: 800px" align="center"/>
+<img src="./images/dualmode.png" alt="dualmode" style="width: 700px" align="center"/>
+
+# FAQ
+- Q：我的conda/uv安装失败了，我不想使用虚拟环境管理，怎么办？
+- A：如果您只使用pdf2zh_next/pdf2zh引擎中的一个，并且全局python版本为3.12.0，可以不使用虚拟环境管理，执行如下命令即可：
+```shell
+# 1. 创建并进入zotero-pdf2zh文件夹
+mkdir zotero-pdf2zh && cd zotero-pdf2zh
+
+# 2. 下载并解压server文件夹
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/server.zip 手动下载
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
+unzip server.zip
+
+# 3. 进入server文件夹
+cd server
+
+# 4. 安装执行包
+pip install -r requirements.txt
+
+# 5. 执行脚本
+# 关闭虚拟环境管理
+# 默认自动检查更新
+# 默认端口号为8890
+# 默认不开启winexe模式
+python server.py --enable_venv=False
+```
 
 # 致谢
 
@@ -186,9 +213,8 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 <a href="https://github.com/guaguastandup/zotero-pdf2zh/graphs/contributors"> <img src="https://contrib.rocks/image?repo=guaguastandup/zotero-pdf2zh" /></a>
 
-# # Support me
+# Support me
 
 💐 免费开源插件，您的支持是我继续开发的动力～
-
-- 🤖 SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
 - ☕️ Buy me a coffee https://github.com/guaguastandup/guaguastandup
+  🤖 SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
