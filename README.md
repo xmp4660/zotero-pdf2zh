@@ -214,5 +214,6 @@ python server.py --enable_venv=False
 
 💐 免费开源插件，您的支持是我继续开发的动力～
 - ☕️ [Buy me a coffee (Wechat/Alipay)](https://github.com/guaguastandup/guaguastandup) 请在备注中留下您希望出现在赞助者名单的姓名或昵称💗
+- 🐳 [爱发电](https://afdian.com/a/guaguastandup)
 - 🤖 SiliconFlow邀请链接: https://cloud.siliconflow.cn/i/WLYnNanQ
 - [赞助者名单(待更新）](./docs/sponsors.md)
