@@ -1,3 +1,5 @@
+# zotero-pdf2zh Docker 使用说明
+
 ## 0. 先确认 Docker 就绪
 
 > 当前docker仅适配了pdf2zh_next
@@ -51,7 +53,7 @@ cd docker
 
 解压后的 `docker/` 目录包含：
 
-```
+```txt
 Dockerfile
 docker-compose.yaml
 config/         （空文件夹，用于挂载配置）
@@ -79,7 +81,7 @@ docker compose logs -f pdf2zh-server
 
 看到类似输出即表示启动成功：
 
-```
+```cmd
 * Running on http://127.0.0.1:8890
 * Running on http://172.18.0.2:8890
 ```
