@@ -141,7 +141,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 - 免费的翻译服务:
     - **zhipu**(GLM-4.5-Flash模型免费, 需配置API Key)
 - 具有优惠/赠送的翻译服务:
-    - 加入**火山引擎**共享计划, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
+    - 加入**[火山引擎协作计划](https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&OpenAuthorizeModal=true&OpenTokenDrawer=false)**, 可以享受每个模型最高50w赠送额度(翻译配置选择openailiked)
         - 火山引擎的Token赠送量取决于前一天的Token使用量，请注意在火山引擎管理台观察服务赠送Token用量，避免支付超额费用
         - 本服务支持高线程数, 可将线程数设置为500~2000
     - 硅基流动: 通过邀请好友可以获得14元赠送金额
@@ -149,8 +149,6 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 - openailiked可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
     - 示例: 火山引擎url填写为`https://ark.cn-beijing.volces.com/api/v3`
-    
-    
 
 **💡 注意事项**
 
