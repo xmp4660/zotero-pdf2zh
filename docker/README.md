@@ -1,8 +1,8 @@
 # zotero-pdf2zh Docker 使用说明
 
-## 0. 先确认 Docker 就绪
+> 如果你想使用 **pdf2zh**（而不是 **pdf2zh_next**）作为翻译引擎，请直接跳到文末章节：**“（可选）切换为 pdf2zh”**。
 
-> 当前docker仅适配了pdf2zh_next
+## 0. 先确认 Docker 就绪
 
 ```bash
 docker version
@@ -18,13 +18,13 @@ docker compose version
 ### Windows（CMD）
 
 ```cmd
-mkdir zotero-pdf2zh_next-3.0
-cd zotero-pdf2zh_next-3.0
+mkdir zotero-pdf2zh_docker
+cd zotero-pdf2zh_docker
 
 REM 下载
 curl -L -o docker.zip https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker.zip
 
-REM 解压（任选一种）
+REM 解压（任选一种；如命令行解压失败，可在资源管理器中右键解压到当前目录）
 powershell -Command "Expand-Archive -Path '.\docker.zip' -DestinationPath '.' -Force"
 REM 或者（如果 tar 可用）
 REM tar -xf docker.zip
@@ -36,8 +36,8 @@ cd docker
 ### macOS / Linux（终端）
 
 ```bash
-mkdir -p zotero-pdf2zh_next-3.0
-cd zotero-pdf2zh_next-3.0
+mkdir -p zotero-pdf2zh_docker
+cd zotero-pdf2zh_docker
 
 # 下载
 curl -L -o docker.zip https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker.zip
@@ -72,11 +72,10 @@ docker pull awwaawwa/pdfmathtranslate-next:latest
 
 ---
 
-## 3. 启动服务（在 `zotero-pdf2zh_next-3.0/docker` 目录内）
+## 3. 启动服务（在 `zotero-pdf2zh_docker/docker` 目录内）
 
 ```bash
-docker compose up -d
-docker compose logs -f pdf2zh-server
+docker compose up -d --build
 ```
 
 看到类似输出即表示启动成功：
@@ -86,4 +85,111 @@ docker compose logs -f pdf2zh-server
 * Running on http://172.18.0.2:8890
 ```
 
-祝您使用愉快！
+常用命令：
+
+```cmd
+docker start zotero-pdf2zh
+docker stop zotero-pdf2zh
+docker logs -f zotero-pdf2zh   # 查看实时日志/排错
+```
+
+---
+
+## （可选）切换为 `pdf2zh`
+
+> 默认镜像是 `pdf2zh_next`。如果你只想用 **1.x** `pdf2zh`（`byaidu/pdf2zh:1.9.6`），按下述最小改动即可。
+
+### 0）预拉取经典镜像
+
+```bash
+docker pull byaidu/pdf2zh:1.9.6
+```
+
+下面只给“改哪儿、怎么改”的最小改动，改完后重构即可。
+
+---
+
+## 1) 修改 Dockerfile
+
+**A. 更换镜像变量，改为1.x**  
+
+找到：
+
+```dockerfile
+    ZOTERO_PDF2ZH_FROM_IMAGE=awwaawwa/pdfmathtranslate-next:latest
+```
+
+改为：
+
+```dockerfile
+    ZOTERO_PDF2ZH_FROM_IMAGE=byaidu/pdf2zh:1.9.6
+```
+
+**B. 删除“next 包装器”整段**  
+
+找到
+
+```dockerfile
+RUN printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'img="${ZOTERO_PDF2ZH_FROM_IMAGE:-awwaawwa/pdfmathtranslate-next:latest}"' \
+  'cid="$(cat /etc/hostname)"' \
+  'exec docker run --rm --volumes-from "${cid}" -e TZ -e http_proxy -e https_proxy -e HF_ENDPOINT "$img" pdf2zh_next "$@"' \
+  > /usr/local/bin/pdf2zh_next && chmod +x /usr/local/bin/pdf2zh_next
+```
+
+整块修改为：
+
+```dockerfile
+RUN printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'img="${ZOTERO_PDF2ZH_FROM_IMAGE:-byaidu/pdf2zh:1.9.6}"' \
+  'cid="$(cat /etc/hostname)"' \
+  'exec docker run --rm --volumes-from "${cid}" -e TZ -e http_proxy -e https_proxy -e HF_ENDPOINT "$img" pdf2zh "$@"' \
+  > /usr/local/bin/pdf2zh && chmod +x /usr/local/bin/pdf2zh
+```
+
+> 其它内容（server.zip 下载、requirements 安装、entrypoint）保持不变。
+
+## 2) 修改 `docker-compose.yaml`
+
+找到
+
+```yaml
+      ZOTERO_PDF2ZH_FROM_IMAGE: awwaawwa/pdfmathtranslate-next:latest
+```
+
+改为：
+
+```yaml
+      ZOTERO_PDF2ZH_FROM_IMAGE: byaidu/pdf2zh:1.9.6
+```
+
+如需挂字体（可选，字体文件与 `docker-compose.yaml` 同级）：
+
+```yaml
+volumes:
+  - ./translated:/app/server/translated
+  - ./config:/app/server/config
+  - ./LXGWWenKai-Regular.ttf:/app/LXGWWenKai-Regular.ttf:ro   # 可选
+  - /var/run/docker.sock:/var/run/docker.sock
+```
+
+## 3) 重构启动（在 `docker` 目录）
+
+```bash
+docker compose down
+docker compose up -d --build
+```
+
+常用命令：
+
+```cmd
+docker start zotero-pdf2zh
+docker stop zotero-pdf2zh
+docker logs -f zotero-pdf2zh   # 查看实时日志/排错
+```
+
+> 插件里把 **翻译引擎** 选成 `pdf2zh`（经典版）。祝您使用愉快！

@@ -27,7 +27,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     ZOTERO_PDF2ZH_FROM_IMAGE=awwaawwa/pdfmathtranslate-next:latest
 
 # server.zip 下载地址（可在构建时通过 build-arg 覆盖）
-ARG SERVER_ZIP_URL="https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/server.zip"
+ARG SERVER_ZIP_URL="https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip"
 
 WORKDIR /app
 
