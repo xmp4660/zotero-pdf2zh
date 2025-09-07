@@ -1,0 +1,21 @@
+services:
+  pdf2zh-server:
+    image: zotero-pdf2zh_next-3.0
+    container_name: zotero-pdf2zh_next-3.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVER_ZIP_URL: ${ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL:-https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/server.zip}
+    environment:
+      PORT: "8890"
+      TZ: Asia/Shanghai
+      ZOTERO_PDF2ZH_FROM_IMAGE: awwaawwa/pdfmathtranslate-next:latest
+      ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL: ${ZOTERO_PDF2ZH_SERVER_FILE_DOWNLOAD_URL:-https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/server.zip}
+    volumes:
+      - ./translated:/app/server/translated
+      - ./config:/app/server/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8890:8890"
+    restart: unless-stopped
