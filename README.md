@@ -27,8 +27,17 @@
 - **将终端报错复制到txt文件，并截图zotero插件设置端配置**，将错误发送到本插件用户QQ群: 971960014，入群验证回答: github
 - 访问网络上的视频教程，感谢大家的视频教程！
     - 来自小红薯[@jiajia](https://www.xiaohongshu.com/user/profile/631310d8000000001200c3a1?channelType=web_engagement_notification_page&channelTabId=mentions&xsec_token=AB6wOtAu2rBNcN8WfzJS72pVX6rDZYfWMImRRCx98yX6w%3D&xsec_source=pc_notice)的视频教程: [【zotero PDF文献翻译，免费无需会员，超简单 - jiajia | 小红书 - 你的生活兴趣社区】]( https://www.xiaohongshu.com/discovery/item/68b6cce7000000001c00a555?source=webshare&xhsshare=pc_web&xsec_token=ABI-0NjKTM_1mc2td-UyiWIG4RSUAyxmi2HC8oGmS852I=&xsec_source=pc_share)
+- 想要使用Docker进行部署？
+    - 请参考：[Docker部署方法一](./docker/README.md) by [@Rosetears520](https://github.com/Rosetears520)
+    - 请参考：[Docker部署方法二](./docker2/README.md) by [@taozhe6](https://github.com/taozhe6)
+
+
+
+
+# 安装说明
 
 ## 第零步：安装Python和Zotero
+
 - [Python下载链接](https://www.python.org/downloads/) 建议下载3.12.0版本Python
 
 - 插件目前支持[Zotero 7](https://www.zotero.org/download/)，Zotero 8待适配
@@ -117,6 +126,8 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 新版本v3.0.20[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/zotero-pdf-2-zh-v3.0.20.xpi)
 
+在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero后再试）
+
 ## 第五步: Zotero端插件设置
 
 <img src="./images/preference.png" alt="preference" style="width: 500px" align="center"/>
@@ -138,6 +149,8 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 - openailiked可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
     - 示例: 火山引擎url填写为`https://ark.cn-beijing.volces.com/api/v3`
+    
+    
 
 **💡 注意事项**
 
@@ -174,6 +187,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 <img src="./images/dualmode.png" alt="dualmode" style="width: 700px" align="center"/>
 
 # FAQ
+
 - Q：我的conda/uv安装失败了，我不想使用虚拟环境管理，怎么办？
 - A：如果您只使用pdf2zh_next/pdf2zh引擎中的一个，并且全局python版本为3.12.0，可以不使用虚拟环境管理，执行如下命令即可：
 ```shell
