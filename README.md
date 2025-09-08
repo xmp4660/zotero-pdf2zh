@@ -30,6 +30,8 @@
 - 想要使用Docker进行部署？
     - 请参考：[Docker部署方法一](./docker/README.md) by [@Rosetears520](https://github.com/Rosetears520)
     - 请参考：[Docker部署方法二](./docker2/README.md) by [@taozhe6](https://github.com/taozhe6)
+- zotero-pdf2zh插件基于虚拟环境，支持在pdf2zh/pdf2zh_next两种翻译引擎内切换，如果您是新手，不善于python相关操作，并且只想使用其中一种翻译引擎，可跳转至此：
+  - [如果不使用虚拟环境管理，请参考FAQ](https://github.com/guaguastandup/zotero-pdf2zh?tab=readme-ov-file#faq)
 
 
 # 安装说明
@@ -40,6 +42,8 @@
 
 - 插件目前支持[Zotero 7](https://www.zotero.org/download/)，Zotero 8待适配
 
+- 打开cmd/终端，执行以下指南中的指令 （windows用户请用管理员身份打开cmd.exe）
+
 ## 第一步: 安装uv/conda（可选）
 
 如果不使用虚拟环境管理，请参考[FAQ](https://github.com/guaguastandup/zotero-pdf2zh?tab=readme-ov-file#faq)
@@ -48,20 +52,30 @@
 
 1. 安装uv
 ```shell
-# 方法一: 使用pip安装uv
-pip install uv
-
-# 方法二: 下载脚本安装
+# 方法一: 下载脚本安装(推荐)
 # macOS/Linux
 wget -qO- https://astral.sh/uv/install.sh | sh
 # windows
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 方法二: pip安装
+pip install uv
 ```
 
 2. 检查uv安装是否成功
 ```shell
-# 显示uv版本号, 则uv安装完成
+# 显示uv版本号, 则uv安装完成（必做）
 uv --version
+```
+
+3. 如果检查失败
+需要将uv执行路径添加到全局路径，并重启终端
+
+```shell
+# MacOS/Linux
+export PATH="$PATH:/Users/Username/.local/bin"
+# Windows
+$env:Path = "C:\Users\Username\.local\bin;$env:Path"
 ```
 
 **conda安装**
@@ -96,7 +110,7 @@ cd server
 # 1. 安装依赖
 pip install -r requirements.txt
 
-# 2. 执行脚本
+# 2. 执行脚本, 请注意, 翻译功能依赖本脚本, 需要保持脚本的运行状态
 # 默认开启虚拟环境管理
 # 默认使用uv进行虚拟环境管理
 # 默认自动检查更新
@@ -189,6 +203,9 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 - Q：我的conda/uv安装失败了，我不想使用虚拟环境管理，怎么办？
 - A：如果您只使用pdf2zh_next/pdf2zh引擎中的一个，并且全局python版本为3.12.0，可以不使用虚拟环境管理，执行如下命令即可：
 ```shell
+# 0. 安装python3.12.0
+# 0. 安装uv(可选, 参考指南中的uv安装教程)
+
 # 1. 创建并进入zotero-pdf2zh文件夹
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
@@ -206,8 +223,8 @@ pip install -r requirements.txt
 pip install pdf2zh==1.9.11 numpy==2.2.0
 # 如果只使用pdf2zh_next:
 pip install pdf2zh_next
-# 或者
-uv pip install pdf2zh_next
+# 或者(如果已经安装了uv)
+uv tool install --python 3.12 pdf2zh-next
 
 # 5. 执行脚本
 # 关闭虚拟环境管理
