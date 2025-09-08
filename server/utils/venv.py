@@ -42,12 +42,12 @@ class VirtualEnvManager:
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 result = subprocess.run(
                     ['uv', 'pip', 'list', '--format=json', '--python', python_path],
-                    capture_output=True, text=True, timeout=600
+                    capture_output=True, text=True, timeout=6000
                 )
             elif envtool == 'conda':
                 result = subprocess.run(
                     ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json'],
-                    capture_output=True, text=True, timeout=600
+                    capture_output=True, text=True, timeout=6000
                 )
             if result.returncode != 0:
                 print(f"❌ 检查 packages 失败: pip list 返回非零退出码")
@@ -77,7 +77,7 @@ class VirtualEnvManager:
         print(f"🔧 开始(重新)安装 packages: {packages} in {envtool} 环境 {envname}")
         try:
             env = os.environ.copy()
-            env['UV_HTTP_TIMEOUT'] = '3600' if envtool == 'uv' else None
+            env['UV_HTTP_TIMEOUT'] = '36000' if envtool == 'uv' else None
             if envtool == 'uv':
                 python_executable = 'python.exe' if self.is_windows else 'python'
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
@@ -85,26 +85,26 @@ class VirtualEnvManager:
                     print("🌍 使用清华大学镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     subprocess.run(
                     ['uv', 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages, '--python', python_path],
-                    check=True, timeout=3600, env=env
+                    check=True, timeout=36000, env=env
                 )
                 else:
                     print("🌍 使用默认 PyPI 源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=True")
                     subprocess.run(
                         ['uv', 'pip', 'install', *packages, '--python', python_path],
-                        check=True, timeout=3600, env=env
+                        check=True, timeout=36000, env=env
                     )
             elif envtool == 'conda':
                 if self.enable_mirror:
                     print("🌍 使用清华大学镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     subprocess.run(
                     ['conda', 'run', '-n', envname, 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages],
-                    check=True, timeout=3600
+                    check=True, timeout=36000
                 )
                 else:
                     print("🌍 使用默认 PyPI 源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=True")
                     subprocess.run(
                         ['conda', 'run', '-n', envname, 'pip', 'install', *packages],
-                        check=True, timeout=3600
+                        check=True, timeout=36000
                     )
             print(f"✅ packages 安装成功: {packages}")
             return True
@@ -125,13 +125,13 @@ class VirtualEnvManager:
         try:
             if envtool == 'uv':
                 env = os.environ.copy()
-                env['UV_HTTP_TIMEOUT'] = '1200' 
+                env['UV_HTTP_TIMEOUT'] = '36000' 
                 subprocess.run(
                     ['uv', 'venv', envname, '--python', python_version],
-                    check=True, timeout=3600 # 3600秒超时
+                    check=True, timeout=36000 # 36000秒超时
                 )
             elif envtool == 'conda':
-                subprocess.run(['conda', 'create', '-n', envname, f'python={python_version}', '-y'], check=True, timeout=3600)
+                subprocess.run(['conda', 'create', '-n', envname, f'python={python_version}', '-y'], check=True, timeout=36000)
             return True
         except subprocess.TimeoutExpired:
             print(f"⏰ 创建 {envname} 环境超时")
@@ -143,7 +143,7 @@ class VirtualEnvManager:
     
     def check_envtool(self, envtool): # 检查 uv / conda 是否存在
         try:
-            result = subprocess.run([envtool, '--version'], capture_output=True, text=True, timeout=600)
+            result = subprocess.run([envtool, '--version'], capture_output=True, text=True, timeout=6000)
             return result.returncode == 0
         except Exception as e:
             print(f"❌ 检查 {envtool} 失败: {e}")
@@ -162,7 +162,7 @@ class VirtualEnvManager:
                 return False
         elif envtool == 'conda':
             try: 
-                result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=600)
+                result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=6000)
                 if result.returncode == 0:
                     envs = [line.split()[0] for line in result.stdout.splitlines() if line and not line.startswith("#")]
                     print("🔍 检查 conda 环境列表: ", envs)
@@ -206,7 +206,7 @@ class VirtualEnvManager:
         try:
             result = subprocess.run(
                 ['conda', 'info', '--json'],
-                capture_output=True, text=True, check=True, timeout=600, encoding='utf-8'
+                capture_output=True, text=True, check=True, timeout=6000, encoding='utf-8'
             )
             conda_info = json.loads(result.stdout)
             # Conda lists full paths to all environments in 'envs'

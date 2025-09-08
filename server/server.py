@@ -21,7 +21,7 @@ import tempfile # 引入tempfile来处理临时目录
 import io
 
 # NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.20" 
+__version__ = "3.0.21" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
