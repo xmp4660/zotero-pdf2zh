@@ -39,7 +39,7 @@
 ## 第零步：安装Python和Zotero
 
 - [Python下载链接](https://www.python.org/downloads/) 建议下载3.12.0版本Python
-  - 安装教程推荐：【[3] Windows | 安装Python和PyCharm】 https://www.bilibili.com/video/BV18q4y1R7gW/?share_source=copy_web&vd_source=7295b9ad781950043e4c60b3aabd0c72
+  - 安装教程推荐：[【[3] Windows | 安装Python和PyCharm】](https://www.bilibili.com/video/BV18q4y1R7gW/?share_source=copy_web&vd_source=7295b9ad781950043e4c60b3aabd0c72)
 
 - 插件目前支持[Zotero 7](https://www.zotero.org/download/)，Zotero 8待适配
 
