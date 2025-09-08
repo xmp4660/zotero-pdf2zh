@@ -30,7 +30,7 @@
 - 想要使用Docker进行部署？
     - 请参考：[Docker部署方法一](./docker/README.md) by [@Rosetears520](https://github.com/Rosetears520)
     - 请参考：[Docker部署方法二](./docker2/README.md) by [@taozhe6](https://github.com/taozhe6)
-- zotero-pdf2zh插件基于虚拟环境，支持在pdf2zh/pdf2zh_next两种翻译引擎内切换，如果您是新手，不善于python相关操作，并且只想使用其中一种翻译引擎，可跳转至此：
+- zotero-pdf2zh插件基于虚拟环境，支持在pdf2zh/pdf2zh_next两种翻译引擎内切换，如果您是新手，不善于python相关操作，并且只想使用其中一种翻译引擎，可在完成指南第零步以后，跳转至此：
   - [如果不使用虚拟环境管理，请参考FAQ](https://github.com/guaguastandup/zotero-pdf2zh?tab=readme-ov-file#faq)
 
 
