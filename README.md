@@ -202,6 +202,12 @@ cd server
 
 # 4. 安装执行包
 pip install -r requirements.txt
+# 如果只使用pdf2zh:
+pip install pdf2zh==1.9.11 numpy==2.2.0
+# 如果只使用pdf2zh_next:
+pip install pdf2zh_next
+# 或者
+uv pip install pdf2zh_next
 
 # 5. 执行脚本
 # 关闭虚拟环境管理
