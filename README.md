@@ -32,8 +32,6 @@
     - 请参考：[Docker部署方法二](./docker2/README.md) by [@taozhe6](https://github.com/taozhe6)
 
 
-
-
 # 安装说明
 
 ## 第零步：安装Python和Zotero
@@ -43,6 +41,8 @@
 - 插件目前支持[Zotero 7](https://www.zotero.org/download/)，Zotero 8待适配
 
 ## 第一步: 安装uv/conda（可选）
+
+如果不使用虚拟环境管理，请参考[FAQ](https://github.com/guaguastandup/zotero-pdf2zh?tab=readme-ov-file#faq)
 
 **uv安装(推荐)**
 
