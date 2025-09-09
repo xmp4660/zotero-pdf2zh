@@ -171,6 +171,8 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 - 切换翻译引擎pdf2zh/pdf2zh_next, 界面将显示不同引擎的翻译配置
 - 翻译引擎pdf2zh的自定义字体：字体文件路径为本地路径。如果采用远端服务器部署, 暂时无法使用本配置，则需要手动修改`config.json`文件中的`NOTO_FONT_PATH`字段。
 - 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
+- 关于qps和poolsize选项: 请参考您的服务商，例如[zhipu](https://www.bigmodel.cn/dev/howuse/rate-limits), 计算公式: qps = rpm / 60, 对于上游为qps/rpm限速: pool size = qps * 10; 对于上游为并发数限制: pool size = max(向下取整(0.9*官方并发数限制), 官方并发数限制-20), qps = pool size
+    - 如果您不知道怎么设置, 请直接设置qps即可, pool size设置为默认值0即可.
 
 <img src="./images/editor.png" alt="editor" style="width: 300px" align="center"/>
 
