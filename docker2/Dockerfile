@@ -24,7 +24,7 @@ RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debia
 RUN uv pip install --system --no-cache-dir flask pypdf toml
 
 # 接收 server.py 的下载地址作为构建参数
-ARG SERVER_URL=https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.20-beta/server.zip
+ARG SERVER_URL=https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/server.zip
 # 下载并解压 server.zip
 RUN wget -O server.zip $SERVER_URL && \
     unzip server.zip && \
@@ -37,4 +37,5 @@ VOLUME ["/app/config", "/app/server/translated"]
 EXPOSE 8890
 
 # 定义容器启动命令，并明确禁用 server.py 内部的 venv 管理
+
 CMD ["python", "server/server.py", "--enable_venv=False", "--port=8890"]
