@@ -66,7 +66,14 @@ class Config:
 
         if self.qps == 0 and self.pool_size == 0:
             self.qps = 8
-        
+
+        if self.qps > 0 and self.pool_size == 0:
+            if self.service == "zhipu":
+                self.pool_size = max(int(0.9 * self.qps), self.qps - 20)
+                self.qps = self.pool_size
+            else:
+                self.pool_size = self.qps * 10
+
         if self.pool_size > 1000:
             self.pool_size = 1000
 
@@ -163,7 +170,10 @@ class Config:
                     if value not in (None, "", [], {}):  # 跳过空值
                         translator['envs'][mapped_key] = value
                         translator_keys.append(mapped_key)
-                        print(f"✏️ 更新 {key}: {mapped_key} = {value}")
+                        if key == "apiKey":
+                            print(f"✏️ 更新 {key}: {mapped_key} = {'*' * 8 + value[-4:] if len(value) > 4 else '*' * len(value)}")
+                        else:
+                            print(f"✏️ 更新 {key}: {mapped_key} = {value}") 
                     else:
                         print(f"✏️ 跳过 {key}: {mapped_key} = {value} (empty or null)")
 
@@ -220,7 +230,10 @@ class Config:
                     if value not in (None, "", [], {}):
                         translator[mapped_key] = value
                         translator_keys.append(mapped_key)
-                        print(f"✏️ 更新 {key}: {mapped_key} = {value}")
+                        if key == "apiKey":
+                            print(f"✏️ 更新 {key}: {mapped_key} = {'*' * 8 + value[-4:] if len(value) > 4 else '*' * len(value)}")
+                        else:
+                            print(f"✏️ 更新 {key}: {mapped_key} = {value}") 
                     else:
                         translator_keys.append(mapped_key)
                         print(f"✏️ 跳过 {key}: {mapped_key} = {value} (empty or null)")

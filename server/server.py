@@ -22,7 +22,7 @@ import io
 
 # NEW: 定义当前脚本版本  
 # Current version of the script
-__version__ = "3.0.22" 
+__version__ = "3.0.23" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -800,7 +800,7 @@ def check_for_updates(): # 从 GitHub 检查是否有新版本。如果存在，
     print("🔍 [自动更新] 正在检查更新...")
     remote_script_url = "https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/server/server.py"
     try:
-        with urllib.request.urlopen(remote_script_url, timeout=10) as response:
+        with urllib.request.urlopen(remote_script_url, timeout=100) as response:
             remote_content = response.read().decode('utf-8')
         match = re.search(r'__version__\s*=\s*["\'](.+?)["\']', remote_content)
         if not match:
