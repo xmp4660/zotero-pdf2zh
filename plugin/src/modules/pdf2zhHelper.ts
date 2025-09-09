@@ -310,7 +310,7 @@ export class PDF2zhHelperFactory {
                 `${config.serverUrl}/translatedFile/${fileName}`,
                 {
                     responseType: "arraybuffer",
-                    timeout: 60000, // 60秒超时
+                    timeout: 360000, // 6分钟
                 },
             );
 

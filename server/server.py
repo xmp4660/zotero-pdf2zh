@@ -24,10 +24,12 @@ import io
 # Current version of the script
 __version__ = "3.0.23" 
 
+
 ############# config file #########
 pdf2zh      = 'pdf2zh'
 pdf2zh_next = 'pdf2zh_next'
 venv        = 'venv' 
+
 
 # TODO: 强制设置标准输出和标准错误的编码为 UTF-8
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
@@ -42,6 +44,7 @@ config_path = { # 配置文件路径
     pdf2zh_next: os.path.join(config_folder, 'config.toml'),
     venv:        os.path.join(config_folder, 'venv.json'),
 }
+
 ######### venv config #########
 venv_name = { # venv名称
     pdf2zh:      'zotero-pdf2zh-venv',
@@ -51,7 +54,7 @@ venv_name = { # venv名称
 default_env_tool = 'uv' # 默认使用uv管理venv
 enable_venv = True
 
-PORT = 8890 # 默认端口号
+PORT = 8890     # 默认端口号
 class PDFTranslator:
     def __init__(self, args):
         self.app = Flask(__name__)
