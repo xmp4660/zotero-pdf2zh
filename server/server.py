@@ -20,8 +20,9 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 import io
 
-# NEW: 定义当前脚本版本  # Current version of the script
-__version__ = "3.0.20" 
+# NEW: 定义当前脚本版本  
+# Current version of the script
+__version__ = "3.0.21" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -51,7 +52,6 @@ default_env_tool = 'uv' # 默认使用uv管理venv
 enable_venv = True
 
 PORT = 8890 # 默认端口号
-
 class PDFTranslator:
     def __init__(self, args):
         self.app = Flask(__name__)
@@ -839,6 +839,8 @@ if __name__ == '__main__':
     parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
     args = parser.parse_args()
     print(f"🚀 启动参数: {args}\n")
+    print("💡 常见问题文档: https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC")
+    print("💡 如遇到无法解决的问题请加入QQ群: 971960014, 提问时请将本终端完整的信息复制到txt文件中, 并截图zotero插件设置, 一并发送, 以便更好地得到帮助, 感谢配合!\n")
 
     # 启动时自动检查更新
     if args.check_update:
