@@ -13,6 +13,8 @@ export enum PDFType {
 export interface ServerConfig {
     serverUrl: string;
     threadNum: string;
+    qps: string;
+    poolSize: string;
     engine: string;
     service: string;
     next_service: string;

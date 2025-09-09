@@ -22,7 +22,7 @@ import io
 
 # NEW: 定义当前脚本版本  
 # Current version of the script
-__version__ = "3.0.21" 
+__version__ = "3.0.22" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -449,7 +449,7 @@ class PDFTranslator:
             pdf2zh_next,
             input_path,
             '--' + config.service,
-            '--qps', str(config.thread_num),
+            '--qps', str(config.qps),
             '--output', str(output_folder),
             '--lang-in', str(config.sourceLang),
             '--lang-out', str(config.targetLang),
@@ -489,6 +489,8 @@ class PDFTranslator:
             cmd.append('--auto-enable-ocr-workaround')
         if config.font_family and config.font_family in ['serif', 'sans-serif', 'script']:
             cmd.extend(['--primary-font-family', config.font_family])
+        if config.pool_size and config.pool_size > 1:
+            cmd.extend(['--pool-max-worker', str(config.pool_size)])
 
         fileName = os.path.basename(input_path).replace('.pdf', '')
         no_watermark_mono = os.path.join(output_folder, f"{fileName}.no_watermark.{config.targetLang}.mono.pdf")
@@ -542,10 +544,20 @@ def prepare_path():
     os.makedirs(output_folder, exist_ok=True)
     # config file 路径和格式检查
     for (_, path) in config_path.items():
-        if not os.path.exists(path):
-            example_file = os.path.join(config_folder, os.path.basename(path) + '.example')
-            if os.path.exists(example_file):
-                shutil.copyfile(example_file, path)
+        # if not os.path.exists(path):
+        #     example_file = os.path.join(config_folder, os.path.basename(path) + '.example')
+        #     if os.path.exists(example_file):
+        #         shutil.copyfile(example_file, path)
+        # 因为需要修复toml文件中的一些问题, 需要让example文件直接覆盖config文件
+        example_file = os.path.join(config_folder, os.path.basename(path) + '.example')
+        if os.path.exists(example_file):
+            # TOCHECK: 是否是直接覆盖, 是否会引发报错?
+            if os.path.exists(path):
+                print(f"⚠️ [配置文件] 发现旧的配置文件 {path}, 为了确保配置文件格式正确, 将使用 {example_file} 覆盖旧的配置文件.")
+            else:
+                print(f"🔍 [配置文件] 发现缺失的配置文件 {path}, 将使用 {example_file} 作为初始配置文件.")
+            shutil.copyfile(example_file, path)
+        # 检查文件格式
         try:
             if path.endswith('.json'):
                 with open(path, 'r', encoding='utf-8') as f:  # Specify UTF-8 encoding
@@ -564,35 +576,28 @@ def prepare_path():
 
 def get_xpi_info_from_repo(owner, repo, branch='main', expected_version=None):
     """
-    通过 GitHub API 扫描文件树查找.xpi文件。
-    优先根据 expected_version 精确查找，如果找不到，则回退到查找任意.xpi文件。
+    根据已知的命名规则直接构造 Zotero PDF 2 ZH 插件的下载链接。
+    命名规则：zotero-pdf-2-zh-v{expected_version}.xpi
     """
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1"
-    try:
-        print("  - 正在从项目文件库中扫描插件...")
-        with urllib.request.urlopen(api_url, timeout=10) as response:
-            if response.status != 200:
-                print(f"  - 访问GitHub API失败，状态码: {response.status}")
-                return None, None
-            data = json.load(response)
-
-        all_xpis = [item['path'] for item in data.get('tree', []) if item['path'].endswith('.xpi')]
-        if not all_xpis:
-            print("  - ⚠️ 未在项目中找到任何.xpi文件。")
-            return None, None
-
-        if expected_version:
-            target_filename = f"zotero-pdf-2-zh-v{expected_version}.xpi"
-            for xpi_path in all_xpis:
-                if os.path.basename(xpi_path) == target_filename:
-                    print(f"  - 成功找到匹配版本的插件: {target_filename}")
-                    download_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{xpi_path}"
-                    return download_url, target_filename
-                
-        print(f"  - ⚠️ 未找到与服务端版本 {expected_version} 匹配的插件")
+    if not expected_version:
+        print("  - ⚠️ 未提供版本号，无法构造插件下载链接。")
         return None, None
+    try:
+        # 构造文件名
+        target_filename = f"zotero-pdf-2-zh-v{expected_version}.xpi"
+        # 构造 GitHub raw 文件下载链接
+        download_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{target_filename}"
+        print(f"  - 构造插件下载链接: {download_url}")
+        # 可选：验证链接是否有效
+        with urllib.request.urlopen(download_url, timeout=1000) as response:
+            if response.status == 200:
+                print(f"  - 成功验证插件: {target_filename}")
+                return download_url, target_filename
+            else:
+                print(f"  - ⚠️ 无法访问插件文件，状态码: {response.status}")
+                return None, None
     except Exception as e:
-        print(f"  - ⚠️ 扫描插件失败 (可能是网络问题): {e}")
+        print(f"  - ⚠️ 无法获取插件文件 (可能是网络问题或文件不存在): {e}")
         return None, None
 
 def smart_file_sync(source_dir, target_dir, stats, backup_dir, updated_files, new_files, exclude_dirs=None):

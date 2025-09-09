@@ -7,6 +7,8 @@ pref-serverip        = Python服务器IP地址
 pref-engine          = 翻译引擎
 pref-service         = 翻译服务
 pref-threadNum       = 翻译线程数
+pref-qps             = 最大QPS(每秒请求数)
+pref-poolSize        = 池最大工作线程数(可选, 不需要可设置为0)
 pref-rename          = 重命名条目为短标题(如'短标题-dual', 实际文件名不变)
 pref-skipLastPages   = 最后几页跳过翻译
 

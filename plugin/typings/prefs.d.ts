@@ -20,6 +20,8 @@ declare namespace _ZoteroTypes {
       "next_serviceSelect": string;
       "skipLastPages": number;
       "threadNum": number;
+      "qps": number;
+      "poolSize": number;
       "rename": boolean;
       "skipSubsetFonts": boolean;
       "babeldoc": boolean;

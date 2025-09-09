@@ -51,6 +51,24 @@ class Config:
                 self.thread_num = 8
         except ValueError:
             self.thread_num = 8
+        
+        self.qps = request_data.get('qps', 0)
+        try:
+            self.qps = int(self.qps)
+        except ValueError:
+            self.qps = 0
+        
+        self.pool_size = request_data.get('poolSize', 0)
+        try:
+            self.pool_size = int(self.pool_size)
+        except ValueError:
+            self.pool_size = 0
+
+        if self.qps == 0 and self.pool_size == 0:
+            self.qps = 8
+        
+        if self.pool_size > 1000:
+            self.pool_size = 1000
 
         # 如果左右留白部分裁剪太多了, 可以调整pdf_w_offset和pdf_offset_ratio, 宽边裁剪值pdf_w_offset, 窄边裁剪值pdf_w_offset/pdf_offset_ratio
         # TODO: 将裁剪的逻辑添加到zotero配置页面

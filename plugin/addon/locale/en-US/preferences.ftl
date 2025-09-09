@@ -7,6 +7,8 @@ pref-serverip        = Python Server IP Address
 pref-engine          = Translation Engine
 pref-service         = Translation Service
 pref-threadNum       = Translation Threads Num
+pref-qps             = Max QPS (Requests Per Second)
+pref-poolSize        = Thread Pool Size(Optional)
 pref-rename          = Rename Item to Short Title (e.g. 'ShortTitle-dual', actual file name remains unchanged)
 pref-skipLastPages   = Skip Last Pages Translation
 

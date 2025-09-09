@@ -383,6 +383,8 @@ export class PDF2zhHelperFactory {
 
             skipLastPages: getPref("skipLastPages")?.toString() || "",
             threadNum: getPref("threadNum")?.toString() || "",
+            qps: getPref("qps")?.toString() || "10",
+            poolSize: getPref("poolSize")?.toString() || "0",
 
             // generate
             mono: getPref("mono")?.toString() || "",

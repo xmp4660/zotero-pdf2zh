@@ -16,6 +16,8 @@ pref("__prefsPrefix__.next_serviceSelect", "siliconflowfree");
 
 pref("__prefsPrefix__.skipLastPages", 0);
 pref("__prefsPrefix__.threadNum", 4);
+pref("__prefsPrefix__.qps", 10);
+pref("__prefsPrefix__.poolSize", 0);
 pref("__prefsPrefix__.rename", true);
 
 // pdf1x

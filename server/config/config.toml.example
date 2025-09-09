@@ -61,10 +61,10 @@ enhance_compatibility = false
 use_alternating_pages_dual = false
 watermark_output_mode = "no_watermark"
 max_pages_per_part = "null"
-translate_table_text = true
+translate_table_text = false
 skip_scanned_detection = false
-ocr_workaround = true
-auto_enable_ocr_workaround = true
+ocr_workaround = false
+auto_enable_ocr_workaround = false
 only_include_translated_page = false
 
 [gui_settings]
