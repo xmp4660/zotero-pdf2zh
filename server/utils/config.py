@@ -111,6 +111,8 @@ class Config:
         self.translate_table_text = stringToBoolean(request_data.get('translateTableText', False))
         self.only_include_translated_page = stringToBoolean(request_data.get('onlyIncludeTranslatedPage', False))
 
+        print("\n🔍 Config without llm_api: ", self.__dict__)
+
         self.llm_api = {
             'apiKey': request_data.get('llm_api', {}).get('apiKey', ''),
             'apiUrl': request_data.get('llm_api', {}).get('apiUrl', ''),
@@ -118,8 +120,6 @@ class Config:
             'threadnum': request_data.get('llm_api', {}).get('threadNum', self.thread_num), # TODO, 为每个服务单独配置线程数, 暂时不实现
             'extraData': request_data.get('llm_api', {}).get('extraData', {})
         }
-
-        print("\n🔍 Config: ", self.__dict__)
 
     def update_config_file(self, config_file):
         service = self.service

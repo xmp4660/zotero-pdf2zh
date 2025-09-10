@@ -22,7 +22,8 @@ import io
 
 # NEW: 定义当前脚本版本  
 # Current version of the script
-__version__ = "3.0.23" 
+# 解决api key暴露的问题
+__version__ = "3.0.24" 
 
 
 ############# config file #########
