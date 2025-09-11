@@ -25,12 +25,10 @@ import io
 # 解决api key暴露的问题
 __version__ = "3.0.24" 
 
-
 ############# config file #########
 pdf2zh      = 'pdf2zh'
 pdf2zh_next = 'pdf2zh_next'
 venv        = 'venv' 
-
 
 # TODO: 强制设置标准输出和标准错误的编码为 UTF-8
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
