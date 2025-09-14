@@ -139,7 +139,7 @@ python server.py --enable_winexe=True --winexe_path='xxxxxxx'
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.24[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.24-beta/zotero-pdf-2-zh-v3.0.24.xpi)
+新版本v3.0.22[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.22-beta/zotero-pdf-2-zh-v3.0.22.xpi)
 
 在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero后再试）
 
