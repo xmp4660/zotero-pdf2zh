@@ -34,6 +34,12 @@ venv        = 'venv'
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 # sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
+# Windows 下防止子进程弹出控制台窗口
+if sys.platform == 'win32':
+    CREATE_NO_WINDOW = subprocess.CREATE_NO_WINDOW
+else:
+    CREATE_NO_WINDOW = 0
+
 # 所有系统: 获取当前脚本server.py所在的路径
 root_path     = os.path.dirname(os.path.abspath(__file__))
 config_folder = os.path.join(root_path, 'config')
@@ -88,9 +94,16 @@ class PDFTranslator:
     # 下载文件 /translatedFile/<filename>
     def download_file(self, filename):
         try:
-            file_path = os.path.join(output_folder, filename)
-            if os.path.exists(file_path):
-                return send_file(file_path, as_attachment=True)
+            base = os.path.abspath(output_folder)
+            full = os.path.abspath(os.path.join(output_folder, filename))
+            # 防止目录穿越
+            if os.path.commonpath([base, full]) != base:
+                return jsonify({'status': 'error', 'message': 'Invalid path'}), 400
+
+            if os.path.exists(full):
+                return send_file(full, as_attachment=True)
+            # 新增：不存在时明确返回 404，而不是什么都不返回
+            return jsonify({'status': 'error', 'message': f'File not found: {filename}'}), 404
         except Exception as e:
             traceback.print_exc()
             return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -195,10 +208,19 @@ class PDFTranslator:
                 raise ValueError(f"⚠️ [Zotero PDF2zh Server] 输入了不支持的翻译引擎: {engine}, 目前脚本仅支持: pdf2zh/pdf2zh_next")
             
             fileNameList = [os.path.basename(path) for path in fileList]
-            for file_path in fileList:
-                if os.path.exists(file_path):
-                    size = os.path.getsize(file_path)
-                    print(f"🐲 翻译成功, 生成文件: {file_path}, 大小为: {size/1024.0/1024.0:.2f} MB")
+            existing = [p for p in fileList if os.path.exists(p)]
+            missing  = [p for p in fileList if not os.path.exists(p)]
+
+            for m in missing:
+                print(f"⚠️ 期望生成但不存在: {m}")
+            for f in existing:
+                size = os.path.getsize(f)
+                print(f"🐲 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
+
+            if not existing:
+                return jsonify({'status': 'error', 'message': '翻译完成但未找到任何输出文件，请查看上方日志。'}), 500
+
+            fileNameList = [os.path.basename(p) for p in existing]
             return jsonify({'status': 'success', 'fileList': fileNameList}), 200
         except Exception as e:
             print(f"❌ [Zotero PDF2zh Server] /translate Error: {e}\n")
@@ -501,12 +523,12 @@ class PDFTranslator:
         watermark_dual = os.path.join(output_folder, f"{fileName}.{config.targetLang}.dual.pdf")
 
         output_path = []
-        if config.no_watermark: # 有水印
+        if config.no_watermark: # 无水印
             if not config.no_mono:
                 output_path.append(no_watermark_mono)
             if not config.no_dual:
                 output_path.append(no_watermark_dual)
-        else: # 无水印
+        else: # 有水印
             if not config.no_mono:
                 output_path.append(watermark_mono)
             if not config.no_dual:
@@ -514,27 +536,111 @@ class PDFTranslator:
 
         if args.enable_winexe and os.path.exists(args.winexe_path):
             cmd = [f"{args.winexe_path}"] + cmd[1:]  # Windows可执行文件
-            print(f"⚠️ 使用 Windows 可执行文件: {cmd}")
             # 将所有是路径的字段, 改为os.path.normpath
             cmd = [os.path.normpath(arg) if os.path.isfile(arg) or os.path.isdir(arg) else arg for arg in cmd]
-            # Run with subprocess and capture output
-            r = subprocess.run(
-                cmd, shell=False,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                text=True, encoding="utf-8"
-            )
-            if r.returncode != 0:
-                raise RuntimeError(f"pdf2zh.exe 退出码 {r.returncode}\nstdout:\n{r.stdout}\nstderr:\n{r.stderr}")
+            # 设置工作目录为 exe 所在目录，确保相对路径解析正确
+            exe_dir = os.path.dirname(args.winexe_path)
+
+            # 打印开关状态
+            print(f"🔧 [winexe] winexe_attach_console={args.winexe_attach_console}")
+
+            if args.winexe_attach_console:
+
+                # 附着父控制台模式
+                print("🚀 [winexe] mode=attach-console")
+                print(f"📁 [winexe] cwd={exe_dir}")
+
+                # 隐藏敏感信息后的命令显示
+                safe_cmd = []
+                for i, arg in enumerate(cmd):
+                    if i > 0 and any(sensitive in cmd[i-1].lower() for sensitive in ['key', 'token', 'secret', 'password']):
+                        safe_cmd.append('***')
+                    else:
+                        safe_cmd.append(arg)
+                print(f"⚡ [winexe] cmd={' '.join(safe_cmd)}")
+
+                # 23秒可见性预检
+                def quick_visibility_check():
+                    try:
+                        print("🔍 [预检] 检查exe输出可见性...")
+                        test_cmd = [cmd[0], '--help']
+                        test_result = subprocess.run(
+                            test_cmd,
+                            shell=False,
+                            cwd=exe_dir,
+                            timeout=23,
+                            capture_output=True,
+                            text=True
+                        )
+
+                        # 检查是否有输出
+                        has_output = bool(test_result.stdout.strip() or test_result.stderr.strip())
+
+                        if not has_output:
+                            print("\n⚠️ [预检结果] 23秒内未检测到控制台输出，可能为GUI/无控制台子系统或会自行新建控制台窗口")
+                            print("   若需无黑窗 + 实时日志，建议使用console版exe或回到uv/venv")
+                            print("   " + "="*60 + "\n")
+                        else:
+                            print(f"✅ [预检结果] 检测到控制台输出")
+
+                        return has_output
+
+                    except subprocess.TimeoutExpired:
+                        print("\n⚠️ [预检结果] exe响应超时，可能为GUI程序")
+                        print("   " + "="*60 + "\n")
+                        return False
+                    except Exception as e:
+                        print(f"⚠️ [预检结果] 检查失败: {e}")
+                        print("   " + "="*60 + "\n")
+                        return False
+
+                # 执行预检
+                quick_visibility_check()
+
+                # 执行主命令 - 附着父控制台
+                print("🔍 [winexe] 开始执行（预期在当前终端显示实时日志）...")
+                r = subprocess.run(
+                    cmd,
+                    shell=False,
+                    cwd=exe_dir
+                    # 不使用creationflags，允许控制台窗口显示
+                    # 不捕获stdout/stderr，继承父进程的标准输出/错误流
+                )
+
+                if r.returncode != 0:
+                    print(f"❌ pdf2zh.exe 执行失败，退出码: {r.returncode}")
+                    print("   请查看上方实时日志获取详细错误信息")
+                    raise RuntimeError(f"pdf2zh.exe 执行失败，退出码: {r.returncode}")
+
+            else:
+                # 回退模式：静默模式（旧行为）
+                print("🔇 [winexe] mode=silent")
+                r = subprocess.run(
+                    cmd,
+                    shell=False,
+                    cwd=exe_dir,
+                    creationflags=CREATE_NO_WINDOW,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    encoding="utf-8"
+                )
+                if r.returncode != 0:
+                    raise RuntimeError(f"pdf2zh.exe 退出码 {r.returncode}\nstdout:\n{r.stdout}\nstderr:\n{r.stderr}")
         elif args.enable_venv:
             self.env_manager.execute_in_env(cmd)
         else:
             subprocess.run(cmd, check=True)
-        for f in output_path:
-            if not os.path.exists(f):
-                continue
+        existing = [p for p in output_path if os.path.exists(p)]
+
+        for f in existing:
             size = os.path.getsize(f)
             print(f"🐲 pdf2zh_next 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
-        return output_path
+
+        if not existing:
+            raise RuntimeError("翻译完成但未找到期望的输出文件，请检查上方日志（可能是路径过长/特殊字符导致保存失败）。")
+
+        return existing
 
     def run(self, port, debug=False):
         # print(f"🔍 [温馨提示] 如果遇到Network Error错误，请检查Zotero插件设置中的Python Server IP端口号是否与此处端口号一致: {port}, 并检查端口是否开放.")
@@ -844,6 +950,7 @@ if __name__ == '__main__':
     parser.add_argument('--enable_winexe', type=str2bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
     parser.add_argument('--enable_mirror', type=str2bool, default=True, help='启用下载镜像加速, 仅限中国大陆用户')
     parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
+    parser.add_argument('--winexe_attach_console', type=str2bool, default=True, help='Winexe模式是否尝试附着父控制台显示实时日志 (默认True)')
     args = parser.parse_args()
     print(f"🚀 启动参数: {args}\n")
     print("💡 常见问题文档: https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC")
