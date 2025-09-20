@@ -214,20 +214,6 @@ python server.py
 <img src="./images/preference.png" width="600"/>
 </div>
 
-**💡 翻译服务介绍**
-
-| 服务类型                | 服务名称        | 服务介绍                                                     | 💡注意事项                                                    |
-| ----------------------- | --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 免费&免配置的翻译服务   | siliconflowfree | 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由[@硅基流动](https://www.siliconflow.cn/)、[@pdf2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next) 和 [@BabelDOC](https://github.com/funstory-ai/BabelDOC)联合提供服务 | 1. 此服务无需选择qps，默认为40<br />2.此服务可能会存在漏翻译的情况，如果需要高质量翻译请优先选择其他服务<br />3. 此服务仅支持pdf2zh_next引擎 |
-| 免费&免配置的翻译服务   | bing/google     | bing/google的官方机器翻译                                    | bing和goole的翻译服务都存在限流，如果翻译失败，请将并发数设置调至2及以下重试 |
-| 具有优惠/赠送的翻译服务 | silicon         | 通过邀请好友可以获得14元赠送金额                             | 💡注意事项：<br />1. 此服务url需填写为: `https://api.siliconflow.cn/v1`，如果后面有completions等后缀，请删除。<br />2. 此服务免费版支持的线程数较低，建议设置为10左右 |
-| 高质量服务              | aliyunDashScope | 翻译效果较好，可以尝试                                       |                                                              |
-
-- **openailiked服务选项**可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
-
-    - 示例: 火山引擎url填写为`https://ark.cn-beijing.volces.com/api/v3`
-
-    
 
 **配置选项说明**
 
@@ -239,14 +225,48 @@ python server.py
     >   - 对于上游为**qps/rpm限速**：pool size = qps * 10; 
     >   - 对于上游为**并发数限制**: pool size = max(向下取整(0.9*官方并发数限制), 官方并发数限制-20)，qps = pool size
     >   - 如果您不知道怎么设置, 请直接设置qps即可, pool size设置为默认值0即可
-    
+
 - 翻译引擎pdf2zh的自定义字体：字体文件路径为本地路径。如果采用远端服务器部署，暂时无法使用本配置，则需要手动修改`config.json`文件中的`NOTO_FONT_PATH`字段。
 
 - 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
 
+
+
+**翻译服务说明**
+
+单击LLM API配置管理处的新增，弹出此窗口，进行服务配置。
+
+-   您可以为同一个服务添加多种配置，但是您只能激活其中一种，在翻译时会使用您激活的配置
+-   在配置LLM API后，您还需要在上方设置的翻译服务处选择您需要使用的服务
+
 <div align=center>
 <img src="./images/editor.png" width="400"/>
 </div>
+
+
+
+**💡 翻译服务介绍**
+
+| 服务类型                | 服务名称         | 服务介绍                                                     | 💡注意事项                                                    |
+| ----------------------- | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 免费&免配置的翻译服务   | siliconflowfree  | 基于硅基流动提供的GLM4-9B模型, 仅支持翻译引擎pdf2zh_next，由[@硅基流动](https://www.siliconflow.cn/)、[@pdf2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next) 和 [@BabelDOC](https://github.com/funstory-ai/BabelDOC)联合提供服务 | 1. 此服务无需选择qps，默认为40<br />2.此服务可能会存在漏翻译的情况，如果需要高质量翻译请优先选择其他服务<br />3. 此服务仅支持pdf2zh_next引擎 |
+| 免费&免配置的翻译服务   | bing/google      | bing/google的官方机器翻译                                    | bing和goole的翻译服务都存在限流，如果翻译失败，请将并发数设置调至2及以下重试 |
+| 具有优惠/赠送的翻译服务 | openaliked       | 加入[火山引擎协作计划](https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?OpenAuthorizeModal=true&OpenTokenDrawer=false)，个人用户每个模型每天最多赠送50w token | 1. 协作计划的额度赠送规则是：按照前一天参加协作的token量等额计算（例如您昨天使用了10w token，那么今天的赠送额度则为10w token）上限为50w，请注意检查自己的额度使用情况，避免超额<br />2. 此服务支持高并发数：可设置并发数为500~1000 |
+| 具有优惠/赠送的翻译服务 | silicon          | 通过邀请好友可以获得14元赠送金额                             | 1. 此服务url需填写为: `https://api.siliconflow.cn/v1`，如果后面有completions等后缀，请删除。<br />2. 此服务免费版支持的线程数较低，建议设置为6左右 |
+| 具有优惠/赠送的翻译服务 | zhipu            | 智谱部分模型可支持免费调用                                   | 免费服务的并发数不要设置过高，建议设置为6以内                |
+| 高质量服务              | aliyunDashScope  | 翻译效果较好，新用户有赠送额度，可以尝试                     | 选择LLM API配置管理中的默认模型选项                          |
+| 高质量服务              | deepseek（推荐） | 翻译效果好，有缓存命中机制                                   | 使用deepseek v3服务即可                                      |
+
+-   除了免费服务，您均需要配置自己的API Key和URL才可以使用翻译服务（某些服务不需要配置URL，可以忽略）
+-   您可以根据实际情况自行调整并发数
+
+- **openailiked服务选项**可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
+
+    - 示例: 火山引擎url填写为`https://ark.cn-beijing.volces.com/api/v3`
+
+
+
+
 
 ## 第六步
 
