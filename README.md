@@ -22,7 +22,6 @@
 ❓ 遇到问题
 
 - 跳转至本项目总结的常见问题：[常见问题(FAQ)](https://github.com/guaguastandup/zotero-pdf2zh?tab=readme-ov-file#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98faq)
-
 - 阅读[**常见问题文档**](https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC) by [@Rosetears520](https://github.com/Rosetears520)
 - 基础问题（例如如何安装python，如何安装conda等问题）请向AI提问
 - 在github issue区提问
@@ -36,9 +35,7 @@
     - 请注意，视频教程并不包含所有的注意事项，也会存在步骤遗漏，也不能保证适配最新版本插件，如果您遇到问题，请您优先以本项目主页的安装指南和文字说明为准。
     - 如果您为本插件制作了教程，可以对在本区域提交您的视频链接，感谢您做出的贡献!
     - 来自bilibili[@她笑中藏泪花](https://space.bilibili.com/3493121191054300)的视频教程: [【Zotero-pdf2zh】快速搞定 PDF 翻译，完美保留原文格式](https://www.bilibili.com/video/BV1FnHYzeEfj/?share_source=copy_web&vd_source=a492b2fdd5febb228a648d598595ea6e)
-    - 来自小红薯[@jiajia](https://www.xiaohongshu.com/user/profile/631310d8000000001200c3a1?channelType=web_engagement_notification_page&channelTabId=mentions&xsec_token=AB6wOtAu2rBNcN8WfzJS72pVX6rDZYfWMImRRCx98yX6w%3D&xsec_source=pc_notice)的视频教程: [【zotero PDF文献翻译，免费无需会员，超简单 - jiajia | 小红书】]( https://www.xiaohongshu.com/discovery/item/68b6cce7000000001c00a555?source=webshare&xhsshare=pc_web&xsec_token=ABI-0NjKTM_1mc2td-UyiWIG4RSUAyxmi2HC8oGmS852I=&xsec_source=pc_share)
     - 来自bilibili[@尛希](https://space.bilibili.com/347580558)的视频教程: [【zotero PDF文献翻译，无需会员，本地部署，超简易教程，人人都可部署成功】](https://www.bilibili.com/video/BV1hraMzuEP8/?share_source=copy_web&vd_source=a492b2fdd5febb228a648d598595ea6e)
-    
 - 想要使用Docker进行部署？
     - 请参考：[Docker部署方法一](./docker/README.md) by [@Rosetears520](https://github.com/Rosetears520)
     - 请参考：[Docker部署方法二](./docker2/README.md) by [@taozhe6](https://github.com/taozhe6)
@@ -118,7 +115,7 @@ cd server
 
 ## 第三步: 准备环境并执行
 
-1. 安装依赖
+1. **安装依赖**
 ```shell
 pip install -r requirements.txt
 ```
@@ -133,7 +130,7 @@ pip install -r requirements.txt
 
 如果您确定您系统中的uv或conda是正常的，并且可以正常安装一些Python包（不存在网络问题等），那么不需要使用预热版本。
 
-2. 如果您选择conda
+2. **如果您选择conda**
 
 预热版本
 ```shell
@@ -142,6 +139,8 @@ pip install -r requirements.txt
 .\install-with-conda.bat --warmup
 # MacOS/Linux用户:
 ./install-with-conda.sh  --warmup
+
+# 预热后，您需要检查命令行中是否提示安装成功，如果安装失败，请不要进行下一步
 
 # 2. 执行脚本
 python server.py --env_tool=conda --skip_install=True
@@ -158,7 +157,7 @@ python server.py --env_tool=conda --skip_install=True
 python server.py --env_tool=conda
 ```
 
-3. 如果您选择uv
+3. **如果您选择uv**
 
 预热版本
 ```shell
@@ -167,6 +166,8 @@ python server.py --env_tool=conda
 .\install-with-uv.bat --warmup
 # MacOS/Linux用户:
 ./install-with-uv.sh --warmup
+
+# 预热后，您需要检查命令行中是否提示安装成功，如果安装失败，请不要进行下一步
 
 # 2. 执行脚本
 python server.py --skip_install=True
@@ -188,7 +189,7 @@ python server.py
 
 >   - 默认开启虚拟环境管理
 >   - 默认使用uv进行虚拟环境管理
->   - 默认在脚本执行过程安装必要的包
+>   - 默认在脚本执行过程安装必要的包（而不是预热）
 >   - 默认自动检查更新
 >   - 默认端口号为**8890**
 >   - 默认不开启winexe模式
@@ -209,9 +210,11 @@ python server.py
 
 ## 第五步: Zotero端插件设置
 
-<img src="./images/preference.png" alt="preference" style="width: 500px" align="center"/>
+<div align=center>
+<img src="./images/preference.png" width="600"/>
+</div>
 
-**💡 插件设置介绍**
+**💡 翻译服务介绍**
 
 | 服务类型                | 服务名称        | 服务介绍                                                     | 💡注意事项                                                    |
 | ----------------------- | --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -226,7 +229,7 @@ python server.py
 
     
 
-**💡 注意事项**
+**配置选项说明**
 
 - 切换翻译引擎`pdf2zh/pdf2zh_next`，界面将显示不同引擎的翻译配置
 
@@ -241,7 +244,9 @@ python server.py
 
 - 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
 
-<img src="./images/editor.png" alt="editor" style="width: 500px" align="center"/>
+<div align=center>
+<img src="./images/editor.png" width="400"/>
+</div>
 
 ## 第六步
 
@@ -251,7 +256,9 @@ python server.py
 
 对条目/附件单击右键, 可以看到四个翻译选项:
 
-<img src="./images/menu.png" alt="menu" style="width: 400px" align="center"/>
+<div align=center>
+<img src="./images/menu.png" width="400"/>
+</div>
 
 **💡 翻译选项解析**
 
@@ -308,7 +315,7 @@ python server.py --enable_venv=False
 
 ### 关于网络
 
--   **Q：我遇到了网络问题（Network Error），该怎么办？**
+-   **Q：我遇到了网络问题（NetworkError when attempting to fetch resource），该怎么办？**
 -   A：
     -   确保插件是最新版：版本号3.0.x，而不是旧版本：2.4.3
     -   翻译过程中需要保证server.py脚本开启
@@ -319,6 +326,7 @@ python server.py --enable_venv=False
             -   执行脚本时的指令修改为：`python server.py --port=9999`
     -   检查防火墙是否开启
     -   关闭杀毒软件并重启电脑
+    -   另外如果您执行翻译时，终端有日志输出/正在尝试翻译，此后报网络错误，则不符合上述情况，应该优先解决终端中提示的报错。
 
 
 
@@ -445,4 +453,4 @@ python server.py --enable_venv=False
     - h*u
     - 爱发电用户_96598
     - jiajia [@尛希](https://space.bilibili.com/347580558)
-    - <img src="./docs/chii.jpg" alt="preference" style="width: 100px" align="center"/>
+    - <img src="./images/chii.jpg" style="width: 100px"/>

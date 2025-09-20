@@ -19,4 +19,4 @@
 - 爱发电用户_96598
 - jiajia [@尛希](https://space.bilibili.com/347580558)
 
-<img src="./chii.jpg" alt="preference" style="width: 100px" align="center"/>
+<img src="../images/chii.jpg" alt="preference" style="width: 100px" align="center"/>
