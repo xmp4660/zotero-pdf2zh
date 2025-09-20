@@ -21,9 +21,11 @@ import tempfile # 引入tempfile来处理临时目录
 import io
 
 # NEW: 定义当前脚本版本  
-# Current version of the script
-# 解决api key暴露的问题
-__version__ = "3.0.24" 
+# 修复了Ocr的问题, 更新了readme
+# 添加了新的预热方法
+# 修复windows预热方法, 修复skipInstall默认选项
+# 解决apikey暴露的问题
+__version__ = "3.0.29" 
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -33,6 +35,7 @@ venv        = 'venv'
 # TODO: 强制设置标准输出和标准错误的编码为 UTF-8
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 # sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+
 
 # Windows 下防止子进程弹出控制台窗口
 if sys.platform == 'win32':
@@ -64,7 +67,7 @@ class PDFTranslator:
     def __init__(self, args):
         self.app = Flask(__name__)
         if args.enable_venv:
-            self.env_manager = VirtualEnvManager(config_path[venv], venv_name, args.env_tool, args.enable_mirror)
+            self.env_manager = VirtualEnvManager(config_path[venv], venv_name, args.env_tool, args.enable_mirror, args.skip_install)
         self.cropper = Cropper()
         self.setup_routes()
 
@@ -218,7 +221,7 @@ class PDFTranslator:
                 print(f"🐲 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
 
             if not existing:
-                return jsonify({'status': 'error', 'message': '翻译完成但未找到任何输出文件，请查看上方日志。'}), 500
+                return jsonify({'status': 'error', 'message': '操作失败，请查看详细日志。'}), 500
 
             fileNameList = [os.path.basename(p) for p in existing]
             return jsonify({'status': 'success', 'fileList': fileNameList}), 200
@@ -463,7 +466,8 @@ class PDFTranslator:
             'openailiked': 'openaicompatible',
             'tencent': 'tencentmechinetranslation',
             'silicon': 'siliconflow',
-            'qwen-mt': 'qwenmt'
+            'qwen-mt': 'qwenmt',
+            "AliyunDashScope": "aliyundashscope"
         }
         if config.service in service_map:
             config.service = service_map[config.service]
@@ -609,7 +613,7 @@ class PDFTranslator:
 
                 if r.returncode != 0:
                     print(f"❌ pdf2zh.exe 执行失败，退出码: {r.returncode}")
-                    print("   请查看上方实时日志获取详细错误信息")
+                    print("   操作失败，请查看详细日志。")
                     raise RuntimeError(f"pdf2zh.exe 执行失败，退出码: {r.returncode}")
 
             else:
@@ -638,7 +642,7 @@ class PDFTranslator:
             print(f"🐲 pdf2zh_next 翻译成功, 生成文件: {f}, 大小为: {size/1024.0/1024.0:.2f} MB")
 
         if not existing:
-            raise RuntimeError("翻译完成但未找到期望的输出文件，请检查上方日志（可能是路径过长/特殊字符导致保存失败）。")
+            raise RuntimeError("操作失败，请查看详细日志。")
 
         return existing
 
@@ -908,7 +912,7 @@ def check_for_updates(): # 从 GitHub 检查是否有新版本。如果存在，
     print("🔍 [自动更新] 正在检查更新...")
     remote_script_url = "https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/server/server.py"
     try:
-        with urllib.request.urlopen(remote_script_url, timeout=100) as response:
+        with urllib.request.urlopen(remote_script_url, timeout=60) as response:
             remote_content = response.read().decode('utf-8')
         match = re.search(r'__version__\s*=\s*["\'](.+?)["\']', remote_content)
         if not match:
@@ -949,19 +953,21 @@ if __name__ == '__main__':
     parser.add_argument('--debug', type=str2bool, default=False, help='Enable debug mode')
     parser.add_argument('--enable_winexe', type=str2bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
     parser.add_argument('--enable_mirror', type=str2bool, default=True, help='启用下载镜像加速, 仅限中国大陆用户')
-    parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.4.3-BabelDOC-v0.4.22-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
+    parser.add_argument('--winexe_path', type=str, default='./pdf2zh-v2.6.3-BabelDOC-v0.5.7-win64/pdf2zh/pdf2zh.exe', help='Windows可执行文件的路径')
     parser.add_argument('--winexe_attach_console', type=str2bool, default=True, help='Winexe模式是否尝试附着父控制台显示实时日志 (默认True)')
+    parser.add_argument('--skip_install', type=str2bool, default=False, help='跳过虚拟环境中的安装')
     args = parser.parse_args()
     print(f"🚀 启动参数: {args}\n")
-    print("💡 常见问题文档: https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC")
-    print("💡 如遇到无法解决的问题请加入QQ群: 971960014, 提问时请将本终端完整的信息复制到txt文件中, 并截图zotero插件设置, 一并发送, 以便更好地得到帮助, 感谢配合!\n")
+    print("💡 如果您来自网络上的视频教程/文字教程, 并且在执行中遇到问题, 请优先阅读【本项目主页】, 以获得最准确的安装信息: \ngithub: https://github.com/guaguastandup/zotero-pdf2zh\ngitee: https://gitee.com/guaguastandup/zotero-pdf2zh")
+    print("💡 另外, 常见问题文档: https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC")
+    print("💡 如遇到无法解决的问题请加入QQ群: 897867369, 提问前您需要先阅读本项目指南和常见问题文档, 确认是新问题后再提问. 另外，提问时必须将本终端完整的信息复制到txt文件中并截图zotero插件设置, 一并发送到群里, 以便更好地得到帮助, 感谢配合!\n")
 
     # 启动时自动检查更新
     if args.check_update:
         update_info = check_for_updates()
         if update_info:
             local_v, remote_v = update_info
-            print(f"🎉 发现新版本！当前版本: {local_v}, 最新版本: {remote_v}")
+            print(f"🎉 发现新版本！当前版本: {local_v}, 最新版本: {remote_v}, 新增AliyunDashScope与ClaudeCode翻译服务支持, 修复Ocr选项不生效的Bug, 新增预热模式.")
             try:
                 answer = input("是否要立即更新? (y/n): ").lower()
             except (EOFError, KeyboardInterrupt):
@@ -973,6 +979,8 @@ if __name__ == '__main__':
             else:
                 print("👌 已取消更新。")
     
+    print("🏠 当前路径: ", root_path)
+    print("🏠 当前版本: ", __version__)
     # 正常的启动流程
     prepare_path()
     translator = PDFTranslator(args)
