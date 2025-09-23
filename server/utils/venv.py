@@ -6,6 +6,8 @@ import json
 import subprocess
 import os
 import shutil
+import sys
+import traceback
 # e.g. "pdf2zh": { "conda": { "packages": [...], "python_version": "3.12" } }
 
 # TODO: 如果用户的conda/uv环境路径是自定义的, 需要支持自定义路径
@@ -266,21 +268,47 @@ class VirtualEnvManager:
     # 在虚拟环境中执行
     def execute_in_env(self, command):
         engine = 'pdf2zh_next' if 'pdf2zh_next' in ' '.join(command).lower() else 'pdf2zh'
+
+        def _run(cmd, **popen_kwargs):
+            popen_kwargs.setdefault('stdout', None)
+            process = subprocess.Popen(
+                cmd,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1,
+                **popen_kwargs,
+            )
+            stderr_lines = []
+            if process.stderr:
+                for line in process.stderr:
+                    stderr_lines.append(line)
+                    sys.stderr.write(line)
+                    sys.stderr.flush()
+                process.stderr.close()
+            return_code = process.wait()
+            aggregated = ''.join(stderr_lines)
+            if return_code != 0:
+                raise subprocess.CalledProcessError(
+                    returncode=return_code,
+                    cmd=cmd,
+                    output=None,
+                    stderr=aggregated,
+                )
+            return aggregated
+
         if not self.ensure_env(engine):
             print(f"❌ 无法找到或创建 {engine} 的虚拟环境，尝试直接执行命令...")
-            try: # 对于直接执行，同样让它继承终端
-                # stdout 和 stderr 保持默认的 None，子进程将直接输出到当前终端
-                process = subprocess.Popen(command) 
-                process.wait()
-                if process.returncode != 0:
-                    raise subprocess.CalledProcessError(process.returncode, command)
+            try:
+                aggregated = _run(command)
                 print(f"✅ 命令执行成功: {' '.join(command)}")
-            except subprocess.CalledProcessError as e:
-                print(f"\n❌ 执行命令失败: {e}")
+                return aggregated
+            except subprocess.CalledProcessError:
+                raise
             except Exception as e:
                 print(f"\n❌ 执行命令出错: {e}")
-            return
-        
+                traceback.print_exc()
+                raise
+
         try:
             if self.curr_envtool == 'uv':
                 bin_dir = os.path.join(self.curr_envname, 'Scripts' if self.is_windows else 'bin')
@@ -291,7 +319,7 @@ class VirtualEnvManager:
                 bin_dir = os.path.join(env_full_path, 'Scripts' if self.is_windows else 'bin')
                 if not os.path.exists(bin_dir):
                     print(f"❌ 虚拟环境目录不存在: {bin_dir}")
-                    return
+                    raise FileNotFoundError(f"虚拟环境目录不存在: {bin_dir}")
             else:
                 raise ValueError(f"⚠️ 未知的环境工具: {self.curr_envtool}")
 
@@ -323,32 +351,18 @@ class VirtualEnvManager:
             env['PYTHONUNBUFFERED'] = '1'  # 再次确保无缓冲
             env['PATH'] = bin_dir + os.pathsep + env.get('PATH', '')
 
-            # ===== 核心修改：让子进程直接继承终端，而不是捕获输出 =====
-            # 将 stdout 和 stderr 设置为 None (默认值)，子进程的输出会直接打印到
-            # 运行此脚本的控制台，就像直接在 shell 中执行一样。
-            # 这使得子进程能正确检测到 TTY，从而显示进度条。
-            process = subprocess.Popen(
-                cmd,
-                env=env,
-                # stdout=None, # 无需捕获，保持默认
-                # stderr=None, # 无需捕获，保持默认
-            )
-            # 只需等待它完成即可，输出由操作系统自动处理
-            return_code = process.wait()
-            if return_code != 0:
-                # 失败时，在进度条覆盖的行后换行，让错误信息更清晰
-                print()
-                raise subprocess.CalledProcessError(return_code, cmd)
-            # 成功时也换行，让成功信息在新的一行显示
+            aggregated = _run(cmd, env=env)
             print()
             print(f"✅ 命令执行成功: {' '.join(cmd)}")
+            return aggregated
 
-        except subprocess.CalledProcessError as e:
-            print(f"❌ 执行命令失败: {e}")
+        except subprocess.CalledProcessError:
+            raise
         except FileNotFoundError as e:
             print(f"❌ 环境的可执行文件未找到: {e}")
             print(f"请检查虚拟环境是否正确安装: {self.curr_envname}")
+            raise
         except Exception as e:
             print(f"❌ 执行命令出错: {e}")
-            import traceback
             traceback.print_exc()
+            raise
