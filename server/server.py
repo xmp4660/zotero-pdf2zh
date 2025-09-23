@@ -20,6 +20,8 @@ import zipfile # NEW: 用于解压文件
 import tempfile # 引入tempfile来处理临时目录
 import io
 
+_VALUE_ERROR_RE = re.compile(r'(?m)^ValueError:\s*(?P<msg>.+)$')
+
 # NEW: 定义当前脚本版本  
 # 修复了Ocr的问题, 更新了readme
 # 添加了新的预热方法
@@ -226,9 +228,88 @@ class PDFTranslator:
             fileNameList = [os.path.basename(p) for p in existing]
             return jsonify({'status': 'success', 'fileList': fileNameList}), 200
         except Exception as e:
-            print(f"❌ [Zotero PDF2zh Server] /translate Error: {e}\n")
-            traceback.print_exc()
-            return jsonify({'status': 'error', 'message': str(e)}), 500
+            return self._handle_exception(e, context='/translate')
+
+    def _handle_exception(self, exc, status_code=500, context=None):
+        if context:
+            print(f"⚠️ [Zotero PDF2zh Server] {context} Error: {exc}")
+        else:
+            print(f"⚠️ [Zotero PDF2zh Server] Error: {exc}")
+        traceback.print_exception(type(exc), exc, exc.__traceback__)
+        info = self._derive_error_info(exc)
+        payload = {
+            'status': 'error',
+            'ok': False,
+            'message': info['message'],
+        }
+        error_type = info.get('errorType')
+        if error_type:
+            payload['errorType'] = error_type
+        if isinstance(exc, subprocess.CalledProcessError):
+            payload['exitCode'] = exc.returncode
+        return jsonify(payload), status_code
+
+    def _derive_error_info(self, exc):
+        parts = []
+        if isinstance(exc, subprocess.CalledProcessError) and getattr(exc, 'stderr', None):
+            parts.append(exc.stderr)
+        formatted = ''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        if formatted:
+            parts.append(formatted)
+        blob = '\n'.join(part for part in parts if part)
+
+        ve_msg = self._extract_value_error(blob)
+        if ve_msg:
+            return {
+                'errorType': 'ValueError',
+                'message': ve_msg,
+            }
+
+        def _tail_readable(text):
+            lines = [ln.rstrip() for ln in text.splitlines()]
+            for ln in reversed(lines):
+                if not ln:
+                    continue
+                if ln.startswith(('Traceback', 'File ')):
+                    continue
+                return ln
+            return str(exc).strip() or exc.__class__.__name__
+
+        fallback_message = _tail_readable(blob) if blob else (str(exc).strip() or exc.__class__.__name__)
+        return {
+            'errorType': exc.__class__.__name__,
+            'message': fallback_message,
+        }
+
+    @staticmethod
+    def _extract_value_error(blob):
+        if not blob:
+            return None
+        if not isinstance(blob, str):
+            blob = str(blob)
+
+        matches = list(_VALUE_ERROR_RE.finditer(blob))
+        if not matches:
+            return None
+
+        match = matches[-1]
+        msg = match.group('msg').strip()
+
+        tail_lines = []
+        for line in blob[match.end():].splitlines():
+            if not line:
+                break
+            if line.startswith('Traceback') or _VALUE_ERROR_RE.match(line):
+                break
+            if line[:1] in (' ', '\t') or line.startswith('^'):
+                tail_lines.append(line.strip())
+            else:
+                break
+
+        if tail_lines:
+            msg += ' ' + ' '.join(tail_lines)
+
+        return msg or None
 
     # 裁剪 /crop
     def crop(self):
@@ -251,9 +332,7 @@ class PDFTranslator:
             else:
                 return jsonify({'status': 'error', 'message': f'Crop failed: {new_path} not found'}), 500
         except Exception as e:
-            traceback.print_exc()
-            print(f"❌ [Zotero PDF2zh Server] /crop Error: {e}\n")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
+            return self._handle_exception(e, context='/crop')
 
     def crop_compare(self):
         try:
@@ -299,9 +378,7 @@ class PDFTranslator:
             else:
                 return jsonify({'status': 'error', 'message': f'Crop-compare failed: {new_path} not found'}), 500
         except Exception as e:
-            traceback.print_exc()
-            print(f"❌ [Zotero PDF2zh Server] /crop-compare Error: {e}\n")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
+            return self._handle_exception(e, context='/crop-compare')
 
     # /compare
     def compare(self):
@@ -346,9 +423,7 @@ class PDFTranslator:
             else:
                 return jsonify({'status': 'error', 'message': f'Compare failed: {new_path} not found'}), 500
         except Exception as e:
-            traceback.print_exc()
-            print(f"❌ [Zotero PDF2zh Server] /compare Error: {e}\n")
-            return jsonify({'status': 'error', 'message': str(e)}), 500
+            return self._handle_exception(e, context='/compare')
 
     def get_filetype(self, path):
         if 'mono.pdf' in path:
@@ -603,18 +678,32 @@ class PDFTranslator:
 
                 # 执行主命令 - 附着父控制台
                 print("🔍 [winexe] 开始执行（预期在当前终端显示实时日志）...")
-                r = subprocess.run(
+                process = subprocess.Popen(
                     cmd,
                     shell=False,
-                    cwd=exe_dir
-                    # 不使用creationflags，允许控制台窗口显示
-                    # 不捕获stdout/stderr，继承父进程的标准输出/错误流
+                    cwd=exe_dir,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    bufsize=1,
                 )
 
-                if r.returncode != 0:
-                    print(f"❌ pdf2zh.exe 执行失败，退出码: {r.returncode}")
+                stderr_lines = []
+                if process.stderr:
+                    for line in process.stderr:
+                        stderr_lines.append(line)
+                        sys.stderr.write(line)
+                        sys.stderr.flush()
+                    process.stderr.close()
+
+                return_code = process.wait()
+                if return_code != 0:
+                    stderr_text = ''.join(stderr_lines)
+                    value_error = self._extract_value_error(stderr_text)
+                    if value_error:
+                        raise ValueError(value_error)
+                    print(f"❌ pdf2zh.exe 执行失败，退出码: {return_code}")
                     print("   操作失败，请查看详细日志。")
-                    raise RuntimeError(f"pdf2zh.exe 执行失败，退出码: {r.returncode}")
+                    raise RuntimeError(f"pdf2zh.exe 执行失败，退出码: {return_code}")
 
             else:
                 # 回退模式：静默模式（旧行为）
@@ -630,6 +719,9 @@ class PDFTranslator:
                     encoding="utf-8"
                 )
                 if r.returncode != 0:
+                    value_error = self._extract_value_error(r.stderr or '')
+                    if value_error:
+                        raise ValueError(value_error)
                     raise RuntimeError(f"pdf2zh.exe 退出码 {r.returncode}\nstdout:\n{r.stdout}\nstderr:\n{r.stderr}")
         elif args.enable_venv:
             self.env_manager.execute_in_env(cmd)
