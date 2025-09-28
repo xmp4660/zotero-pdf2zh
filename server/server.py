@@ -27,7 +27,8 @@ _VALUE_ERROR_RE = re.compile(r'(?m)^ValueError:\s*(?P<msg>.+)$')
 # 添加了新的预热方法
 # 修复windows预热方法, 修复skipInstall默认选项
 # 解决apikey暴露的问题
-__version__ = "3.0.29" 
+__version__ = "3.0.30" 
+update_log = "新增了自定义镜像源选项, 新增了自定义更新源选项, 您可以通过--update_source参数指定更新源, 目前支持github和gitee."
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -37,7 +38,6 @@ venv        = 'venv'
 # TODO: 强制设置标准输出和标准错误的编码为 UTF-8
 # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 # sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
-
 
 # Windows 下防止子进程弹出控制台窗口
 if sys.platform == 'win32':
@@ -1065,12 +1065,13 @@ if __name__ == '__main__':
     print("💡 另外, 常见问题文档: https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC")
     print("💡 如遇到无法解决的问题请加入QQ群: 897867369, 提问前您需要先阅读本项目指南和常见问题文档, 确认是新问题后再提问. 另外，提问时必须将本终端完整的信息复制到txt文件中并截图zotero插件设置, 一并发送到群里, 以便更好地得到帮助, 感谢配合!\n")
 
+
     # 启动时自动检查更新
     if args.check_update:
         update_info = check_for_updates(args.update_source)
         if update_info:
             local_v, remote_v = update_info
-            print(f"🎉 发现新版本！当前版本: {local_v}, 最新版本: {remote_v}, 新增AliyunDashScope与ClaudeCode翻译服务支持, 修复Ocr选项不生效的Bug, 新增预热模式.")
+            print(f"🎉 发现新版本！当前版本: {local_v}, 最新版本: {remote_v}, 更新日志: {update_log}")
             try:
                 answer = input("是否要立即更新? (y/n): ").lower()
             except (EOFError, KeyboardInterrupt):
