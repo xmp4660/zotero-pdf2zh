@@ -453,6 +453,8 @@ python server.py --enable_venv=False
 
 # 贡献者
 
+感谢各位贡献者对项目的付出!!
+
 <a href="https://github.com/guaguastandup/zotero-pdf2zh/graphs/contributors"> <img src="https://contrib.rocks/image?repo=guaguastandup/zotero-pdf2zh" /></a>
 
 # 如何支持我
@@ -467,10 +469,11 @@ python server.py --enable_venv=False
     - bibiu77
     - *琰
     - *冬萍
-    - awwaawwa [@awwaawwa](https://github.com/awwaawwa)
-    - 阿赟
+    - awwaawwa [@awwaawwa](https://github.com/awwaawwa) * 3
+    - 阿赟 * 3
     - *声
     - h*u
     - 爱发电用户_96598
     - jiajia [@尛希](https://space.bilibili.com/347580558)
+    - soooda
     - <img src="./images/chii.jpg" style="width: 100px"/>

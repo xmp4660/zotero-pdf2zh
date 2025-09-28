@@ -12,11 +12,12 @@
 - bibiu77
 - *琰
 - *冬萍
-- awwaawwa [@awwaawwa](https://github.com/awwaawwa)
-- 阿赟
+- awwaawwa [@awwaawwa](https://github.com/awwaawwa) * 3
+- 阿赟 * 3
 - *声
 - h*u
 - 爱发电用户_96598
 - jiajia [@尛希](https://space.bilibili.com/347580558)
+- soooda
 
 <img src="../images/chii.jpg" alt="preference" style="width: 100px" align="center"/>
