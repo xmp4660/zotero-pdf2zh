@@ -28,7 +28,7 @@
 - QQ群提问:
     - 提问时需要遵循规则: **确保已经阅读过issue区和常见问题文档，重复问题不会得到回复。确定问题为新问题后, 将终端报错复制到txt文件, 并截图zotero插件设置端配置**
     - 1群: 971960014(已满)
-    - 2群: 897867369
+    - 2群: 897867369(即将满员)
     - 3群: 1064375380
     - 入群问题答案: github
 - 访问视频教程
@@ -191,20 +191,24 @@ python server.py
 >   - 默认使用uv进行虚拟环境管理
 >   - 默认在脚本执行过程安装必要的包（而不是预热）
 >   - 默认自动检查更新
+>   - 默认自动更新源为 github
 >   - 默认端口号为**8890**
 >   - 默认不开启winexe模式
 >   - 默认启用国内镜像进行必要包安装
+>   - 默认使用镜像为中科大镜像源
 
 - 如果要关闭虚拟环境管理: `python server.py --enable_venv=False`
 - 如果要切换虚拟环境管理工具为conda: `python server.py --env_tool=conda`
 - 如果要切换端口: `python server.py --port={Your Port Num}`
 - 如果要关闭自动检查更新: `python server.py --check_update=False`
+- 如果要切换自动更新源为gitee: `python server.py --update_source="gitee"`
 - 如果要关闭包安装时启用镜像: `python server.py --enable_mirror=False`
+- 如果要自定义镜像源: `python server.py --mirror_source="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"` 
 - 开启windows exe安装模式, 安装pdf2zh_next exe版本，将可执行文件路径输入到命令行参数(例如./pdf2zh-v2.6.3-BabelDOC-v0.5.7-win64/pdf2zh/pdf2zh.exe): `python server.py --enable_winexe=True --winexe_path='xxxxxxx'`
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.27[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.28-beta/zotero-pdf-2-zh-v3.0.27.xpi)
+新版本v3.0.30[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.30/zotero-pdf-2-zh.xpi)
 
 在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero后再试）
 
@@ -263,8 +267,6 @@ python server.py
 - **openailiked服务选项**可以填写所有兼容openai格式的LLM服务, 您需要填写您的LLM服务供应商提供的URL, API Key, Model名称等信息。
 
     - 示例: 火山引擎url填写为`https://ark.cn-beijing.volces.com/api/v3`
-
-
 
 
 
@@ -340,7 +342,7 @@ python server.py --enable_venv=False
     -   确保插件是最新版：版本号3.0.x，而不是旧版本：2.4.3
     -   翻译过程中需要保证server.py脚本开启
     -   请检查8890端口是否被其他程序占用
-    -   切换端口重试
+    -   切换端口重试（可以多次尝试更换新的端口）
         -   切换端口需要修改两个地方（以新端口号为9999为例）
             -   zotero插件配置里的python server ip里的8890修改为9999
             -   执行脚本时的指令修改为：`python server.py --port=9999`
@@ -350,7 +352,9 @@ python server.py --enable_venv=False
 
 
 
-**Q：我用了预热方法，但是在warmup步骤卡住了，我该怎么处理？（或者我没用预热方法，但是我在pdf2zh_next的第一次翻译时，进度条一直卡在某一处，最后报错了结束了翻译）**
+**Q1：我用了预热方法，但是在warmup步骤卡住了，我该怎么处理？**
+
+**Q2：我没用预热方法，我在pdf2zh_next的第一次翻译时，进度条一直卡在某一处，例如10/100，或者出现了assets download failed的问题，最后报错结束了翻译）**
 
 -   A：
 
