@@ -111,7 +111,7 @@ docker compose up -d
     # 下载 dev 配置文件
     wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.dev.yaml
     # 下载并解压 server 文件夹
-    wget https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.30-beta/server.zip
+    wget https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.30/server.zip
     unzip server.zip
     ```
 2.  使用 `-f` 参数指定配置文件启动：
