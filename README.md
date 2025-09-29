@@ -288,7 +288,7 @@ python server.py
 | ------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | **翻译PDF (translate PDF)**           | 点击原文PDF或论文条目, 将会生成在Zotero插件设置端所选择的默认生成文件 | <img src="./images/image3.png" alt="image3" style="width: 400px" align="center"/> |
 | **裁剪PDF (crop PDF)**                | 选择dual/mono类型附件, 将会对选择的附件在宽度1/2处裁剪, 然后上下拼接, 此功能适合手机阅读<br />注意事项: <br />1. 本选项会将页面两侧空白处进行裁剪<br />2. 若产生截断了原文内容的情况, 可将`server/utils/config.py`中的`config.pdf_w_offset`值降低 | <img src="./images/image4-1.png" alt="image4" style="width: 400px" align="center"/> |
-| 双语对照 (compare PDF)                | 点击此选项, 会生成左边为原文, 右边为翻译后文本的PDF<br />1. 选择"Dual文件翻译页在前"可以交换生成顺序<br />2. 此选项等同于翻译引擎为pdf2zh_next, 且`双语(Dual)文件显示模式`为**Left&Right**时生成的文件 | <img src="./images/image4-3.png" alt="image4" style="width: 400px" align="center"/> |
+| **双语对照 (compare PDF)**                | 点击此选项, 会生成左边为原文, 右边为翻译后文本的PDF<br />1. 选择"Dual文件翻译页在前"可以交换生成顺序<br />2. 此选项等同于翻译引擎为pdf2zh_next, 且`双语(Dual)文件显示模式`为**Left&Right**时生成的文件 | <img src="./images/image4-3.png" alt="image4" style="width: 400px" align="center"/> |
 | **双语对照(裁剪) (crop-compare PDF)** | 此选项仅针对**双栏PDF论文**。它会先将PDF**竖向裁剪为单栏文件**，再左右拼接。 | <img src="./images/image4-2.png" alt="image4" style="width: 400px" align="center"/> |
 
 
@@ -352,23 +352,17 @@ python server.py --enable_venv=False
 
 
 
-**Q1：我用了预热方法，但是在warmup步骤卡住了，我该怎么处理？**
-
-**Q2：我没用预热方法，我在pdf2zh_next的第一次翻译时，进度条一直卡在某一处，例如10/100，或者出现了assets download failed的问题，最后报错结束了翻译）**
-
+-  **Q1：我用了预热方法，但是在warmup步骤卡住了，我该怎么处理？**
+-  **Q2：我没用预热方法，我在pdf2zh_next的第一次翻译时，进度条一直卡在某一处，例如10/100，或者出现了assets download failed的问题，最后报错结束了翻译）**
 -   A：
-
     -   这是因为pdf2zh_next在首次启动时，需要远程下载字体和模型文件，这个过程比较慢。
-
     -   您可以：
         -   用预热模式，继续等待下载
         -   访问pdf2zh_next的最新release: https://github.com/PDFMathTranslate/PDFMathTranslate-next/releases
         -   下载其中的exe包，例如：pdf2zh-v2.6.4-BabelDOC-xxx-with-assets-win64.zip
         -   解压后打开其中的pdf2zh.exe，然后打开命令行中提示的gui，翻译一篇文章后退出。
         -   回到插件重新翻译。
-
-
-
+     
 
 ### 关于环境
 
