@@ -11,7 +11,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.30 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.32 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -28,7 +28,7 @@
 - QQ群提问:
     - 提问时需要遵循规则: **确保已经阅读过issue区和常见问题文档，重复问题不会得到回复。确定问题为新问题后, 将终端报错复制到txt文件, 并截图zotero插件设置端配置**
     - 1群: 971960014(已满)
-    - 2群: 897867369(即将满员)
+    - 2群: 897867369(已满)
     - 3群: 1064375380
     - 入群问题答案: github
 - 访问视频教程
