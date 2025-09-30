@@ -208,7 +208,9 @@ python server.py
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.30[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.30/zotero-pdf-2-zh.xpi)
+新版本v3.0.32[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.32/zotero-pdf-2-zh.xpi)
+
+您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
 
 在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero后再试）
 
