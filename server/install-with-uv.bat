@@ -98,8 +98,8 @@ rem ---- 配置 ----
 set "PY_VER=3.12"
 set "ENV1=zotero-pdf2zh-venv"
 set "ENV2=zotero-pdf2zh-next-venv"
-set "PACKAGES1=pdf2zh==1.9.11 pypdf PyMuPDF flask numpy==2.2.0 toml pdfminer.six==20250416 onnx==1.16.1"
-set "PACKAGES2=pdf2zh_next pypdf PyMuPDF flask toml babeldoc onnx==1.16.1"
+set "PACKAGES1=pdf2zh==1.9.11 pypdf PyMuPDF flask numpy==2.2.0 toml pdfminer.six==20250416"
+set "PACKAGES2=pdf2zh_next pypdf PyMuPDF flask toml babeldoc"
 
 rem 默认参数
 set "USE_MIRROR=1"
