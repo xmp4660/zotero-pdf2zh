@@ -12,7 +12,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.32 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.33 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -207,6 +207,8 @@ python server.py
 - 如果要自定义镜像源: `python server.py --mirror_source="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"` 
 - 开启windows exe安装模式, 安装pdf2zh_next exe版本，将可执行文件路径输入到命令行参数(例如./pdf2zh-v2.6.3-BabelDOC-v0.5.7-win64/pdf2zh/pdf2zh.exe): `python server.py --enable_winexe=True --winexe_path='xxxxxxx'`
 
+P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动server文件夹，也不要修改文件夹名。
+
 ## 第四步: 下载并安装插件
 
 新版本v3.0.32[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.32/zotero-pdf-2-zh.xpi)
@@ -337,10 +339,9 @@ python server.py --enable_venv=False
 ```
 
 
-
 ### 关于网络
 
--   **Q：我遇到了网络问题（NetworkError when attempting to fetch resource），该怎么办？**
+-   **[🔥高频问题]Q：我遇到了网络问题（NetworkError when attempting to fetch resource），该怎么办？**
 -   A：
     -   确保插件是最新版：版本号3.0.x，而不是旧版本：2.4.3
     -   翻译过程中需要保证server.py脚本开启
@@ -353,32 +354,35 @@ python server.py --enable_venv=False
     -   关闭杀毒软件并重启电脑
     -   另外如果您执行翻译时，终端有日志输出/正在尝试翻译，此后报网络错误，则不符合上述情况，应该优先解决终端中提示的报错。
 
-
-
--  **Q1：我用了预热方法，但是在warmup步骤卡住了，我该怎么处理？**
--  **Q2：我没用预热方法，我在pdf2zh_next的第一次翻译时，进度条一直卡在某一处，例如10/100，或者出现了assets download failed的问题，最后报错结束了翻译）**
+-  **[🔥高频问题]Q1: 翻译卡在某个地方不动了**
+-  **Q2：我用了预热方法，但是在warmup步骤卡住了，我该怎么处理？**
+-  **Q3：我没用预热方法，我在pdf2zh_next的第一次翻译时，进度条一直卡在某一处，例如10/100，或者出现了assets download failed的问题，最后报错结束了翻译）**
 -   A：
     -   这是因为pdf2zh_next在首次启动时，需要远程下载字体和模型文件，这个过程比较慢。
     -   您可以：
         -   用预热模式，继续等待下载
-        -   访问pdf2zh_next的最新release: https://github.com/PDFMathTranslate/PDFMathTranslate-next/releases
-        -   下载其中的exe包，例如：pdf2zh-v2.6.4-BabelDOC-xxx-with-assets-win64.zip
-        -   解压后打开其中的pdf2zh.exe，然后打开命令行中提示的gui，翻译一篇文章后退出。
+        -   访问pdf2zh_next的最新release: https://github.com/PDFMathTranslate/PDFMathTranslate-next/releases, 下载其中的exe包，例如：pdf2zh-v2.6.4-BabelDOC-xxx-with-assets-win64.zip
+            - 如果由于网络问题无法下载, 请加入QQ群下载群文件
+        -   解压后打开其中的pdf2zh.exe，然后打开命令行中提示的gui路径(`http://127.0.0.1:7860/`)，翻译一篇文章后退出。
         -   回到插件重新翻译。
      
 
 ### 关于环境
 
--   **Q：我遇到了DLL安装错误的问题，但是我尝试安装了提示中指定的[vs_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)包，依然报错，该怎么办？**
+-   **[🔥高频问题]Q：我遇到了““动态链接库(DLL)初始化例程失败”的错误，但是我尝试安装了提示中指定的[vs_redist.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)包，依然报错，该怎么办？**
 -   A：
     -   您需要进入虚拟环境，将onnx包降级到`1.16.1`版本
         -   pdf2zh 对应的虚拟环境名为`zotero-pdf2zh-venv`
         -   pdf2zh_next对应的虚拟环境名为`zotero-pdf2zh-next-venv`
         -   如果您依然不会操作，可以把这段内容发送给AI，并且告诉它您正在使用uv还是conda进行虚拟环境管理。
     -   您也许缺少的是[vs_redist.x86.exe](https://aka.ms/vs/17/release/vc_redist.x86.exe)包
+        - 可以加入QQ群下载群文件中的3个exe包
     -   也许您正在使用macOS旧版本系统（这个问题大部分发生在windows系统中），您需要在安装时python虚拟环境指定为3.11而不是3.12
+    -   另有群友贡献的方法供您尝试:
+        - <img src="./images/onnx-solution.png" style="width: 200px"/>
 
-
+-  **[🔥高频问题]Q: 我的命令行中提示: Failed to canonicalize script path**
+-  A: 删除`server`路径下的`zotero-pdf2zh-next-venv`或者`zotero-pdf2zh-venv`文件夹, 然后重新配置。使用uv方法在安装配置后不可以修改路径名/移动文件夹。
 
 ### 关于远程服务
 
@@ -386,33 +390,31 @@ python server.py --enable_venv=False
 -   A：不可以，除非您使用的是免费的服务。
     -   例如，如果您选择pdf2zh_next引擎，并且使用siliconflowfree服务，就可以获得免费的服务，但是本服务可能会漏翻译一些内容。建议您优先自己配置API。
 
--   **Q：我正在使用bing/google，也是免费的，但是翻译到一半就报错了/卡住了/中止了**
+-   **[🔥高频问题]Q：我正在使用bing/google，也是免费的，但是翻译到一半就报错了/卡住了/中止了**
 -   A：因为bing/google的限流较为严重，您需要把线程数设置得非常低。建议您最好换到更加稳定的服务，以便长期使用。
-
-
 
 -   **Q：我感觉这个翻译消耗的Token很多，怎么办？**
 -   A：
     -   通常一篇10页的英文文献消耗Token量在7～10w左右，单页在5k左右，您可以先基于此数据进行检查
     -   如果您正在使用pdf2zh_next引擎，可以尝试在zotero插件配置中，把提取术语表选项关闭，这个选项会消耗较多Token
-    
-
 
 
 ### 关于插件功能
 
 -   **Q：我不知道zotero插件里的各个功能是什么意思**
 -   A：您可以自由尝试，请尽量不要对这些问题进行提问，翻译引擎具有缓存的设置，也就是说您重复对同一篇文献进行翻译时，可能不会消耗过多的Token（不能保证完全不消耗）
--   **Q：pdf2zh_next服务中的ocr模式与兼容模式是指什么？**
+
+-   **[🔥高频问题]Q1: 翻译界面提示 Scanned PDF detected, 翻译失败**
+-   **Q2：pdf2zh_next服务中的ocr模式与兼容模式是指什么？**
 -   A：
-    -    OCR选项并不是直接提供OCR服务的，它只是一个对于OCR后的文件进行兼容的临时方案，您保持自动开启OCR临时方案的选项开启即可。
+    -   pdf2zh和pdf2zh_next不直接提供文档OCR功能, 您需要用其他工具对自己的扫描版文件进行OCR处理, 再调用插件的翻译功能
+    -   OCR选项并不是直接提供OCR服务的，它只是一个对于OCR后的文件进行兼容的临时方案，您保持自动开启OCR临时方案的选项开启即可。
     -   兼容模式生成的文件大小会更大，您在非必要的时候不需要开启。（如果您翻译功能正常，但是某一次失败了/并且确定不是远程翻译服务的问题，那您可以尝试开启）
-    
-    
+
 
 ### 关于提问
 
--   **Q：排查问题的原则？**
+-   **[🔥高频问题]Q：排查问题的原则？**
 -   A：
     -   目前为止，本插件所有的问题在所有的环境下都可以得到解决。请您认真阅读指南，它几乎包含了您会遇到的所有的问题。
     -   如果您依然遇到无法解决的问题，或者您无法确定您的问题是什么，请您
@@ -420,17 +422,23 @@ python server.py --enable_venv=False
         -   将您的zotero设置截图
         -   将zotero的弹窗截图
         -   将以上三者发送到插件的QQ群里，并且，您需要说明：您是否已经检查过常见问题，您已经使用了哪些方法来解决问题，您是否观看了某些教程。
+    - 请您先尝试阅读终端中的错误提示，再到项目文档/常见文档中查找
+        - 例如: 终端中某处报错提示: DeepSeek API Key is Required, 这说明您没有配置自己的DeepSeek API Key, 故而无法翻译, 此类错误您可以通过自行阅读排查, 无需提问
+        - 例如: 终端中某处报错提示: OSError: Microsoft Visual C++ Redistributable is not installed. Download it at https://aka.ms/vs/17/release/vc_redist.x64.exe, 这个错误信息在明确地提醒您按照链接地址进行相关exe的安装, 如果您在安装后依然失败, 您可以在项目文档/常见文档中搜索“DLL”, 可以找到详尽的解决方案
+        - 例如: 终端中某处报错提示: Failed to canonicalize script path, 您可以复制此错误在项目文档/常见文档中查找, 找到解决方案.
+
 -   **Q：我在群里问问题，怎么没人回复我，反而回复了别人？**
 -   A：有以下几种情况
     -   您的问题【显然】是常见问题。
         -   如果您认为不是常见问题，或者您无法确定是否是常见问题，您需要在问题描述时说明：您已经查看了常见问题但无法自主解决。
     -   漏看了，可以过一会重新发，也可以@群主。
     -   您没有发送您的终端的信息，无法排查问题。
+
 -   **Q：我认为开发者/群里的人没有给我很好的支持，我想不礼貌了，怎么办？**
 -   A：本项目是【免费/开源】的项目。那么您得到的是他人用学习/工作之余的义务劳动时间，插件群是为了让更多的人在此项目中受益，并不能够保证有求必应。请控制自己的情绪和语言。
+
 -   **Q：可是我给作者打赏了。**
 -   A：感谢支持！请您私聊联系群主，远程帮您解决问题。
-
 
 
 ### 关于支持本插件
@@ -442,7 +450,6 @@ python server.py --enable_venv=False
     -   您可以为本项目点一个star
     -   您可以在issue区提出您期望的未来功能（需是合理的功能建议）
     -   您可以将本插件推荐给身边的朋友，并且在他们的安装过程中给出一些指导
-
 
 
 # 致谢
