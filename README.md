@@ -486,3 +486,7 @@ python server.py --enable_venv=False
     - soooda
     - 泪花花
     - <img src="./images/chii.jpg" style="width: 100px"/>
+
+# Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=guaguastandup/zotero-pdf2zh&type=Date)](https://www.star-history.com/#guaguastandup/zotero-pdf2zh&Date)
