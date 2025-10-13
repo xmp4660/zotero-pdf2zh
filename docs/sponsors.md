@@ -19,6 +19,9 @@
 - 爱发电用户_96598
 - jiajia [@尛希](https://space.bilibili.com/347580558)
 - soooda
-- 泪花花
+- 泪花花 *2
+- 狐狸
+- 山间火
+- Angus
 
 <img src="../images/chii.jpg" alt="preference" style="width: 100px" align="center"/>
