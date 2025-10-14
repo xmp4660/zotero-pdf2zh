@@ -14,7 +14,7 @@ from collections import defaultdict
 # e.g. "pdf2zh": { "conda": { "packages": [...], "python_version": "3.12" } }
 
 # TODO: 如果用户的conda/uv环境路径是自定义的, 需要支持自定义路径
-# 目前我们默认为当用户在命令行中执行uv / conda时, 是可以正常使用的, 而不是执行/usr/local/bin/uv等等才可以使用
+# 目前默认为当用户在命令行中执行uv / conda时, 是可以正常使用的, 而不是执行/usr/local/bin/uv等等才可以使用
 
 def normalize_pkg_name(name: str) -> str:
     return name.lower().replace('_', '-').replace('.', '-').split("=")[0] # .split("=")[0] 去掉==分隔的版本号等
@@ -43,10 +43,11 @@ def check_packages_python_snippet(requirements_list):
     print(json.dumps(result))
 
 class VirtualEnvManager:
-    def __init__(self, config_path, env_name, default_env_tool, enable_mirror=True, skip_install=False):
+    def __init__(self, config_path, env_name, default_env_tool, enable_mirror=True, skip_install=False, mirror_source=None):
         self.is_windows = platform.system() == "Windows"
         self.config_path = config_path
         self.skip_install = skip_install
+        self.mirror_source = mirror_source
 
         with open(config_path, 'r', encoding='utf-8') as f:
             self.env_configs = json.load(f)
@@ -73,7 +74,7 @@ class VirtualEnvManager:
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 # command_run = ['uv', 'pip', 'list', '--format=json', '--python', python_path]
             elif envtool == 'conda':
-                python_path = f'"{os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)}"'
+                python_path = os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)
                 # command_run = ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json']
             command_run = [python_path, "-c",
                 "from utils.venv import check_packages_python_snippet; "
@@ -117,32 +118,32 @@ class VirtualEnvManager:
 
         try:
             env = os.environ.copy()
-            env['UV_HTTP_TIMEOUT'] = '120000' if envtool == 'uv' else None
+            env['UV_HTTP_TIMEOUT'] = '1200' if envtool == 'uv' else None
             if envtool == 'uv':
                 python_executable = 'python.exe' if self.is_windows else 'python'
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 if self.enable_mirror:
-                    print("🌍 使用清华大学镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
+                    print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     subprocess.run(
-                    ['uv', 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages, '--python', python_path],
-                    check=True, timeout=120000, env=env
+                    ['uv', 'pip', 'install', '--index-url', self.mirror_source, *packages, '--python', python_path],
+                    check=True, timeout=1200, env=env
                 )
                 else:
                     print("🌍 使用默认 PyPI 源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=True")
                     subprocess.run(
                         ['uv', 'pip', 'install', *packages, '--python', python_path],
-                        check=True, timeout=120000, env=env
+                        check=True, timeout=1200, env=env
                     )
             elif envtool == 'conda':
                 python_executable = 'python.exe' if self.is_windows else 'python'
                 python_path = f'"{os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)}"'
                 if self.enable_mirror:
-                    print("🌍 使用清华大学镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
-                    subprocess.run(
-                        # ['conda', 'run', '-n', envname, 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages],
-                        [python_path, '-m', 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages],
+                    print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
+                    subprocess.run(# ['conda', 'run', '-n', envname, 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages],
+                        [python_path, '-m', 'pip', 'install', '--index-url', self.mirror_source, *packages],
                         check=True, timeout=120000
                     )
+                        
                 else:
                     print("🌍 使用默认 PyPI 源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=True")
                     subprocess.run(
@@ -169,13 +170,13 @@ class VirtualEnvManager:
         try:
             if envtool == 'uv':
                 env = os.environ.copy()
-                env['UV_HTTP_TIMEOUT'] = '120000' 
+                env['UV_HTTP_TIMEOUT'] = '1200' 
                 subprocess.run(
                     ['uv', 'venv', envname, '--python', python_version],
                     check=True, timeout=120000 # 120000秒超时
                 )
             elif envtool == 'conda':
-                subprocess.run(['conda', 'create', '-n', envname, f'python={python_version}', '-y'], check=True, timeout=120000)
+                subprocess.run(['conda', 'create', '-n', envname, f'python={python_version}', '-y'], check=True, timeout=1200)
             return True
         except subprocess.TimeoutExpired:
             print(f"⏰ 创建 {envname} 环境超时")
@@ -187,7 +188,7 @@ class VirtualEnvManager:
     
     def check_envtool(self, envtool): # 检查 uv / conda 是否存在
         try:
-            result = subprocess.run([envtool, '--version'], capture_output=True, text=True, timeout=120000)
+            result = subprocess.run([envtool, '--version'], capture_output=True, text=True, timeout=1200)
             return result.returncode == 0
         except Exception as e:
             print(f"❌ 检查 {envtool} 失败: {e}")
@@ -206,7 +207,7 @@ class VirtualEnvManager:
                 return False
         elif envtool == 'conda':
             try: 
-                result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=120000)
+                result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=1200)
                 if result.returncode == 0:
                     envs = [line.split()[0] for line in result.stdout.splitlines() if line and not line.startswith("#")]
                     print("🔍 检查 conda 环境列表: ", envs)
@@ -263,7 +264,7 @@ class VirtualEnvManager:
         try:
             result = subprocess.run(
                 ['conda', 'info', '--json'],
-                capture_output=True, text=True, check=True, timeout=120000, encoding='utf-8'
+                capture_output=True, text=True, check=True, timeout=1200, encoding='utf-8'
             )
             conda_info = json.loads(result.stdout)
             # Conda lists full paths to all environments in 'envs'
