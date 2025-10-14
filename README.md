@@ -5,6 +5,7 @@
 <h2 id="title">Zotero PDF2zh</h2>
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
+[![zotero target version](https://img.shields.io/badge/Zotero-8-blue?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org/support/beta_builds)
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 ![Downloads release](https://img.shields.io/github/downloads/guaguastandup/zotero-pdf2zh/total?color=yellow)
 [![License](https://img.shields.io/github/license/guaguastandup/zotero-pdf2zh)](https://github.com/guaguastandup/zotero-pdf2zh/blob/main/LICENSE)
@@ -12,7 +13,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.33 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.34 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
@@ -48,7 +49,7 @@
 - [Python下载链接](https://www.python.org/downloads/) 建议下载3.12.0版本Python
   - 安装教程推荐：[【Windows | 安装Python和PyCharm】](https://www.bilibili.com/video/BV18q4y1R7gW/?share_source=copy_web&vd_source=7295b9ad781950043e4c60b3aabd0c72)
 
-- 插件目前支持[Zotero 7](https://www.zotero.org/download/)，Zotero 8待适配
+- 插件目前支持[Zotero 7](https://www.zotero.org/download/)以及Zotero 8(适配 by @[Aphcity](https://github.com/Aphcity))
 
 - 打开cmd/终端，执行以下指南中的指令 （windows用户请用**管理员身份**打开cmd.exe）
 
@@ -106,7 +107,7 @@ conda --version
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.31/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.34/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -211,7 +212,7 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.32[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.32/zotero-pdf-2-zh.xpi)
+新版本v3.0.34[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.34/zotero-pdf-2-zh.xpi)
 
 您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
 

@@ -27,8 +27,8 @@ _VALUE_ERROR_RE = re.compile(r'(?m)^ValueError:\s*(?P<msg>.+)$')
 # 添加了新的预热方法
 # 修复windows预热方法, 修复skipInstall默认选项
 # 解决apikey暴露的问题
-__version__ = "3.0.33" 
-update_log = "新增了自定义镜像源选项, 新增了自定义更新源选项, 您可以通过--update_source参数指定更新源, 目前支持github和gitee. 修复了预热模式脚本."
+__version__ = "3.0.34" 
+update_log = "新增了自定义镜像源选项, 新增了自定义更新源选项, 您可以通过--update_source参数指定更新源, 目前支持github和gitee. 修复了预热模式脚本. 修复了包检查环节. 开始支持Zotero 8."
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
