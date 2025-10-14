@@ -1,6 +1,4 @@
 {
-  "editor.formatOnType": false,
-  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },

@@ -14,7 +14,7 @@ from collections import defaultdict
 # e.g. "pdf2zh": { "conda": { "packages": [...], "python_version": "3.12" } }
 
 # TODO: 如果用户的conda/uv环境路径是自定义的, 需要支持自定义路径
-# 目前我们默认为当用户在命令行中执行uv / conda时, 是可以正常使用的, 而不是执行/usr/local/bin/uv等等才可以使用
+# 目前默认为当用户在命令行中执行uv / conda时, 是可以正常使用的, 而不是执行/usr/local/bin/uv等等才可以使用
 
 def normalize_pkg_name(name: str) -> str:
     return name.lower().replace('_', '-').replace('.', '-').split("=")[0] # .split("=")[0] 去掉==分隔的版本号等
@@ -48,7 +48,6 @@ class VirtualEnvManager:
         self.config_path = config_path
         self.skip_install = skip_install
         self.mirror_source = mirror_source
-        self.mirror_source = mirror_source
 
         with open(config_path, 'r', encoding='utf-8') as f:
             self.env_configs = json.load(f)
@@ -75,7 +74,7 @@ class VirtualEnvManager:
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 # command_run = ['uv', 'pip', 'list', '--format=json', '--python', python_path]
             elif envtool == 'conda':
-                python_path = f'"{os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)}"'
+                python_path = os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)
                 # command_run = ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json']
             command_run = [python_path, "-c",
                 "from utils.venv import check_packages_python_snippet; "
@@ -119,7 +118,7 @@ class VirtualEnvManager:
 
         try:
             env = os.environ.copy()
-            env['UV_HTTP_TIMEOUT'] = '7200' if envtool == 'uv' else None
+            env['UV_HTTP_TIMEOUT'] = '1200' if envtool == 'uv' else None
             if envtool == 'uv':
                 python_executable = 'python.exe' if self.is_windows else 'python'
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
@@ -137,7 +136,7 @@ class VirtualEnvManager:
                     )
             elif envtool == 'conda':
                 python_executable = 'python.exe' if self.is_windows else 'python'
-                python_path = f'"{os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)}"'
+                python_path = os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)
                 if self.enable_mirror:
                     print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     subprocess.run(
