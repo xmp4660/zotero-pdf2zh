@@ -139,11 +139,11 @@ class VirtualEnvManager:
                 python_path = f'"{os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)}"'
                 if self.enable_mirror:
                     print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
-                    subprocess.run(# ['conda', 'run', '-n', envname, 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages],
+                    subprocess.run(
+                        # ['conda', 'run', '-n', envname, 'pip', 'install', '--index-url', 'https://pypi.tuna.tsinghua.edu.cn/simple', *packages],
                         [python_path, '-m', 'pip', 'install', '--index-url', self.mirror_source, *packages],
                         check=True, timeout=120000
                     )
-                        
                 else:
                     print("🌍 使用默认 PyPI 源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=True")
                     subprocess.run(
