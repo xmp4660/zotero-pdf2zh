@@ -93,7 +93,6 @@ class VirtualEnvManager:
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 if self.enable_mirror:
                     print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
-                    print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     subprocess.run(
                     ['uv', 'pip', 'install', '--index-url', self.mirror_source, *packages, '--python', python_path],
                     check=True, timeout=1200, env=env
@@ -106,7 +105,6 @@ class VirtualEnvManager:
                     )
             elif envtool == 'conda':
                 if self.enable_mirror:
-                    print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     print("🌍 使用中科大镜像源安装 packages, 如果失败请在命令行参数中添加--enable_mirror=False")
                     subprocess.run(
                     ['conda', 'run', '-n', envname, 'pip', 'install', '--index-url', self.mirror_source, *packages],
