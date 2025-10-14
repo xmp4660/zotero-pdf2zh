@@ -1,4 +1,4 @@
-## server.py v3.0.17
+## server.py v3.0.36
 # guaguastandup
 # zotero-pdf2zh
 import platform
@@ -9,7 +9,6 @@ import shutil
 import sys
 import traceback
 import importlib.metadata
-from packaging import requirements
 from collections import defaultdict
 # e.g. "pdf2zh": { "conda": { "packages": [...], "python_version": "3.12" } }
 
@@ -20,6 +19,7 @@ def normalize_pkg_name(name: str) -> str:
     return name.lower().replace('_', '-').replace('.', '-').split("=")[0] # .split("=")[0] 去掉==分隔的版本号等
 
 def check_packages_python_snippet(requirements_list):
+    from packaging import requirements
     result = {'satisfied': [], 'missing': []}
     for package_requirement in requirements_list:
         try:
@@ -73,9 +73,15 @@ class VirtualEnvManager:
             if envtool == 'uv':
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
                 # command_run = ['uv', 'pip', 'list', '--format=json', '--python', python_path]
+                subprocess.run(
+                    [python_path, '-m', 'pip', 'install', 'packaging'], # 确保 packaging 已安装
+                )
             elif envtool == 'conda':
                 python_path = os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)
                 # command_run = ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json']
+                subprocess.run(
+                    [python_path, '-m', 'pip', 'install', 'packaging'], # 确保 packaging 已安装
+                )
             command_run = [python_path, "-c",
                 "from utils.venv import check_packages_python_snippet; "
                 "import json; "
