@@ -13,10 +13,11 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.35 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.36 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
 
+[TOC]
 
 # 如何使用本插件
 
@@ -54,7 +55,7 @@
 
 - 打开cmd/终端，执行以下指南中的指令 （windows用户请用**管理员身份**打开cmd.exe）
 
-## 第一步: 安装uv/conda
+## 第一步：安装uv/conda
 
 如果不使用虚拟环境管理，请参考[FAQ](https://github.com/guaguastandup/zotero-pdf2zh?tab=readme-ov-file#faq)
 
@@ -101,14 +102,14 @@ $env:Path = "C:\Users\Username\.local\bin;$env:Path"
 conda --version
 ```
 
-## 第二步: 下载项目文件
+## 第二步：下载项目文件
 
 ```shell
 # 1. 创建并进入zotero-pdf2zh文件夹
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.36/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -116,7 +117,7 @@ unzip server.zip
 cd server
 ```
 
-## 第三步: 准备环境并执行
+## 第三步：准备环境并执行
 
 1. **安装依赖**
 ```shell
@@ -194,7 +195,7 @@ python server.py
 >   - 默认使用uv进行虚拟环境管理
 >   - 默认在脚本执行过程安装必要的包（而不是预热）
 >   - 默认自动检查更新
->   - 默认自动更新源为 github
+>   - 默认自动更新源为gitee(为了便于国内用户拉取最新版本, 从3.0.36版本开始将默认更新源修改为gitee)
 >   - 默认端口号为**8890**
 >   - 默认不开启winexe模式
 >   - 默认启用国内镜像进行必要包安装
@@ -204,22 +205,22 @@ python server.py
 - 如果要切换虚拟环境管理工具为conda: `python server.py --env_tool=conda`
 - 如果要切换端口: `python server.py --port={Your Port Num}`
 - 如果要关闭自动检查更新: `python server.py --check_update=False`
-- 如果要切换自动更新源为gitee: `python server.py --update_source="gitee"`
+- 如果要切换自动更新源为github: `python server.py --update_source="github"`
 - 如果要关闭包安装时启用镜像: `python server.py --enable_mirror=False`
 - 如果要自定义镜像源: `python server.py --mirror_source="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"` 
 - 开启windows exe安装模式, 安装pdf2zh_next exe版本，将可执行文件路径输入到命令行参数(例如./pdf2zh-v2.6.3-BabelDOC-v0.5.7-win64/pdf2zh/pdf2zh.exe): `python server.py --enable_winexe=True --winexe_path='xxxxxxx'`
 
 P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动server文件夹，也不要修改文件夹名。
 
-## 第四步: 下载并安装插件
+## 第四步：下载并安装插件
 
-新版本v3.0.35[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/zotero-pdf-2-zh.xpi)
+新版本v3.0.36[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.36/zotero-pdf-2-zh.xpi)
 
 您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
 
 在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero后再试）
 
-## 第五步: Zotero端插件设置
+## 第五步：Zotero端插件设置
 
 <div align=center>
 <img src="./images/preference.png" width="600"/>
@@ -277,11 +278,9 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 
 
 
-## 第六步
+## 第六步： 关于翻译选项
 
 在Zotero中对条目/PDF右键，选择PDF2zh-翻译选项，进行翻译。
-
-### 关于翻译选项
 
 对条目/附件单击右键, 可以看到四个翻译选项:
 
@@ -302,7 +301,6 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 
 # 常见问题（FAQ）
 
-
 ### 关于虚拟环境
 
 - **Q：我的conda/uv安装失败了，我不想使用虚拟环境管理，怎么办？**
@@ -316,7 +314,7 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.36/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -490,6 +488,7 @@ python server.py --enable_venv=False
     - 狐狸
     - 山间火
     - Angus
+    - 研究所
     - <img src="./images/chii.jpg" style="width: 100px"/>
 
 # Star History

@@ -27,8 +27,8 @@ _VALUE_ERROR_RE = re.compile(r'(?m)^ValueError:\s*(?P<msg>.+)$')
 # 添加了新的预热方法
 # 修复windows预热方法, 修复skipInstall默认选项
 # 解决apikey暴露的问题
-__version__ = "3.0.35" 
-update_log = "新增了自定义镜像源选项, 新增了自定义更新源选项, 您可以通过--update_source参数指定更新源, 目前支持github和gitee. 修复了预热模式脚本. 修复了包检查环节. 开始支持Zotero 8."
+__version__ = "3.0.36" 
+update_log = "近期版本新增了自定义镜像源选项, 新增了自定义更新源选项, 您可以通过--update_source参数指定更新源, 目前支持github和gitee. 修复了预热模式脚本. 修复了包检查环节. 开始支持Zotero 8. 修复了gitee源的问题."
 
 ############# config file #########
 pdf2zh      = 'pdf2zh'
@@ -1055,7 +1055,7 @@ if __name__ == '__main__':
     parser.add_argument('--enable_venv', type=str2bool, default=enable_venv, help='脚本自动开启虚拟环境')
     parser.add_argument('--env_tool', type=str, default=default_env_tool, help='虚拟环境管理工具, 默认使用 uv')
     parser.add_argument('--check_update', type=str2bool, default=True, help='启动时检查更新')
-    parser.add_argument('--update_source', type=str, default='github', help='更新源, gitee 或 github')
+    parser.add_argument('--update_source', type=str, default='gitee', help='更新源设置为gitee或github, 默认为gitee')
     parser.add_argument('--debug', type=str2bool, default=False, help='Enable debug mode')
     parser.add_argument('--enable_winexe', type=str2bool, default=False, help='使用pdf2zh_next Windows可执行文件运行脚本, 仅限Windows系统')
     parser.add_argument('--enable_mirror', type=str2bool, default=True, help='启用下载镜像加速, 仅限中国大陆用户')
@@ -1083,7 +1083,7 @@ if __name__ == '__main__':
                 print("\n无法获取用户输入，已自动取消更新。")
             
             if answer in ['y', 'yes']:
-                perform_update_optimized(expected_version=remote_v, update_source='github')  # 使用优化版本
+                perform_update_optimized(expected_version=remote_v, update_source=args.update_source)  # 使用优化版本
             else:
                 print("👌 已取消更新。")
     

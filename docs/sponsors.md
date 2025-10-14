@@ -23,5 +23,6 @@
 - 狐狸
 - 山间火
 - Angus
+- 研究所
 
 <img src="../images/chii.jpg" alt="preference" style="width: 100px" align="center"/>
