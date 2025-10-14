@@ -17,6 +17,7 @@
 
 </div>
 
+
 # 如何使用本插件
 
 本指南将引导您完成 Zotero PDF2zh 插件的安装和配置。
@@ -107,7 +108,7 @@ conda --version
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.36/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/blob/main/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -212,7 +213,7 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 
 ## 第四步：下载并安装插件
 
-新版本v3.0.36[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.36/zotero-pdf-2-zh.xpi)
+新版本v3.0.35[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/zotero-pdf-2-zh.xpi)
 
 您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
 
