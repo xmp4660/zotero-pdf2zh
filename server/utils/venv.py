@@ -18,7 +18,6 @@ def normalize_pkg_name(name: str) -> str:
 
 class VirtualEnvManager:
     def __init__(self, config_path, env_name, default_env_tool, enable_mirror=True, skip_install=False, mirror_source=None):
-    def __init__(self, config_path, env_name, default_env_tool, enable_mirror=True, skip_install=False, mirror_source=None):
         self.is_windows = platform.system() == "Windows"
         self.config_path = config_path
         self.skip_install = skip_install
