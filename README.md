@@ -13,9 +13,11 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-新版本v3.0.34 | [旧版本v2.4.3](./2.4.3%20version/README.md)
+新版本v3.0.35 | [旧版本v2.4.3](./2.4.3%20version/README.md)
 
 </div>
+
+[TOC]
 
 # 如何使用本插件
 
@@ -107,7 +109,7 @@ conda --version
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.34/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -212,7 +214,7 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 
 ## 第四步: 下载并安装插件
 
-新版本v3.0.34[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.34/zotero-pdf-2-zh.xpi)
+新版本v3.0.35[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/zotero-pdf-2-zh.xpi)
 
 您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
 
@@ -315,7 +317,7 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载并解压server文件夹
-# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.31/server.zip 手动下载
+# 如果server.zip下载失败, 可以直接访问: https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.35/server.zip 手动下载
 wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/refs/heads/main/server.zip
 unzip server.zip
 
@@ -366,7 +368,7 @@ python server.py --enable_venv=False
             - 如果由于网络问题无法下载, 请加入QQ群下载群文件
         -   解压后打开其中的pdf2zh.exe，然后打开命令行中提示的gui路径(`http://127.0.0.1:7860/`)，翻译一篇文章后退出。
         -   回到插件重新翻译。
-     
+    
 
 ### 关于环境
 
