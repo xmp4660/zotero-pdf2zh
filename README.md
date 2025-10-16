@@ -131,7 +131,7 @@ pip install -r requirements.txt
 
 -   请注意，预热只需要在首次安装时执行，之后只需要执行`python server.py`
 
-如果您确定您系统中的uv或conda是正常的，并且可以正常安装一些Python包（不存在网络问题等），那么不需要使用预热版本。
+如果您确定您系统中的uv或conda是正常的，并且可以正常安装一些Python包（不存在网络问题等），那么不需要使用预热版本。(预热版本仍处于Experimental阶段，可能会存在一些错误，如果遇到错误请跳过预热阶段即可。）
 
 2. **如果您选择conda**
 
@@ -296,7 +296,32 @@ P.S. 注意事项: 如果使用uv方法安装，在安装后请不要移动serve
 | **双语对照 (compare PDF)**                | 点击此选项, 会生成左边为原文, 右边为翻译后文本的PDF<br />1. 选择"Dual文件翻译页在前"可以交换生成顺序<br />2. 此选项等同于翻译引擎为pdf2zh_next, 且`双语(Dual)文件显示模式`为**Left&Right**时生成的文件 | <img src="./images/image4-3.png" alt="image4" style="width: 400px" align="center"/> |
 | **双语对照(裁剪) (crop-compare PDF)** | 此选项仅针对**双栏PDF论文**。它会先将PDF**竖向裁剪为单栏文件**，再左右拼接。 | <img src="./images/image4-2.png" alt="image4" style="width: 400px" align="center"/> |
 
+## 第七步: 关于包更新(New)
 
+zotero插件和server脚本均具有自动更新功能, 但是为了使用最新版本babeldoc和pdf2zh_next, 您需要进行下列操作:
+
+0. 进入server文件夹
+
+1. 进入虚拟环境: 名称为`zotero-pdf2zh-next-venv`
+```shell
+# conda
+conda activate zotero-pdf2zh-next-venv
+
+# uv
+## MacOS/Linux
+source ./zotero-pdf2zh-venv-next/bin/activate
+## Windows
+.\.zotero-pdf2zh-next-venv\Scripts\activate
+```
+
+2. 更新
+```shell
+# conda
+pip install --upgrade pdf2zh_next babeldoc
+
+# uv
+uv pip install --upgrade pdf2zh_next babeldoc
+```
 
 # 常见问题（FAQ）
 
