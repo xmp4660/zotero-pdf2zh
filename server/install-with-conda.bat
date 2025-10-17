@@ -30,7 +30,7 @@ set /a MAX=3
 set /a ATTEMPT=1
 :retry_loop
 call :log 正在为 %ENV_NAME% 安装依赖（第!ATTEMPT!次）...
-conda run -n "%ENV_NAME%" python -m pip install !INSTALL_PACKAGES! %INDEX_OPT%
+call conda run -n "%ENV_NAME%" python -m pip install !INSTALL_PACKAGES! %INDEX_OPT%
 if errorlevel 1 (
   if !ATTEMPT! geq !MAX! (
     call :log ❌ 安装失败，已达到最大重试次数 !MAX!。
@@ -50,7 +50,7 @@ endlocal & exit /b 0
 :run_babeldoc_warmup
 set "ENV_NAME=%~1"
 call :log 运行 babeldoc --warmup（%ENV_NAME%）...
-conda run -n "%ENV_NAME%" babeldoc --warmup
+call conda run -n "%ENV_NAME%" babeldoc --warmup
 if errorlevel 1 (call :log ❌ babeldoc --warmup 执行失败。& exit /b 1)
 call :log babeldoc --warmup 执行成功！
 exit /b 0
@@ -59,7 +59,7 @@ exit /b 0
 :upgrade_pdf2zh_next
 set "ENV_NAME=%~1"
 call :log 升级 pdf2zh_next（%ENV_NAME%）...
-conda run -n "%ENV_NAME%" python -m pip install --upgrade pdf2zh_next %INDEX_OPT%
+call conda run -n "%ENV_NAME%" python -m pip install --upgrade pdf2zh_next %INDEX_OPT%
 if errorlevel 1 (call :log ❌ pdf2zh_next 升级失败。& exit /b 1)
 call :log pdf2zh_next 升级成功！
 exit /b 0
@@ -71,7 +71,7 @@ set "ENV_NAME=%~1"
 set "PYVER=%~2"
 
 call :log 为 %ENV_NAME% 创建 Conda 环境（Python %PYVER%）...
-conda create -n "%ENV_NAME%" python="%PYVER%" -y
+call conda create -n "%ENV_NAME%" python="%PYVER%" -y
 if errorlevel 1 (call :log ❌ 创建环境失败。& exit /b 1)
 
 set "INSTALL_PACKAGES=%CUR_PACKAGES%"
