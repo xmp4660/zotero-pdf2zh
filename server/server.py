@@ -1067,7 +1067,7 @@ if __name__ == '__main__':
     print(f"🚀 启动参数: {args}\n")
     print("💡 如果您来自网络上的视频教程/文字教程, 并且在执行中遇到问题, 请优先阅读【本项目主页】, 以获得最准确的安装信息: \ngithub: https://github.com/guaguastandup/zotero-pdf2zh\ngitee: https://gitee.com/guaguastandup/zotero-pdf2zh")
     print("💡 另外, 常见问题文档: https://docs.qq.com/markdown/DU0RPQU1vaEV6UXJC")
-    print("💡 如遇到无法解决的问题请加入QQ群: 1064375380, 提问前您需要先阅读本项目指南和常见问题文档, 确认是新问题后再提问. 另外，提问时必须将本终端完整的信息复制到txt文件中并截图zotero插件设置, 一并发送到群里, 以便更好地得到帮助, 感谢配合!\n")
+    print("💡 如遇到无法解决的问题请加入QQ群: 443031486, 口令为: github, 提问前您需要先阅读本项目指南和常见问题文档, 提问时必须将本终端完整的信息复制到txt文件中并截图zotero插件设置, 一并发送到群里, 感谢配合!\n")
 
     print("🏠 当前版本: ", __version__, "更新日志: ", update_log)
     # 启动时自动检查更新
