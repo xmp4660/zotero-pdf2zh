@@ -27,16 +27,16 @@ async function onMainWindowLoad(win: Window): Promise<void> {
     // TOCHECK: 目前可以有效解决问题, 但是关闭Preference后这个初始化的内容不会被删除吗??
     initTableUI();
     // 给老用户的通知
-    const progressWindow = new ztoolkit.ProgressWindow(
-        "zotero-pdf2zh插件 给老用户的通知",
-        { closeOnClick: true, closeTime: -1 },
-    ).createLine({
-        text: "重要:【老用户必读】 本插件在近期进行了重大更新, 并在此3.0.32版本推送到更新主分支。需要使用2.4.3版本的老用户根据插件主页更新的教程内容, 重新进行环境配置, 如果您不想重新配置, 请卸载此版本插件并在项目Github主页的Release页面重新下载并安装2.4.3版本插件, 并且关闭插件自动更新选项。为您造成的不便, 深感抱歉!",
-        type: "default",
-        progress: 100,
-    });
-    progressWindow.show();
-    progressWindow.startCloseTimer(15000); // 15秒后自动关闭
+    // const progressWindow = new ztoolkit.ProgressWindow(
+    //     "zotero-pdf2zh插件 给老用户的通知",
+    //     { closeOnClick: true, closeTime: -1 },
+    // ).createLine({
+    //     text: "重要:【老用户必读】 本插件在近期进行了重大更新, 并在此3.0.32版本推送到更新主分支。需要使用2.4.3版本的老用户根据插件主页更新的教程内容, 重新进行环境配置, 如果您不想重新配置, 请卸载此版本插件并在项目Github主页的Release页面重新下载并安装2.4.3版本插件, 并且关闭插件自动更新选项。为您造成的不便, 深感抱歉!",
+    //     type: "default",
+    //     progress: 100,
+    // });
+    // progressWindow.show();
+    // progressWindow.startCloseTimer(15000); // 15秒后自动关闭
 }
 
 async function onPrefsEvent(type: string, data: { [key: string]: any }) {
