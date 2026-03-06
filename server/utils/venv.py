@@ -1,4 +1,4 @@
-## server.py v3.0.36
+## server.py v4.0.0
 # guaguastandup
 # zotero-pdf2zh
 import platform
@@ -72,15 +72,23 @@ class VirtualEnvManager:
             python_executable = 'python.exe' if self.is_windows else 'python'
             if envtool == 'uv':
                 python_path = os.path.join(envname, 'Scripts' if self.is_windows else 'bin', python_executable)
-                # command_run = ['uv', 'pip', 'list', '--format=json', '--python', python_path]
-                subprocess.run(
-                    [python_path, '-m', 'pip', 'install', 'packaging'], # 确保 packaging 已安装
-                )
+                # uv 创建的 venv 可能没有 pip，优先用 uv pip 安装 packaging
+                try:
+                    subprocess.run(
+                        ['uv', 'pip', 'install', 'packaging', '--python', python_path],
+                        capture_output=True, timeout=60
+                    )
+                except Exception:
+                    # uv pip 也失败，尝试原来的方式
+                    subprocess.run(
+                        [python_path, '-m', 'pip', 'install', 'packaging'],
+                        capture_output=True, timeout=60
+                    )
             elif envtool == 'conda':
                 python_path = os.path.join(self.conda_env_path[self.curr_envname], '' if self.is_windows else 'bin', python_executable)
-                # command_run = ['conda', 'run', '-n', envname, 'pip', 'list', '--format=json']
                 subprocess.run(
-                    [python_path, '-m', 'pip', 'install', 'packaging'], # 确保 packaging 已安装
+                    [python_path, '-m', 'pip', 'install', 'packaging'],
+                    capture_output=True, timeout=60
                 )
             command_run = [python_path, "-c",
                 "from utils.venv import check_packages_python_snippet; "
@@ -202,17 +210,21 @@ class VirtualEnvManager:
         
     def check_env(self, engine, envtool): # 检查 env 环境是否在uv / conda中存在
         envname = self.env_name.get(engine)
+
         if envtool == 'uv':
             try:
                 uv_env_path = os.path.join('.', envname)
+                pyvenv_path = os.path.join(uv_env_path, 'pyvenv.cfg')
+
                 print("🔍 检查 uv 环境: ", uv_env_path)
                 # TOCHECK: 对于windows, macOS, linux, 检查路径的区别
-                return ( os.path.exists(uv_env_path) and os.path.exists(os.path.join(uv_env_path, 'pyvenv.cfg')))
+                return (os.path.exists(uv_env_path) and os.path.exists(pyvenv_path))
             except Exception as e:
+                traceback.print_exc()
                 print(f"❌ 检查 {envtool} 虚拟环境 {envname} 失败: {e}")
                 return False
         elif envtool == 'conda':
-            try: 
+            try:
                 result = subprocess.run(['conda', 'env', 'list'], capture_output=True, text=True, timeout=1200)
                 if result.returncode == 0:
                     envs = [line.split()[0] for line in result.stdout.splitlines() if line and not line.startswith("#")]
@@ -230,6 +242,7 @@ class VirtualEnvManager:
             return True
         # 否则为 None, 需要检查工具和虚拟环境
         envtools = ['conda', 'uv'] if self.default_env_tool == 'conda' else ['uv', 'conda']
+
         for envtool in envtools:
             if self.check_envtool(envtool):
                 envname = self.env_name[engine]
@@ -320,6 +333,59 @@ class VirtualEnvManager:
         except Exception as e:
             print(f"Error locating Conda environment: {e}")
             return False
+
+    # [新增方法] 仅获取处理后的命令和环境变量，不执行命令
+    # 专门给 utils/execute.py 的 execute_with_progress() 使用
+    # 将"准备虚拟环境命令"与"执行命令"分离，使 execute_with_progress 能捕获输出并解析进度
+    def get_command_and_env(self, command):
+        engine = 'pdf2zh_next' if 'pdf2zh_next' in ' '.join(command).lower() else 'pdf2zh'
+
+        # 1. 确保虚拟环境存在
+        env_result = self.ensure_env(engine)
+
+        if not env_result:
+            return command, os.environ.copy()
+
+        # 2. 计算路径（逻辑与 execute_in_env 保持一致）
+        try:
+            if self.curr_envtool == 'uv':
+                bin_dir = os.path.join(self.curr_envname, 'Scripts' if self.is_windows else 'bin')
+                python_path = os.path.join(bin_dir, 'python.exe' if self.is_windows else 'python')
+            elif self.curr_envtool == 'conda':
+                env_full_path = self._get_conda_env_path(self.curr_envname)
+                if not env_full_path:
+                    # 找不到 conda 路径，回退到原始命令
+                    return command, os.environ.copy()
+                bin_dir = os.path.join(env_full_path, 'Scripts' if self.is_windows else 'bin')
+                python_executable = 'python.exe' if self.is_windows else os.path.join('bin', 'python')
+                python_path = os.path.join(env_full_path, python_executable)
+            else:
+                return command, os.environ.copy()
+
+            # 3. 构造命令（与 execute_in_env 中的逻辑一致）
+            cmd = []
+            if command[0].lower() in ['pdf2zh', 'pdf2zh_next']:
+                executable_name = command[0] + ('.exe' if self.is_windows else '')
+                executable_path = os.path.join(bin_dir, executable_name)
+
+                if os.path.exists(executable_path):
+                    cmd = [executable_path] + command[1:]
+                else:
+                    cmd = [python_path, '-u', '-m', command[0]] + command[1:]
+            else:
+                cmd = [python_path, '-u'] + command
+
+            # 4. 构造环境变量
+            env = os.environ.copy()
+            env['PYTHONUNBUFFERED'] = '1'
+            env['PATH'] = bin_dir + os.pathsep + env.get('PATH', '')
+
+            return cmd, env
+
+        except Exception as e:
+            print(f"⚠️ 获取虚拟环境命令失败: {e}")
+            traceback.print_exc()
+            return command, os.environ.copy()
 
     # 在虚拟环境中执行
     def execute_in_env(self, command):

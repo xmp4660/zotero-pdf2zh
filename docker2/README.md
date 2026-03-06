@@ -43,10 +43,10 @@ mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载 Docker 配置文件
 # 如果 wget 下载失败，可以点击链接手动下载，并放入 zotero-pdf2zh 文件夹
-# - docker-compose.yaml: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.yaml
-# - Dockerfile: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/Dockerfile
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.yaml
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/Dockerfile
+# - docker-compose.yaml: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/docker-compose.yaml
+# - Dockerfile: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/Dockerfile
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/docker-compose.yaml
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/Dockerfile
 
 # 3. 创建用于存放翻译文件的文件夹
 mkdir -p zotero-pdf2zh/config zotero-pdf2zh/translated
@@ -113,9 +113,9 @@ docker compose up -d
 1.  额外下载 `docker-compose.dev.yaml` 和 `server` 文件夹。
     ```shell
     # 下载 dev 配置文件
-    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.dev.yaml
+    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/docker-compose.dev.yaml
     # 下载并解压 server 文件夹
-    wget https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.31/server.zip
+    wget https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v4.0.0/server.zip
     unzip server.zip
     ```
 2.  使用 `-f` 参数指定配置文件启动：

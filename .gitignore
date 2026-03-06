@@ -18,3 +18,7 @@ translated/*
 server/translated/*
 __pycache__
 ast.json
+
+LOG.md
+
+server/dev/
