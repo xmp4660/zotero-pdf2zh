@@ -13,7 +13,7 @@
 
 在Zotero中使用[PDF2zh](https://github.com/Byaidu/PDFMathTranslate)和[PDF2zh_next](https://github.com/PDFMathTranslate/PDFMathTranslate-next)
 
-**当前版本信息：** server.zip v4.0.1 | 插件 xpi v4.0.0
+**当前版本信息：** server.zip v4.0.4 | 插件 xpi v4.0.1
 
 **📚 项目文档：** [zotero-pdf2zh.github.io](https://zotero-pdf2zh.github.io)
 
@@ -32,16 +32,18 @@
   - [第零步：安装Python和Zotero](#第零步安装python和zotero)
   - [第一步：安装uv/conda](#第一步安装uvconda)
   - [第二步：下载项目文件](#第二步下载项目文件)
-  - [第三步：准备环境并执行](#第三步准备环境并执行)
+  - [第三步：启动服务](#第三步启动服务)
   - [第四步：下载并安装插件](#第四步下载并安装插件)
   - [第五步：Zotero端插件设置](#第五步zotero端插件设置)
   - [第六步：关于翻译选项](#第六步-关于翻译选项)
-  - [第七步：关于包更新](#第七步-关于包更新new)
+  - [第七步：关于包更新](#第七步-关于包更新)
   - [其他安装方法](#其他安装方法)
 - [常见问题（FAQ）](#常见问题faq)
   - [关于网络](#关于网络)
   - [关于环境](#关于环境)
-  - [关于远程服务](#关于远程服务)
+  - [关于翻译服务](#关于翻译服务)
+  - [关于OCR/扫描件](#关于ocr扫描件)
+  - [关于翻译效果](#关于翻译效果)
   - [关于插件功能](#关于插件功能)
   - [关于提问](#关于提问)
   - [关于支持本插件](#关于支持本插件)
@@ -69,36 +71,27 @@
     - 4群: 443031486(已满)
     - 5群: 1064435415(已满)
     - 6群: 1083772600
+    - 7群: 930368730
     - 入群问题答案: github
 
 # 安装说明
 
 ## 第零步：安装Python和Zotero
 
-- [Python下载链接](https://www.python.org/downloads/) 建议下载3.12.0版本Python
-  - 安装教程推荐：[【Windows | 安装Python和PyCharm】](https://www.bilibili.com/video/BV18q4y1R7gW/?share_source=copy_web&vd_source=7295b9ad781950043e4c60b3aabd0c72)
+- **Python**：[下载链接](https://www.python.org/downloads/)，建议安装 3.12 版本
+- **Zotero**：支持 [Zotero 7](https://www.zotero.org) 和 [Zotero 8](https://www.zotero.org/download/)（适配 by @[Aphcity](https://github.com/Aphcity)）
 
-- 插件目前支持Zotero 7以及[Zotero 8](https://www.zotero.org/download/)(适配 by @[Aphcity](https://github.com/Aphcity))
-
-- **打开命令行工具**：
-  - **Windows用户**：打开"命令提示符"(cmd)
-    - 按 `Win + R`，输入 `cmd`，按回车
-    - 或者在开始菜单搜索"cmd"或"命令提示符"
-    - ⚠️ **请以管理员身份运行**：右键点击"命令提示符"，选择"以管理员身份运行"
-  - **macOS用户**：打开"终端"(Terminal)
-    - 按 `Cmd + 空格`，输入"终端"或"Terminal"，按回车
-    - 或者在"应用程序" → "实用工具" → "终端"
-  - **Linux用户**：打开终端（通常快捷键为 `Ctrl + Alt + T`）
-
-后续步骤中的指令都需要在命令行中执行。
+- **打开命令行工具**（后续步骤都在命令行中执行）：
+  - **Windows**：按 `Win + R` → 输入 `cmd` → 回车（建议以**管理员身份运行**）
+  - **macOS**：按 `Cmd + 空格` → 输入"终端" → 回车
+  - **Linux**：`Ctrl + Alt + T`
 
 ## 第一步：安装uv/conda
 
-如果不使用虚拟环境管理，请参考[其他安装方法](#其他安装方法)中的"不使用虚拟环境管理"部分。
+选择一个环境管理工具。如果不确定选哪个，推荐 uv。
 
 **uv安装(推荐)**
 
-1. 安装uv
 ```shell
 # macOS/Linux
 wget -qO- https://astral.sh/uv/install.sh | sh
@@ -106,35 +99,20 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-2. 检查uv安装是否成功
-```shell
-# 显示uv版本号, 则uv安装完成（必做）
-# 如果您的uv安装检查失败了，请您优先排查这个问题，不要进行第二步操作。
-uv --version
-```
+安装后执行 `uv --version`，能看到版本号即成功。
 
-3. 如果检查失败
-需要将 **uv 的安装路径** 添加到系统环境变量中，并重启终端。uv 默认安装在用户目录下的 `.local/bin` 文件夹中。
+如果提示找不到命令，需将 uv 路径添加到环境变量并重启终端：
 
 ```shell
-# MacOS/Linux：将 uv 路径添加到 PATH
+# MacOS/Linux
 export PATH="$HOME/.local/bin:$PATH"
-
-# Windows PowerShell：将 uv 路径添加到 PATH
+# Windows PowerShell
 $env:Path = "$env:USERPROFILE\.local\bin;$env:Path"
 ```
 
 **conda安装**
 
-1. 安装conda
-参考本链接安装: https://www.anaconda.com/docs/getting-started/miniconda/install#windows-command-prompt
-
-2. 检查conda安装是否成功
-```shell
-# 显示conda版本号, 则conda安装完成
-# 如果您的conda安装检查失败了，请您优先排查这个问题，不要进行第二步操作。
-conda --version
-```
+参考 [Miniconda 安装指南](https://www.anaconda.com/docs/getting-started/miniconda/install#windows-command-prompt)进行安装，安装后执行 `conda --version` 验证。
 
 ## 第二步：下载项目文件
 
@@ -153,115 +131,87 @@ unzip server.zip
 cd server
 ```
 
-## 第三步：准备环境并执行
+> 💡 **提示：确认目录结构**
+>
+> 解压后，请确认您的目录结构应该是：
+> ```
+> zotero-pdf2zh/
+> └── server/
+>     ├── server.py
+>     ├── ...
+>     └── requirements.txt
+>    ```
+>    
+> 如果您看到的是 `server/server/` 这样的嵌套结构（两层 server），说明解压出现了嵌套问题，请执行：
+>
+> ```shell
+># 回到上级目录
+> cd ..
+> # 移动内容到正确位置
+> mv server/server/* server/
+> # 删除空的嵌套目录
+> rmdir server/server
+> # 重新进入 server 目录
+> cd server
+> ```
 
-1. **安装依赖**
+**快速检查方法**：
+执行 `cd server` 后，运行 `ls server.py`，如果能看到 `server.py` 文件，说明目录结构正确。如果提示找不到文件，说明存在嵌套问题。
+
+## 第三步：启动服务
+
+**uv 用户（推荐）**
+
 ```shell
+uv run --python 3.12 --with-requirements requirements.txt server.py
+```
+
+**conda 用户**
+
+```shell
+# 1. 创建环境（仅首次需要）
+conda create -n zotero-pdf2zh-server python=3.12 -y
+# 2. 激活环境
+conda activate zotero-pdf2zh-server
+# 3. 安装依赖（仅首次需要）
 pip install -r requirements.txt
-```
-
-本项目的Python脚本可以在执行过程中启动虚拟环境，并在虚拟环境中安装必要的包，并且实现pdf2zh与pdf2zh_next两种引擎的虚拟环境之间的切换。
-
-您只需要选择一个虚拟环境工具: `uv`或`conda`
-
-2. **如果您选择conda**
-
-```shell
-# 指定虚拟环境工具为conda
+# 4. 启动服务
 python server.py --env_tool=conda
 ```
 
-3. **如果您选择uv**
+> ⚠️ **重要**：翻译功能依赖本脚本运行，使用翻译时**不要关闭此终端窗口**。
 
-```shell
-# 使用uv（默认选项）
-python server.py
-```
+### 常用参数
 
-> ⚠️ **重要提示**：翻译功能依赖本Python脚本，**需要保持脚本的运行状态**。只要您需要使用翻译功能，就**不要关闭这个Python脚本窗口**。关闭脚本后翻译功能将无法使用。
+在启动命令后面追加参数即可，例如 `... server.py --port=9999`：
 
-### 默认配置
+| 参数 | 说明 | 默认值 |
+|------|------|--------|
+| `--port` | 服务端口号 | `8890` |
+| `--check_update` | 启动时检查更新 | `True` |
+| `--update_source` | 更新源（`github` / `gitee`） | `gitee` |
+| `--enable_mirror` | 启用 pip 镜像加速 | `True` |
+| `--mirror_source` | 自定义镜像源 URL | 中科大镜像 |
+| `--enable_winexe` | 使用 Windows exe 模式（需配合 `--winexe_path`） | `False` |
 
-执行 `python server.py` 时的默认选项：
+### 注意事项
 
-| 配置项 | 默认值 | 说明 |
-|--------|--------|------|
-| 虚拟环境管理 | 开启 | 使用 `uv` 管理 |
-| 自动安装依赖 | 开启 | 首次运行自动安装 |
-| 自动检查更新 | 开启 | 启动时检查 |
-| 更新源 | gitee | 国内用户友好 |
-| 端口号 | 8890 | 服务端口 |
-| 镜像源 | 中科大 | 加速包安装 |
-
-### 常用命令参数
-
-```shell
-# 使用 conda 替代 uv
-python server.py --env_tool=conda
-
-# 修改端口号
-python server.py --port=9999
-
-# 关闭自动检查更新
-python server.py --check_update=False
-
-# 切换更新源（默认为gitee，国内用户友好）
-# 如果gitee源更新失败，可尝试切换到github源：
-python server.py --update_source="github"
-# 如果github源更新失败，可切换回gitee源：
-python server.py --update_source="gitee"
-
-# 关闭镜像加速
-python server.py --enable_mirror=False
-
-# 自定义镜像源
-python server.py --mirror_source="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
-
-# 使用 Windows exe 版本
-python server.py --enable_winexe=True --winexe_path='./pdf2zh-v2.6.3-BabelDOC-v0.5.7-win64/pdf2zh/pdf2zh.exe'
-```
-
-P.S. 注意事项:
-- 如果使用uv方法安装，在安装后请不要移动server文件夹，也不要修改文件夹名。
-- 如果启动时更新检查失败，可以根据网络情况切换更新源：`python server.py --update_source="gitee"` 或 `python server.py --update_source="github"`
+- **uv 用户**：安装后请不要移动或重命名 `server` 文件夹（会影响环境路径）。
+- **conda 用户**：环境存储在 conda 的 envs 目录中，可以安全移动 `server` 文件夹。
 
 ## 第四步：下载并安装插件
 
-新版本v4.0.0[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v4.0.0/zotero-pdf-2-zh.xpi)
+新版本v4.0.1[下载链接](https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v4.0.1/zotero-pdf-2-zh.xpi)
 
-您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
-
-在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero后再试）
+1. 安装方式：在zotero中打开“工具-插件”，将xpi文件拖入，进行安装。（若拖入后功能未生效，请重启Zotero）
+2. 如何更新：您可以在zotero中检查更新，或选择自动更新，来获取最新版本插件。
 
 ## 第五步：Zotero端插件设置
 
 <div align=center>
-<img src="./images/preference.png" width="600"/>
+<img src="./images/preference.png" width="600"/><br>
+<small>zotero 插件设置页面</small>
 </div>
-
-
-**配置选项说明**
-
-- 切换翻译引擎`pdf2zh/pdf2zh_next`，界面将显示不同引擎的翻译配置
-
-- 关于**qps(Query Per Second)**和**poolsize**选项：请参考您的服务商（例如[zhipu](https://www.bigmodel.cn/dev/howuse/rate-limits)）。
-
-    >   - 计算公式: `qps = rpm / 60` (RPM = Request Per Minute)
-    >   - 对于上游为**qps/rpm限速**：pool size = qps * 10; 
-    >   - 对于上游为**并发数限制**: pool size = max(向下取整(0.9*官方并发数限制), 官方并发数限制-20)，qps = pool size
-    >   - 如果您不知道怎么设置, 请直接设置qps即可, pool size设置为默认值0即可
-
-- 翻译引擎pdf2zh的自定义字体：字体文件路径为本地路径。如果采用远端服务器部署，暂时无法使用本配置，则需要手动修改`config.json`文件中的`NOTO_FONT_PATH`字段。
-
-- 目前, 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
-
-**网页端查看翻译进度**
-
-服务启动后，可在浏览器中访问 `http://127.0.0.1:8890` 查看翻译进度：
-
--   实时显示当前翻译任务状态
--   查看翻译历史记录
--   预览和下载翻译后的文件
 
 **检查服务器连接**
 
@@ -270,6 +220,74 @@ P.S. 注意事项:
 -   server.py 脚本是否正在运行
 -   端口号是否正确（默认8890）
 -   防火墙/杀毒软件是否阻止了连接
+
+**配置选项说明**
+
+- 切换翻译引擎`pdf2zh/pdf2zh_next`，界面将显示不同引擎的翻译配置
+
+- 其他说明（初次配置可以忽略）
+
+    - 关于**qps(Query Per Second)**和**poolsize**选项：
+
+    - >具体数值请参考您的LLM服务商提供的参数（例如[zhipu](https://www.bigmodel.cn/dev/howuse/rate-limits)）
+        >
+        >- 计算公式: `qps = rpm / 60` (RPM = Request Per Minute)
+        >- 对于上游为**qps/rpm限速**：pool size = qps * 10; 
+        >- 对于上游为**并发数限制**: pool size = max(向下取整(0.9*官方并发数限制), 官方并发数限制-20)，qps = pool size
+        >- 如果您不知道怎么设置, 请直接设置qps即可, pool size设置为默认值0即可
+
+
+    - 翻译引擎pdf2zh的自定义字体：
+
+    - > - 字体文件路径为本地路径。
+        >
+        > - 如果采用远端服务器部署，暂时无法在插件设置中指定字体路径。需要您手动修改`config.json`文件中的`NOTO_FONT_PATH`字段。
+
+    - 额外配置参数名需要与config文件中的字段相同(例如在pdf2zh_next中, openai对应的额外配置: `openai_temperature`和`openai_send_temperature`与`config.toml`文件中的字段相对应), 本功能将在未来继续优化, 可参考[文档](./server/doc/extraData.md)
+
+
+**网页端查看翻译进度**
+
+服务启动后，可在浏览器中访问 `http://127.0.0.1:8890` 查看翻译进度和使用相关功能：
+
+<div align="center">
+  <img src="./images/HTML1.png" width="400"/><br>
+  <small>查看当前配置信息</small>
+</div>
+
+<div align="center">
+  <img src="./images/HTML2.png" width="400"/><br>
+  <small>实时查看翻译进度</small>
+</div>
+
+<div align="center">
+  <img src="./images/HTML3.png" width="400"/><br>
+  <small>查看历史翻译记录并预览下载</small>
+</div>
+
+**功能说明：**
+- 查看当前server端的配置信息
+- 实时显示当前翻译任务状态
+- 查看翻译历史记录，支持预览和下载翻译后的文件
+
+> 📢: v4.0.3(3月7日) windows端暂时不支持多进度条显示(多个pdf同时翻译时只会有一个进度条会更新，是bug待修复)
+
+**翻译引擎对比**
+
+插件支持两种翻译引擎，请根据需求选择：
+
+| 对比项 | PDF2ZH (旧版) | PDF2ZH Next (新版) |
+|--------|---------------|-------------------|
+| **维护状态** | ❌ 不再活跃维护 | ✅ 持续更新维护 |
+| **翻译速度** | ⚡ 较快 | 速度适中 |
+| **自定义字体** | ✅ 支持更换自定义字体 | ❌ 不支持 |
+| **配置文件** | `config.json` | `config.toml` |
+| **双语模式** | 默认为Top&Bottom | 默认为 Left&Right |
+| **术语表功能** | ❌ 不支持 | ✅ 自动提取并使用术语表 |
+| **表格翻译** | ❌ 不支持 | ✅ 支持表格内容翻译 |
+| **OCR兼容** | ❌ 不支持 | ✅ 支持 OCR 兼容模式和自动 OCR |
+| **支持的翻译服务** | 支持海量翻译服务 | 提供免费 siliconflowfree |
+| **上游项目** | [Byaidu/PDFMathTranslate](https://github.com/Byaidu/PDFMathTranslate) | [PDFMathTranslate-next](https://github.com/PDFMathTranslate/PDFMathTranslate-next) |
 
 **翻译服务配置**
 
@@ -290,7 +308,7 @@ P.S. 注意事项:
 </div>
 
 
-**💡 翻译服务介绍**
+**💡 翻译服务介绍(必读)**
 
 | 服务类型                | 服务名称         | 服务介绍                                                     | 💡注意事项                                                    |
 | ----------------------- | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -331,7 +349,7 @@ P.S. 注意事项:
 
 **您可以多选条目，右键菜单，然后进行批量PDF翻译**
 
-## 第七步: 关于包更新(New)
+## 第七步: 关于包更新
 
 zotero插件和server脚本均具有自动更新功能, 但是为了使用最新版本babeldoc和pdf2zh_next, 您需要进行下列操作:
 
@@ -353,7 +371,6 @@ source ./zotero-pdf2zh-venv-next/bin/activate
 ```shell
 # conda
 pip install --upgrade pdf2zh_next babeldoc
-
 # uv
 uv pip install --upgrade pdf2zh_next babeldoc
 ```
@@ -394,39 +411,84 @@ python server.py --enable_winexe=True --winexe_path='./pdf2zh-v2.x.x-BabelDOC-v0
 
 ### 不使用虚拟环境管理
 
-如果您只使用pdf2zh_next/pdf2zh引擎中的一个，并且全局python版本为3.12.0，可以不使用虚拟环境管理，执行脚本时添加参数：
+如果您只想使用 pdf2zh_next/pdf2zh 引擎中的一个，并且全局 Python 版本为 3.12.0，可以不使用虚拟环境管理。
+
+> ⚠️ **注意**：不使用虚拟环境管理时，您需要确保：
+> - 全局 Python 版本为 3.12 或更高
+> - 已手动安装所需的依赖包
+
+#### uv 用户（推荐）
 
 ```shell
+# 创建固定主虚拟环境（只需执行一次）
+uv venv zotero-pdf2zh-server --python 3.12
+
+# 激活环境
+# Windows
+.\zotero-pdf2zh-server\Scripts\activate
+# macOS/Linux
+source ./zotero-pdf2zh-server/bin/activate
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 启动服务
 python server.py --enable_venv=False
 ```
 
-如果需要手动安装依赖：
+#### conda 用户
+
 ```shell
-# 如果只使用pdf2zh:
+# 创建主虚拟环境（只需执行一次）
+conda create -n zotero-pdf2zh-server python=3.12 -y
+
+# 激活环境
+conda activate zotero-pdf2zh-server
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 启动服务
+python server.py --env_tool=conda --enable_venv=False
+```
+
+#### 手动安装依赖（如果只需要特定引擎）
+
+```shell
+# 如果只使用 pdf2zh:
 pip install pdf2zh==1.9.11 numpy==2.2.0
-# 如果只使用pdf2zh_next:
+
+# 如果只使用 pdf2zh_next:
 pip install pdf2zh_next
 ```
 
 ### 一键启动脚本
 
-每次翻译都需要打开终端执行 `python server.py`，为了方便日常使用，您可以配置一键启动：
+每次翻译都需要打开终端执行启动命令，为了方便日常使用，您可以配置一键启动：
+
+**方式一：使用 uv 的用户**
 
 **Windows 用户 - 创建桌面快捷脚本：**
 
-1. 在桌面新建一个文本文件，重命名为 `start-pdf2zh.bat`
-2. 右键编辑，写入以下内容（请根据实际路径修改）：
+1. 先在当前终端输入 `cd` 命令查看完整路径
+```shell
+cd
+```
+终端会显示类似：`D:\zotero-pdf2zh\server` 的路径
 
+2. 在桌面新建一个文本文件，右键编辑，写入以下内容：
 ```bat
 @echo off
-cd /d D:\zotero-pdf2zh\server
-python server.py
+cd /d <粘贴刚才复制的路径>
+uv run --python 3.12 --with-requirements requirements.txt server.py
 pause
 ```
 
-3. 保存后双击即可启动
+3. 将 `<粘贴刚才复制的路径>` 替换为您复制的实际路径
 
-> 注意：将 `D:\zotero-pdf2zh\server` 替换为您实际的 server 文件夹路径
+4. 重命名为 `start-pdf2zh.bat`（后缀名必须是 `.bat`）
+
+5. 保存后双击即可启动
 
 **macOS / Linux 用户 - 配置别名（alias）：**
 
@@ -442,14 +504,67 @@ nano ~/.bashrc
 2. 在文件末尾添加别名（请根据实际路径修改）：
 
 ```shell
-alias pdf2zh-start='cd /path/to/zotero-pdf2zh/server && python server.py'
+alias pdf2zh-start='cd /path/to/zotero-pdf2zh/server && uv run --python 3.12 --with-requirements requirements.txt server.py'
 ```
 
 3. 保存后执行：
 
 ```shell
-source ~/.zshrc 
-# 或 
+source ~/.zshrc
+# 或
+source ~/.bashrc
+```
+
+4. 之后只需在终端输入 `pdf2zh-start` 即可一键启动
+
+**方式二：使用 conda 的用户**
+
+**Windows 用户 - 创建桌面快捷脚本：**
+
+1. 先在当前终端输入 `cd` 命令查看完整路径
+```shell
+cd
+```
+终端会显示类似：`D:\zotero-pdf2zh\server` 的路径
+
+2. 在桌面新建一个文本文件，右键编辑，写入以下内容：
+```bat
+@echo off
+cd /d <粘贴刚才复制的路径>
+python server.py --env_tool=conda
+pause
+```
+
+3. 将 `<粘贴刚才复制的路径>` 替换为您复制的实际路径
+
+4. 重命名为 `start-pdf2zh-conda.bat`（后缀名必须是 `.bat`）
+
+5. 保存后双击即可启动
+
+**macOS / Linux 用户 - 配置别名（alias）：**
+
+1. 打开终端，编辑 shell 配置文件：
+
+```shell
+# 如果使用 zsh（macOS 默认）
+nano ~/.zshrc
+# 如果使用 bash
+nano ~/.bashrc
+```
+
+2. 在文件末尾添加别名（请根据实际路径修改）：
+
+```shell
+alias pdf2zh-start='cd /path/to/zotero-pdf2zh/server && python server.py --env_tool=conda'
+```
+
+> 💡 注意：使用此别名前，请确保已初始化 conda（通常在安装 conda 后会自动添加到 `.bashrc` 或 `.zshrc` 中）
+
+3. 保存后执行：
+
+```shell
+source ~/.zshrc
+# 或
 source ~/.bashrc
 ```
 
@@ -461,15 +576,17 @@ source ~/.bashrc
 
 -   **[🔥高频问题]Q：我遇到了网络问题（NetworkError when attempting to fetch resource），该怎么办？**
 -   A：
-    -   确保插件是最新版：版本号3.0.x，而不是旧版本：2.4.3
-    -   翻译过程中需要保证server.py脚本开启
-    -   请检查8890端口是否被其他程序占用
-    -   切换端口重试（可以多次尝试更换新的端口）
-        -   切换端口需要修改两个地方（以新端口号为9999为例）
-            -   zotero插件配置里的python server ip里的8890修改为9999
-            -   执行脚本时的指令修改为：`python server.py --port=9999`
-    -   检查防火墙是否开启
-    -   关闭杀毒软件并重启电脑
+    -   **首先点击插件设置页面中"Python Server IP"旁边的"检查连接"按钮**，查看连接状态
+    -   若显示连接失败，请按以下步骤排查：
+        -   确保插件是最新版：版本号4.0.x，而不是旧版本：3.0.x或2.4.3
+        -   翻译过程中需要保证server.py脚本开启
+        -   请检查8890端口是否被其他程序占用
+        -   切换端口重试（可以多次尝试更换新的端口）
+            -   切换端口需要修改两个地方（以新端口号为9999为例）
+                -   zotero插件配置里的python server ip里的8890修改为9999
+                -   执行脚本时的指令修改为：`python server.py --port=9999`
+        -   检查防火墙是否开启
+        -   关闭杀毒软件并重启电脑
     -   另外如果您执行翻译时，终端有日志输出/正在尝试翻译，此后报网络错误，则不符合上述情况，应该优先解决终端中提示的报错。
 
 -  **[🔥高频问题]Q: 翻译卡在某个地方不动了 / pdf2zh_next第一次翻译时进度条一直卡在某一处（例如10/100）/ 出现assets download failed问题**
@@ -477,9 +594,13 @@ source ~/.bashrc
     -   这是因为pdf2zh_next在首次启动时，需要远程下载字体和模型文件，这个过程比较慢。
     -   您可以：
         -   访问pdf2zh_next的最新release: https://github.com/PDFMathTranslate-next/PDFMathTranslate-next/releases, 下载其中的exe包，例如：pdf2zh-v2.6.4-BabelDOC-xxx-with-assets-win64.zip
-            - 如果由于网络问题无法下载, 请加入QQ群下载群文件
+            -   如果由于网络问题无法下载, 请加入QQ群下载群文件
         -   解压后打开其中的pdf2zh.exe，然后打开命令行中提示的gui路径(`http://127.0.0.1:7860/`)，翻译一篇文章后退出。
         -   回到插件重新翻译。
+
+    **为什么这样做是有效的：**
+    -   **资源已下载并加入缓存**：通过exe包完成一次翻译后，字体和模型文件会被下载并缓存到系统中。之后再次使用插件时，就可以直接使用缓存的资源，无需重新下载。
+    -   **网络环境检查**：如果依然出现下载失败的情况，请检查您的网络环境是否能够正常访问GitHub或相关资源服务器。您可以尝试切换网络、使用代理工具，或者加入QQ群下载群文件中的离线资源包。
     
 
 ### 关于环境
@@ -490,16 +611,19 @@ source ~/.bashrc
         -   pdf2zh 对应的虚拟环境名为`zotero-pdf2zh-venv`
         -   pdf2zh_next对应的虚拟环境名为`zotero-pdf2zh-next-venv`
         -   如果您依然不会操作，可以把这段内容发送给AI，并且告诉它您正在使用uv还是conda进行虚拟环境管理。
-    -   您也许缺少的是[vs_redist.x86.exe](https://aka.ms/vs/17/release/vc_redist.x86.exe)包
-        - 可以加入QQ群下载群文件中的3个exe包
+    -   您也许缺少的是x86或其他版本的Visual C++ Redistributable，可以尝试安装以下三个文件：
+        -   [VC_redist.x86.exe](https://aka.ms/vs/17/release/vc_redist.x86.exe)（32位版本）
+        -   [VC_redist.x15.x64.exe](https://aka.ms/vs/16/release/vc_redist.x64.exe)（64位版本，2015-2019）
+        -   [VC_redist.x17.x64.exe](https://aka.ms/vs/17/release/vc_redist.x64.exe)（64位版本，2015-2022）
+        -   如果您在QQ群中，也可以直接在群文件中下载这三个文件
     -   也许您正在使用macOS旧版本系统（这个问题大部分发生在windows系统中），您需要在安装时python虚拟环境指定为3.11而不是3.12
     -   另有群友贡献的方法供您尝试:
-        - <img src="./images/onnx-solution.png" style="width: 200px"/>
+        - <img src="./images/onnx-solution.png" style="width: 100px"/>
 
 -  **[🔥高频问题]Q: 我的命令行中提示: Failed to canonicalize script path**
 -  A: 删除`server`路径下的`zotero-pdf2zh-next-venv`或者`zotero-pdf2zh-venv`文件夹, 然后重新配置。使用uv方法在安装配置后不可以修改路径名/移动文件夹。
 
-### 关于远程服务
+### 关于翻译服务
 
 -   **Q：我没配置API，可以用吗？**
 -   A：不可以，除非您使用的是免费的服务。
@@ -513,54 +637,61 @@ source ~/.bashrc
     -   通常一篇10页的英文文献消耗Token量在7～10w左右，单页在5k左右，您可以先基于此数据进行检查
     -   如果您正在使用pdf2zh_next引擎，可以尝试在zotero插件配置中，把提取术语表选项关闭，这个选项会消耗较多Token
 
+-   **[🔥高频问题]Q：翻译后部分段落缺失（未被翻译），该怎么办？**
+-   A：
+    -   **原因说明**：为了保证PDF能够正常生成，当翻译失败时，程序会使用原文替代翻译后的位置，因此会出现部分段落未翻译的情况。
+    -   **解决方法**：
+        1.  尝试更换翻译引擎（pdf2zh/pdf2zh_next）
+        2.  检查您的API是否超限（查看终端报错信息或API服务商后台）
+        3.  如果使用的是免费服务（如bing/google），可能是限流导致，建议切换到更稳定的服务
+
+
+### 关于OCR/扫描件
+
+-   **[🔥高频问题]Q1：翻译界面提示 Scanned PDF detected, 翻译失败**
+-   A：
+    -   pdf2zh和pdf2zh_next不直接提供文档OCR功能, 您需要用其他工具对自己的扫描版文件进行OCR处理, 再调用插件的翻译功能。
+    -   推荐使用 Adobe Acrobat Pro、ABBYY FineReader 或其他OCR工具对扫描版PDF进行文字识别处理，然后再使用本插件进行翻译。
+
+-   **Q2：pdf2zh_next服务中的ocr模式与兼容模式是指什么？**
+-   A：
+    -   OCR选项并不是直接提供OCR服务的，它只是一个对于OCR后的文件进行兼容的临时方案，您保持自动开启OCR临时方案的选项开启即可。
+    -   兼容模式生成的文件大小会更大，您在非必要的时候不需要开启。（如果您翻译功能正常，但是某一次失败了/并且确定不是远程翻译服务的问题，那您可以尝试开启）
+
+### 关于翻译效果
+
+-   **Q：为什么会出现段落缺失、断行或重影的情况？**
+-   A：
+    -   **扫描件问题**：如果文档本身是扫描件，必须先经过OCR处理后再进行翻译。若未进行OCR识别，会导致断行或段落缺失问题。
+    -   **重影现象**：出现的重影通常是由于OCR识别不准确或PDF文件本身的问题导致的。建议使用高质量的OCR工具重新处理文档。
+    -   **段落缺失**：如前文所述，翻译失败时程序会用原文替代，建议先排查API服务是否正常。
 
 ### 关于插件功能
 
 -   **Q：我不知道zotero插件里的各个功能是什么意思**
 -   A：您可以自由尝试，请尽量不要对这些问题进行提问，翻译引擎具有缓存的设置，也就是说您重复对同一篇文献进行翻译时，可能不会消耗过多的Token（不能保证完全不消耗）
 
--   **[🔥高频问题]Q1: 翻译界面提示 Scanned PDF detected, 翻译失败**
--   **Q2：pdf2zh_next服务中的ocr模式与兼容模式是指什么？**
--   A：
-    -   pdf2zh和pdf2zh_next不直接提供文档OCR功能, 您需要用其他工具对自己的扫描版文件进行OCR处理, 再调用插件的翻译功能
-    -   OCR选项并不是直接提供OCR服务的，它只是一个对于OCR后的文件进行兼容的临时方案，您保持自动开启OCR临时方案的选项开启即可。
-    -   兼容模式生成的文件大小会更大，您在非必要的时候不需要开启。（如果您翻译功能正常，但是某一次失败了/并且确定不是远程翻译服务的问题，那您可以尝试开启）
-
 
 ### 关于提问
 
--   **[🔥高频问题]Q：排查问题的原则？**
+**提问前请先尝试以下方法：**
+  - 将终端报错信息发送给AI（ChatGPT、Gemini、DeepSeek等）进行分析
+  - 在本文档中搜索错误关键词或查阅相关章节
+
+**如需在群内提问，请提供：**
+  - 终端完整输出（复制到txt文件）
+  - Zotero设置截图
+  - Zotero弹窗截图
+  - 说明您已尝试过的解决方法
+
+-   **Q：我在群里问问题，怎么没人回复我？**
 -   A：
-    -   **优先向AI提问**：将终端报错信息复制给AI（如ChatGPT、Claude、DeepSeek等），AI通常能够快速定位问题并给出解决方案。
-    -   **查阅文档**：本插件所有问题在所有环境下都可以解决。请先阅读本指南的常见问题部分，或在项目文档中搜索关键词。
-    -   **阅读终端错误提示**：终端中的报错信息通常已经明确指出了问题所在，例如：
-        - `DeepSeek API Key is Required` → 说明您没有配置DeepSeek API Key
-        - `OSError: Microsoft Visual C++ Redistributable is not installed` → 需要安装vc_redist.x64.exe，安装后仍失败请在文档中搜索"DLL"
-        - `Failed to canonicalize script path` → 请在文档中搜索此错误
-    -   **如果以上方法都无法解决**，请在QQ群提问，并提供：
-        -   终端（命令行/cmd）里的所有内容（复制到txt文件）
-        -   Zotero设置截图
-        -   Zotero弹窗截图
-        -   说明您已经尝试过的方法
+    -   请确认您的问题不属于常见问题，或在问题描述中说明"已查阅常见问题但仍未解决"
+    -   请提供终端输出、Zotero设置截图和弹窗截图，以便定位问题
+    -   如果被漏看，可以稍后重新发或@群主
 
--   **[🔥高频问题]Q：遇到类似 `Error: subprocess.CalledProcessError: Command ['zotero-pdf2zh-venv\\Scripts\\pdf2zh.exe'` 这样的错误，该如何排查？**
--   A：这类 `subprocess.CalledProcessError` 错误信息本身无法看出具体原因，仅表示子进程执行失败。您需要：
-    -   **查看终端输出**：在运行 `python server.py` 的终端窗口中查看详细的错误日志，终端中会显示真正的错误原因。
-    -   **将终端输出发给AI**：把终端中的详细错误信息复制发给AI（如ChatGPT、Claude、DeepSeek等），让AI帮您分析具体原因。
-    -   **常见原因包括**：虚拟环境路径问题、依赖包缺失、Python版本不兼容等。
-
--   **Q：我在群里问问题，怎么没人回复我，反而回复了别人？**
--   A：有以下几种情况
-    -   您的问题属于常见问题。
-        -   如果您认为不是常见问题，或者您无法确定是否是常见问题，您需要在问题描述时说明：您已经查看了常见问题但无法自主解决。
-    -   漏看了，可以过一会重新发，也可以@群主。
-    -   您没有发送您的终端的信息，无法排查问题。
-
--   **Q：我认为开发者/群里的人没有给我很好的支持，我想不礼貌了，怎么办？**
--   A：本项目是【免费/开源】的项目。那么您得到的是他人用学习/工作之余的义务劳动时间，插件群是为了让更多的人在此项目中受益，并不能够保证有求必应。请控制自己的情绪和语言。
-
--   **Q：可是我给作者打赏了。**
--   A：感谢支持！请您私聊联系群主，远程帮您解决问题。
+-   **Q：可是我给作者打赏了，希望能得到优先支持。**
+-   A：非常感谢您的支持！打赏是对项目的肯定和鼓励，如果打赏后遇到问题，欢迎私聊群主，我会尽力协助您解决。
 
 
 ### 关于支持本插件
@@ -610,7 +741,7 @@ source ~/.bashrc
 - 🐳 [爱发电](https://afdian.com/a/guaguastandup)
 - 🤖 【SiliconFlow邀请链接】: https://cloud.siliconflow.cn/i/WLYnNanQ
 - 🤖 【方舟Coding Plan邀请链接】: 方舟 Coding Plan 支持 Doubao、GLM、DeepSeek、Kimi 等模型，工具不限，现在订阅折上9折，低至8.9元，订阅越多越划算！立即订阅：https://volcengine.com/L/nVFMmMWNd6U/  邀请码：8EYCPKHC
-- 🤖 【GLM Coding Plan邀请链接】: 🚀 速来拼好模，智谱 GLM Coding 超值订阅，邀你一起薅羊毛！Claude Code、Cline 等 20+ 大编程工具无缝支持，“码力”全开，越拼越爽！立即开拼，享限时惊喜价！链接：https://www.bigmodel.cn/glm-coding?ic=44Y4L3RHPG
+- 🤖 【GLM Coding Plan邀请链接】: 🚀 速来拼好模，智谱 GLM Coding 超值订阅，邀您一起薅羊毛！Claude Code、Cline 等 20+ 大编程工具无缝支持，“码力”全开，越拼越爽！立即开拼，享限时惊喜价！链接：https://www.bigmodel.cn/glm-coding?ic=44Y4L3RHPG
 
 - 赞助者名单(持续更新), 按照时间先后排序:
   - 我会定期重复检查，但如果仍然有统计遗漏, 请您联系我, QQ: 546409178
@@ -626,7 +757,7 @@ source ~/.bashrc
     <img src="https://img.shields.io/static/v1?label=bibiu77&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="bibiu77">
     <img src="https://img.shields.io/static/v1?label=%2A%E7%90%B0&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="*琰">
     <img src="https://img.shields.io/static/v1?label=%2A%E5%86%AC%E8%90%8D&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="*冬萍">
-    <img src="https://img.shields.io/static/v1?label=%E9%98%BF%E8%B5%9F&message=x3&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="阿赟">
+    <img src="https://img.shields.io/static/v1?label=%E9%98%BF%E8%B5%9F&message=x4&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="阿赟">
     <img src="https://img.shields.io/static/v1?label=%2A%E5%A3%B0&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="*声">
     <img src="https://img.shields.io/static/v1?label=h%2Au&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="h*u">
     <img src="https://img.shields.io/static/v1?label=%E7%88%B1%E5%8F%91%E7%94%B5%E7%94%A8%E6%88%B7&message=96598&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="爱发电用户">
@@ -661,6 +792,8 @@ source ~/.bashrc
     <img src="https://img.shields.io/static/v1?label=%2A%E5%B7%9D&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="*川">
     <img src="https://img.shields.io/static/v1?label=%2A%E5%8D%9A&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="*博">
     <img src="https://img.shields.io/static/v1?label=Sine%E7%92%87&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="Sine璇">
+    <img src="https://img.shields.io/static/v1?label=%F0%9F%90%91H-Yang%E7%8B%AC%E8%A7%92%E5%85%BD%E5%85%88%E7%94%9F&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="🐑H-Yang独角兽先生">
+    <img src="https://img.shields.io/static/v1?label=%2A%E6%B4%8B&message=Sponsor&color=e8f5e0&labelColor=ffffff&style=flat-square" alt="*洋">
   </div>
   <div style="margin-top: 20px;">
     <img src="./images/chii.jpg" alt="感谢" width="150" style="border-radius: 10px;" />
@@ -680,6 +813,8 @@ source ~/.bashrc
    - 将本插件打包后以收费形式出售
    - 以"代安装"、"技术服务"等名义收取高额费用后交付本插件
    - 将本插件作为付费产品的一部分进行销售
+
+   > ⚠️ **特别提醒**：商业贩子请勿加入QQ群提问，不要消耗维护者的精力。一旦发现，将直接移出群聊并拉黑。
 
 3. **合理使用**：欢迎个人学习、研究、非商业用途的使用。如需商业使用，请联系作者获取授权。
 
