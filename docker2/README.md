@@ -43,13 +43,13 @@ mkdir zotero-pdf2zh && cd zotero-pdf2zh
 
 # 2. 下载 Docker 配置文件
 # 如果 wget 下载失败，可以点击链接手动下载，并放入 zotero-pdf2zh 文件夹
-# - docker-compose.yaml: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.yaml
-# - Dockerfile: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/Dockerfile
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.yaml
-wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/Dockerfile
+# - docker-compose.yaml: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/docker-compose.yaml
+# - Dockerfile: https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/Dockerfile
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/docker-compose.yaml
+wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/Dockerfile
 
 # 3. 创建用于存放翻译文件的文件夹
-mkdir -p zotero-pdf2zh/config zotero-pdf2zh/translated
+mkdir -p zotero-pdf2zh/translated
 ```
 
 最终文件夹结构应如下：
@@ -59,8 +59,7 @@ zotero-pdf2zh/
 ├── docker-compose.yaml
 ├── Dockerfile
 └── zotero-pdf2zh/
-    └── translated/
-    ├── config/
+    ├── translated/
     └── LXGWWenKai-Regular.ttf # (可选) 将您的字体文件放在这里
 ```
 
@@ -78,6 +77,8 @@ docker compose up -d
 ```
 
 服务启动需要一些时间，当您在日志中看到 `* Running on http://0.0.0.0:8890` 时，代表服务已准备就绪。
+
+> 说明：生产模式会默认关闭 `server.py` 的启动时更新检查，避免容器内出现交互式“是否立即更新”的提示，影响无人值守部署。翻译配置由 Zotero 插件随请求传入，并在容器内部管理，普通用户无需额外准备 `config/` 目录。
 
 ## 第三步：配置 Zotero 插件
 
@@ -113,9 +114,9 @@ docker compose up -d
 1.  额外下载 `docker-compose.dev.yaml` 和 `server` 文件夹。
     ```shell
     # 下载 dev 配置文件
-    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker/docker-compose.dev.yaml
+    wget https://raw.githubusercontent.com/guaguastandup/zotero-pdf2zh/main/docker2/docker-compose.dev.yaml
     # 下载并解压 server 文件夹
-    wget https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v3.0.31/server.zip
+    wget https://github.com/guaguastandup/zotero-pdf2zh/releases/download/v4.0.0/server.zip
     unzip server.zip
     ```
 2.  使用 `-f` 参数指定配置文件启动：
